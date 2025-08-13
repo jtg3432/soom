@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>집중관리 카페 - 운영관리팀</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-header h2 {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .controls-section {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 45px;
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stats-section {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px 25px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4facfe;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .table-container {
+            padding: 40px;
+            overflow-x: auto;
+        }
+
+        .cafe-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .cafe-table th {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .cafe-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f3f4;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .cafe-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .cafe-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .status-badge.managing {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 2px solid #1976d2;
+        }
+
+        .status-badge.waiting {
+            background: #fff3e0;
+            color: #f57c00;
+            border: 2px solid #f57c00;
+        }
+
+        .status-badge.completed {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 2px solid #2e7d32;
+        }
+
+        .status-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .cafe-name-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .cafe-name-input:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.1);
+        }
+
+        .action-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            display: none;
+        }
+
+        .save-feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .save-feedback.show {
+            transform: translateX(0);
+        }
+
+        .row-number {
+            font-weight: 600;
+            color: #4facfe;
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                margin: 20px;
+            }
+            
+            .controls-section {
+                padding: 20px;
+            }
+
+            .controls-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: unset;
+            }
+
+            .stats-section {
+                gap: 15px;
+            }
+
+            .stat-item {
+                padding: 10px 15px;
+            }
+
+            .table-container {
+                padding: 20px;
+            }
+
+            .cafe-table th,
+            .cafe-table td {
+                padding: 12px 8px;
+                font-size: 0.9rem;
+            }
+
+            .cafe-name-input {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <a href="index.html" class="back-btn">← 메인으로</a>
+            <h1>운영관리팀</h1>
+            <h2>집중관리 카페</h2>
+        </div>
+
+        <div class="controls-section">
+            <div class="controls-row">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="searchInput" placeholder="업체명 또는 카페명으로 검색..." oninput="searchCafes()">
+                </div>
+                <button class="add-btn" onclick="addNewRow()">➕ 카페 추가</button>
+            </div>
+            
+            <div class="stats-section">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">전체 카페</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="managingCount">0</div>
+                    <div class="stat-label">관리중</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="waitingCount">0</div>
+                    <div class="stat-label">대기중</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="completedCount">0</div>
+                    <div class="stat-label">완료</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="cafe-table" id="cafeTable">
+                <thead>
+                    <tr>
+                        <th width="60px">번호</th>
+                        <th width="30%">업체명</th>
+                        <th width="35%">카페명</th>
+                        <th width="120px">상태</th>
+                        <th width="80px">관리</th>
+                    </tr>
+                </thead>
+                <tbody id="cafeTableBody">
+                    <!-- 동적으로 생성됩니다 -->
+                </tbody>
+            </table>
+            
+            <div class="empty-state" id="emptyState">
+                <h3>💬 등록된 카페가 없습니다</h3>
+                <p>첫 번째 카페를 추가해보세요!</p>
+                <button class="add-btn" onclick="addNewRow()">➕ 카페 추가하기</button>
+            </div>
+            
+            <div class="no-results" id="noResults">
+                <p>🔍 검색 결과가 없습니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="save-feedback" id="saveFeedback">
+        💾 저장되었습니다!
+    </div>
+
+    <script>
+        let cafeData = [];
+        let nextId = 1;
+
+        // 샘플 데이터 (비어있음)
+        const sampleData = [];
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedData();
+            if (cafeData.length === 0) {
+                cafeData = [...sampleData];
+                nextId = 1;
+                autoSave();
+            }
+            renderTable();
+            updateStats();
+        });
+
+        function renderTable() {
+            const tbody = document.getElementById('cafeTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const table = document.getElementById('cafeTable');
+            
+            if (cafeData.length === 0) {
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            table.style.display = 'table';
+            emptyState.style.display = 'none';
+            
+            tbody.innerHTML = '';
+            
+            cafeData.forEach((cafe, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="row-number">${index + 1}</td>
+                    <td>
+                        <input type="text" class="cafe-name-input" value="${cafe.company}" 
+                               onchange="updateCafe(${cafe.id}, 'company', this.value)"
+                               placeholder="업체명 입력">
+                    </td>
+                    <td>
+                        <input type="text" class="cafe-name-input" value="${cafe.cafeName}" 
+                               onchange="updateCafe(${cafe.id}, 'cafeName', this.value)"
+                               placeholder="카페명 입력">
+                    </td>
+                    <td>
+                        <div class="status-badge ${cafe.status}" onclick="toggleStatus(${cafe.id})">
+                            ${getStatusText(cafe.status)}
+                        </div>
+                    </td>
+                    <td>
+                        <button class="action-btn" onclick="deleteCafe(${cafe.id})">삭제</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'managing': '관리중',
+                'waiting': '대기중',
+                'completed': '완료'
+            };
+            return statusMap[status] || '대기중';
+        }
+
+        function addNewRow() {
+            const newCafe = {
+                id: nextId++,
+                company: '',
+                cafeName: '',
+                status: 'waiting'
+            };
+            
+            cafeData.push(newCafe);
+            renderTable();
+            updateStats();
+            autoSave();
+            
+            // 새로 추가된 행의 첫 번째 입력창에 포커스
+            const newInputs = document.querySelectorAll('.cafe-name-input');
+            if (newInputs.length > 0) {
+                newInputs[newInputs.length - 2].focus();
+            }
+            
+            showSaveFeedback('➕ 새 카페가 추가되었습니다!');
+        }
+
+        function updateCafe(id, field, value) {
+            const cafe = cafeData.find(c => c.id === id);
+            if (cafe) {
+                cafe[field] = value;
+                autoSave();
+                updateStats();
+            }
+        }
+
+        function toggleStatus(id) {
+            const cafe = cafeData.find(c => c.id === id);
+            if (cafe) {
+                const statusOrder = ['waiting', 'managing', 'completed'];
+                const currentIndex = statusOrder.indexOf(cafe.status);
+                const nextIndex = (currentIndex + 1) % statusOrder.length;
+                cafe.status = statusOrder[nextIndex];
+                
+                renderTable();
+                updateStats();
+                autoSave();
+                showSaveFeedback('📊 상태가 변경되었습니다!');
+            }
+        }
+
+        function deleteCafe(id) {
+            const cafe = cafeData.find(c => c.id === id);
+            const cafeName = cafe ? (cafe.cafeName || '이름 없는 카페') : '카페';
+            
+            if (confirm(`"${cafeName}"를 삭제하시겠습니까?`)) {
+                cafeData = cafeData.filter(c => c.id !== id);
+                renderTable();
+                updateStats();
+                autoSave();
+                showSaveFeedback('🗑️ 카페가 삭제되었습니다!');
+            }
+        }
+
+        function searchCafes() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const rows = document.querySelectorAll('#cafeTableBody tr');
+            const noResults = document.getElementById('noResults');
+            let hasResults = false;
+
+            rows.forEach(row => {
+                const company = row.cells[1].querySelector('input').value.toLowerCase();
+                const cafeName = row.cells[2].querySelector('input').value.toLowerCase();
+                
+                if (searchTerm === '' || company.includes(searchTerm) || cafeName.includes(searchTerm)) {
+                    row.style.display = '';
+                    hasResults = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (cafeData.length > 0 && !hasResults && searchTerm !== '') {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+
+        function updateStats() {
+            const total = cafeData.length;
+            const managing = cafeData.filter(c => c.status === 'managing').length;
+            const waiting = cafeData.filter(c => c.status === 'waiting').length;
+            const completed = cafeData.filter(c => c.status === 'completed').length;
+            
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('managingCount').textContent = managing;
+            document.getElementById('waitingCount').textContent = waiting;
+            document.getElementById('completedCount').textContent = completed;
+        }
+
+        function autoSave() {
+            localStorage.setItem('cafeData', JSON.stringify(cafeData));
+            localStorage.setItem('nextId', nextId.toString());
+        }
+
+        function loadSavedData() {
+            const savedData = localStorage.getItem('cafeData');
+            const savedNextId = localStorage.getItem('nextId');
+            
+            if (savedData) {
+                cafeData = JSON.parse(savedData);
+            }
+            
+            if (savedNextId) {
+                nextId = parseInt(savedNextId);
+            }
+        }
+
+        function showSaveFeedback(message) {
+            const feedback = document.getElementById('saveFeedback');
+            feedback.textContent = message;
+            feedback.classList.add('show');
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        // 키보드 단축키
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                addNewRow();
+            }
+        });
+    </script>
+</body>
+</html>

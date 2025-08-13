@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>운영관리팀 - 메인</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 60px 20px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 60px 40px;
+        }
+
+        .welcome-message {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .menu-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .footer {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>운영관리팀</h1>
+            <p>통합 관리 시스템</p>
+        </div>
+
+        <div class="content">
+            <div class="welcome-message">
+                안녕하세요! 운영관리팀 통합 관리 시스템입니다.<br>
+                필요한 메뉴를 선택해주세요.
+            </div>
+
+            <div class="menu-buttons">
+                <a href="docs.html" class="menu-btn">
+                    <span class="icon">📊</span>
+                    독스 계정 정보
+                </a>
+
+                <a href="company.html" class="menu-btn">
+                    <span class="icon">🏢</span>
+                    업체 정보
+                </a>
+
+                <a href="cafe.html" class="menu-btn">
+                    <span class="icon">💬</span>
+                    집중관리 카페
+                </a>
+
+                <a href="schedule.html" class="menu-btn">
+                    <span class="icon">📋</span>
+                    연세사랑모아 순번
+                </a>
+
+                <a href="vacation.html" class="menu-btn">
+                    <span class="icon">📅</span>
+                    연차 캘린더
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2025 운영관리팀. 모든 권리 보유.
+        </div>
+    </div>
+</body>
+</html>

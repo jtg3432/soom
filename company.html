@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>업체 정보 - 운영관리팀</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-header h2 {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .search-section {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .search-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            padding-left: 50px;
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .search-input:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+
+        .filter-option {
+            flex-shrink: 0;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #495057;
+            font-weight: 500;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .filter-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #4facfe;
+            transform: scale(1.2);
+        }
+
+        .filter-checkbox span {
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .search-notice {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            color: #2d3436;
+            text-align: center;
+            padding: 15px 20px;
+            margin: 20px 40px 0 40px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .companies-grid {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .company-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .company-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .company-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-color: #4facfe;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .company-card:hover::before {
+            left: 100%;
+        }
+
+        .company-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .company-name::before {
+            content: '🏢';
+            font-size: 1.2rem;
+        }
+
+        .company-card:hover .company-name {
+            color: white;
+        }
+
+        .company-info {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #6c757d;
+            transition: all 0.2s ease;
+        }
+
+        .company-card:hover .company-info {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .special-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .company-card:hover .special-badge {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                margin: 20px;
+            }
+            
+            .search-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+            
+            .search-box {
+                min-width: unset;
+            }
+            
+            .filter-option {
+                align-self: center;
+            }
+            
+            .search-section {
+                padding: 20px;
+            }
+
+            .companies-grid {
+                padding: 20px;
+                grid-template-columns: 1fr;
+            }
+
+            .search-notice {
+                margin: 20px 20px 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <a href="index.html" class="back-btn">← 메인으로</a>
+            <h1>운영관리팀</h1>
+            <h2>업체 정보</h2>
+        </div>
+
+        <div class="search-section">
+            <div class="search-controls">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="companySearchInput" placeholder="업체명을 검색하세요 (초성 검색 가능)" oninput="searchCompanies()">
+                </div>
+                <div class="filter-option">
+                    <label class="filter-checkbox">
+                        <input type="checkbox" id="specialActionsFilter" onchange="toggleSpecialActions()">
+                        <span>업로드 후 특정 행동을 해야하는 업체</span>
+                    </label>
+                </div>
+            </div>
+            <div class="search-notice">
+                💡 모든 업체 업로드 / 3자 모니터링 진행 전 정보란 및 필수작성지 확인 필수
+            </div>
+        </div>
+
+        <div class="companies-grid" id="companiesGrid">
+            <div class="company-card" data-company="다정흉부외과" data-initial="ㄷㅈㅎㅂㅇㄱ" data-special="false">
+                <div class="company-name">다정흉부외과(애드비)</div>
+                <div class="company-info">흉부외과 전문 병원 · 일반 관리</div>
+            </div>
+            
+            <div class="company-card" data-company="더미즈병원" data-initial="ㄷㅁㅈㅂㅇ" data-special="false">
+                <div class="company-name">더미즈병원</div>
+                <div class="company-info">종합병원 · 일반 관리</div>
+            </div>
+            
+            <div class="company-card" data-company="로긴" data-initial="ㄹㄱ" data-special="false">
+                <div class="company-name">로긴</div>
+                <div class="company-info">의료기기 업체 · 일반 관리</div>
+            </div>
+            
+            <div class="company-card" data-company="릴리브" data-initial="ㄹㄹㅂ" data-special="false">
+                <div class="company-name">릴리브</div>
+                <div class="company-info">헬스케어 서비스 · 일반 관리</div>
+            </div>
+            
+            <div class="company-card" data-company="서울미즈병원" data-initial="ㅅㅇㅁㅈㅂㅇ" data-special="true">
+                <div class="special-badge">특별관리</div>
+                <div class="company-name">서울미즈병원</div>
+                <div class="company-info">산부인과 전문병원 · 특별 주의사항 있음</div>
+            </div>
+            
+            <div class="company-card" data-company="스팟" data-initial="ㅅㅍ" data-special="true">
+                <div class="special-badge">특별관리</div>
+                <div class="company-name">스팟</div>
+                <div class="company-info">의료 플랫폼 · 특별 주의사항 있음</div>
+            </div>
+            
+            <div class="company-card" data-company="연세사랑모아" data-initial="ㅇㅅㅅㄹㅁ" data-special="true">
+                <div class="special-badge">특별관리</div>
+                <div class="company-name">연세사랑모아</div>
+                <div class="company-info">산부인과 전문병원 · 특별 주의사항 있음</div>
+            </div>
+            
+            <div class="company-card" data-company="에스바른치과" data-initial="ㅇㅅㅂㄹㅊㄱ" data-special="true">
+                <div class="special-badge">특별관리</div>
+                <div class="company-name">에스바른치과</div>
+                <div class="company-info">치과 전문병원 · 특별 주의사항 있음</div>
+            </div>
+            
+            <div class="company-card" data-company="엠레드클리닉" data-initial="ㅇㄹㄷㅋㄹㄴ" data-special="false">
+                <div class="company-name">엠레드클리닉</div>
+                <div class="company-info">피부과 전문 클리닉 · 일반 관리</div>
+            </div>
+            
+            <div class="company-card" data-company="위드맘" data-initial="ㅇㄷㅁ" data-special="true">
+                <div class="special-badge">특별관리</div>
+                <div class="company-name">위드맘</div>
+                <div class="company-info">산후조리원 · 특별 주의사항 있음</div>
+            </div>
+            
+            <div class="company-card" data-company="이학수성형외과" data-initial="ㅇㅎㅅㅅㅎㅇㄱ" data-special="false">
+                <div class="company-name">이학수성형외과</div>
+                <div class="company-info">성형외과 전문병원 · 일반 관리</div>
+            </div>
+        </div>
+
+        <div class="no-results" id="noResults">
+            <p>🔍 검색 결과가 없습니다.</p>
+            <p style="font-size: 0.9rem; margin-top: 10px; color: #adb5bd;">다른 검색어를 입력해보세요.</p>
+        </div>
+    </div>
+
+    <script>
+        function searchCompanies() {
+            const searchTerm = document.getElementById('companySearchInput').value.toLowerCase().trim();
+            const companyCards = document.querySelectorAll('.company-card');
+            const noResults = document.getElementById('noResults');
+            const isSpecialFilter = document.getElementById('specialActionsFilter').checked;
+            let hasResults = false;
+
+            companyCards.forEach(card => {
+                const companyName = card.getAttribute('data-company').toLowerCase();
+                const companyInitial = card.getAttribute('data-initial');
+                const isSpecial = card.getAttribute('data-special') === 'true';
+                
+                const matchesName = companyName.includes(searchTerm);
+                const matchesInitial = companyInitial.includes(searchTerm);
+                const matchesSearch = searchTerm === '' || matchesName || matchesInitial;
+                const matchesFilter = !isSpecialFilter || isSpecial;
+                
+                if (matchesSearch && matchesFilter) {
+                    card.classList.remove('hidden');
+                    hasResults = true;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            if (hasResults) {
+                noResults.style.display = 'none';
+            } else {
+                noResults.style.display = 'block';
+            }
+        }
+
+        function toggleSpecialActions() {
+            searchCompanies();
+        }
+
+        function showAllCompanies() {
+            const companyCards = document.querySelectorAll('.company-card');
+            const noResults = document.getElementById('noResults');
+            
+            companyCards.forEach(card => {
+                card.classList.remove('hidden');
+            });
+            
+            noResults.style.display = 'none';
+            document.getElementById('specialActionsFilter').checked = false;
+        }
+
+        // 업체 카드 클릭 시 상세 정보 표시 (추후 확장 가능)
+        document.addEventListener('DOMContentLoaded', function() {
+            const companyCards = document.querySelectorAll('.company-card');
+            
+            companyCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const companyName = this.getAttribute('data-company');
+                    const isSpecial = this.getAttribute('data-special') === 'true';
+                    
+                    alert(`${companyName}\n\n${isSpecial ? '⚠️ 특별 관리 대상 업체입니다.' : '✅ 일반 관리 업체입니다.'}\n\n상세 정보 페이지는 추후 추가 예정입니다.`);
+                });
+            });
+        });
+
+        // 검색창 포커스
+        window.onload = function() {
+            document.getElementById('companySearchInput').focus();
+        };
+    </script>
+</body>
+</html>
