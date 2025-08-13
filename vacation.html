@@ -539,12 +539,12 @@
         let currentDate = new Date();
         let vacations = [];
 
-        // 샘플 데이터 (비어있음)
-        const sampleVacations = [];
+        // 구글시트 연동 설정
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNUutYXsqOnriqmMLhV_qOQm0pdSHIiL8Kk33E5lna50df7IqtehfCGYkE6W3oALw/exec';
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
-            vacations = [...sampleVacations];
+            loadVacationsFromGoogleSheets();
             generateCalendar();
             updateUpcomingList();
             
@@ -553,6 +553,67 @@
             const todayString = today.toISOString().split('T')[0];
             document.getElementById('vacationDate').value = todayString;
         });
+
+        // 구글시트에서 데이터 불러오기
+        async function loadVacationsFromGoogleSheets() {
+            try {
+                showCopyFeedback('📊 구글시트에서 데이터를 불러오는 중...');
+                
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const data = await response.json();
+                
+                // 첫 번째 행은 헤더이므로 제외
+                vacations = data.slice(1).map(row => ({
+                    id: row[0],
+                    date: row[1],
+                    name: row[2],
+                    type: row[3],
+                    note: row[4] || ''
+                })).filter(v => v.date); // 빈 행 제외
+                
+                showCopyFeedback('✅ 구글시트 데이터 로드 완료!');
+            } catch (error) {
+                console.error('구글시트 연동 오류:', error);
+                showCopyFeedback('⚠️ 구글시트 연결 실패 - 로컬 데이터 사용');
+                
+                // 구글시트 연결 실패 시 로컬 저장소 사용
+                const saved = localStorage.getItem('vacationData');
+                if (saved) {
+                    vacations = JSON.parse(saved);
+                }
+            }
+        }
+
+        // 구글시트에 데이터 저장하기
+        async function saveToGoogleSheets(vacation) {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'add',
+                        id: vacation.id,
+                        date: vacation.date,
+                        name: vacation.name,
+                        type: vacation.type,
+                        note: vacation.note
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showCopyFeedback('☁️ 구글시트에 저장 완료!');
+                }
+            } catch (error) {
+                console.error('구글시트 저장 오류:', error);
+                showCopyFeedback('⚠️ 구글시트 저장 실패 - 로컬에만 저장됨');
+                
+                // 구글시트 저장 실패 시 로컬 저장소에라도 저장
+                localStorage.setItem('vacationData', JSON.stringify(vacations));
+            }
+        }
 
         function generateCalendar() {
             const year = currentDate.getFullYear();
@@ -687,6 +748,9 @@
             };
             
             vacations.push(newVacation);
+            
+            // 구글시트에 저장
+            saveToGoogleSheets(newVacation);
             
             // 폼 초기화
             document.getElementById('vacationDate').value = '';
