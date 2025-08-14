@@ -187,8 +187,7 @@
         .admin-btn.edit {
             background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
         }
-
-        .companies-grid {
+.companies-grid {
             padding: 40px;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -512,7 +511,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">초성</label>
-                <input type="text" class="form-input" id="companyInitial" placeholder="검색용 초성 (예: ㅇㅅㅅㄹㅁ)">
+                <input type="text" class="form-input" id="companyInitial" placeholder="검색용 초성 (예: ㅇㅅㅅㄴㅅ)">
             </div>
             <div class="form-group">
                 <label class="form-label">특별 관리</label>
@@ -531,7 +530,6 @@
     <div class="save-feedback" id="saveFeedback">
         💾 저장되었습니다!
     </div>
-
     <script>
         let companies = [];
         let editMode = false;
@@ -600,7 +598,7 @@
                 { name: "스팟", info: "의료 플랫폼 · 특별 주의사항 있음", initial: "ㅅㅍ", special: true },
                 { name: "연세사랑모아", info: "산부인과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅅㄹㅁ", special: true },
                 { name: "에스바른치과", info: "치과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅂㄹㅊㄱ", special: true },
-                { name: "엠레드클리닉", info: "피부과 전문 클리닉 · 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
+                { name: "엘레드클리닉", info: "피부과 전문 클리닉 · 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
                 { name: "위드맘", info: "산후조리원 · 특별 주의사항 있음", initial: "ㅇㄷㅁ", special: true },
                 { name: "이학수성형외과", info: "성형외과 전문병원 · 일반 관리", initial: "ㅇㅎㅅㅅㅎㅇㄱ", special: false }
             ];
@@ -608,6 +606,9 @@
             for (const company of defaultCompanies) {
                 await window.addDoc(window.collection(window.db, 'companies'), company);
             }
+            
+            // 추가 후 다시 로드
+            await loadCompaniesFromFirebase();
         }
 
         // 기본 데이터 로드 (Firebase 실패 시)
@@ -621,7 +622,7 @@
                 { id: "6", name: "스팟", info: "의료 플랫폼 · 특별 주의사항 있음", initial: "ㅅㅍ", special: true },
                 { id: "7", name: "연세사랑모아", info: "산부인과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅅㄹㅁ", special: true },
                 { id: "8", name: "에스바른치과", info: "치과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅂㄹㅊㄱ", special: true },
-                { id: "9", name: "엠레드클리닉", info: "피부과 전문 클리닉 · 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
+                { id: "9", name: "엘레드클리닉", info: "피부과 전문 클리닉 · 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
                 { id: "10", name: "위드맘", info: "산후조리원 · 특별 주의사항 있음", initial: "ㅇㄷㅁ", special: true },
                 { id: "11", name: "이학수성형외과", info: "성형외과 전문병원 · 일반 관리", initial: "ㅇㅎㅅㅅㅎㅇㄱ", special: false }
             ];
@@ -744,7 +745,6 @@
                 document.getElementById('companyModal').style.display = 'block';
             }
         }
-
         async function saveCompany() {
             const name = document.getElementById('companyName').value.trim();
             const info = document.getElementById('companyInfo').value.trim();
@@ -761,4 +761,136 @@
             try {
                 if (editingId) {
                     // 편집
-                    await window.updateDoc(window.doc(window.db, '
+                    await window.updateDoc(window.doc(window.db, 'companies', editingId), companyData);
+                    showSaveFeedback('✏️ 업체 정보가 수정되었습니다!');
+                } else {
+                    // 추가
+                    await window.addDoc(window.collection(window.db, 'companies'), companyData);
+                    showSaveFeedback('➕ 새 업체가 추가되었습니다!');
+                }
+                closeModal();
+            } catch (error) {
+                console.error('Firebase 저장 실패:', error);
+                
+                // Firebase 실패 시 로컬 저장
+                if (editingId) {
+                    const company = companies.find(c => c.id === editingId);
+                    if (company) {
+                        Object.assign(company, companyData);
+                    }
+                } else {
+                    companyData.id = Date.now().toString();
+                    companies.push(companyData);
+                }
+                
+                renderCompanies();
+                localStorage.setItem('companies', JSON.stringify(companies));
+                closeModal();
+                showSaveFeedback('⚠️ 오프라인 모드로 저장됨');
+            }
+        }
+
+        async function toggleSpecial(id) {
+            const company = companies.find(c => c.id === id);
+            if (company) {
+                const newSpecial = !company.special;
+                
+                try {
+                    await window.updateDoc(window.doc(window.db, 'companies', id), { special: newSpecial });
+                    showSaveFeedback(`${newSpecial ? '🔴 특별관리로' : '🟢 일반관리로'} 변경되었습니다!`);
+                } catch (error) {
+                    console.error('Firebase 업데이트 실패:', error);
+                    
+                    // Firebase 실패 시 로컬 업데이트
+                    company.special = newSpecial;
+                    renderCompanies();
+                    localStorage.setItem('companies', JSON.stringify(companies));
+                    showSaveFeedback('⚠️ 오프라인 모드로 변경됨');
+                }
+            }
+        }
+
+        async function deleteCompany(id) {
+            const company = companies.find(c => c.id === id);
+            const companyName = company ? company.name : '업체';
+            
+            if (confirm(`"${companyName}"를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
+                try {
+                    await window.deleteDoc(window.doc(window.db, 'companies', id));
+                    showSaveFeedback('🗑️ 업체가 삭제되었습니다!');
+                } catch (error) {
+                    console.error('Firebase 삭제 실패:', error);
+                    
+                    // Firebase 실패 시 로컬 삭제
+                    const index = companies.findIndex(c => c.id === id);
+                    if (index > -1) {
+                        companies.splice(index, 1);
+                        renderCompanies();
+                        localStorage.setItem('companies', JSON.stringify(companies));
+                        showSaveFeedback('⚠️ 오프라인 모드로 삭제됨');
+                    }
+                }
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('companyModal').style.display = 'none';
+        }
+
+        function showSaveFeedback(message) {
+            const feedback = document.getElementById('saveFeedback');
+            feedback.textContent = message;
+            feedback.classList.add('show');
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('companyModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // 키보드 단축키
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                openAddModal();
+            }
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+
+    <!-- Firebase SDK 추가 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
+            authDomain: "soom-brand.firebaseapp.com",
+            projectId: "soom-brand",
+            storageBucket: "soom-brand.firebasestorage.app",
+            messagingSenderId: "765427036681",
+            appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 전역 변수로 설정
+        window.db = db;
+        window.firebaseInitialized = true;
+
+        console.log('🔥 Firebase 연결 완료!');
+    </script>
+</body>
+</html>
