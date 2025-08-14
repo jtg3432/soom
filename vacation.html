@@ -544,7 +544,7 @@
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
-            loadVacationsFromGoogleSheets();
+            initFirebaseConnection();
             generateCalendar();
             updateUpcomingList();
             
@@ -614,7 +614,71 @@
                 localStorage.setItem('vacationData', JSON.stringify(vacations));
             }
         }
+// Firebase 연결 초기화
+// Firebase 연결 초기화
+async function initFirebaseConnection() {
+    if (window.firebaseInitialized && window.db) {
+        const { getDocs, collection, addDoc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        window.getDocs = getDocs;
+        window.collection = collection; 
+        window.addDoc = addDoc;
+        window.onSnapshot = onSnapshot;
+        
+        await loadVacationsFromFirebase();
+        setupRealtimeSync();
+        showCopyFeedback('🔥 Firebase 연결 완료!');
+    } else {
+        showCopyFeedback('⚠️ Firebase 연결 실패 - 로컬 모드');
+    }
+}
 
+// Firebase에서 데이터 불러오기
+// Firebase에서 데이터 불러오기
+async function loadVacationsFromFirebase() {
+    if (!window.db) return false;
+    
+    try {
+        const querySnapshot = await window.getDocs(window.collection(window.db, 'vacations'));
+        vacations = [];
+        querySnapshot.forEach((doc) => {
+            vacations.push({ id: doc.id, ...doc.data() });
+        });
+        generateCalendar();
+        updateUpcomingList();
+        return true;
+    } catch (error) {
+        console.error('Firebase 로드 실패:', error);
+        return false;
+    }
+}
+
+// Firebase에 저장
+async function saveVacationToFirebase(vacation) {
+    if (!window.db) return false;
+    
+    try {
+        await window.addDoc(window.collection(window.db, 'vacations'), vacation);
+        return true;
+    } catch (error) {
+        console.error('Firebase 저장 실패:', error);
+        return false;
+    }
+}
+
+// 실시간 동기화
+function setupRealtimeSync() {
+    if (!window.db) return;
+    
+    window.onSnapshot(window.collection(window.db, 'vacations'), (snapshot) => {
+        vacations = [];
+        snapshot.forEach((doc) => {
+            vacations.push({ id: doc.id, ...doc.data() });
+        });
+        generateCalendar();
+        updateUpcomingList();
+        showCopyFeedback('🔄 실시간 동기화됨!');
+    });
+}
         function generateCalendar() {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
@@ -728,7 +792,7 @@
             });
         }
 
-        function addVacation() {
+        async function addVacation() {
             const date = document.getElementById('vacationDate').value;
             const name = document.getElementById('vacationName').value;
             const type = document.getElementById('vacationType').value;
@@ -747,21 +811,28 @@
                 note: note
             };
             
-            vacations.push(newVacation);
+
             
             // 구글시트에 저장
-            saveToGoogleSheets(newVacation);
-            
-            // 폼 초기화
-            document.getElementById('vacationDate').value = '';
-            document.getElementById('vacationName').value = '';
-            document.getElementById('vacationType').value = '';
-            document.getElementById('vacationNote').value = '';
-            
-            generateCalendar();
-            updateUpcomingList();
-            
-            showCopyFeedback('✅ 연차가 추가되었습니다!');
+            // Firebase에 저장 시도
+// Firebase에 저장 시도
+const success = await saveVacationToFirebase(newVacation);
+if (!success) {
+    // 실패 시 로컬에 저장
+    vacations.push(newVacation);
+    localStorage.setItem('vacationData', JSON.stringify(vacations));
+    generateCalendar();
+    updateUpcomingList();
+    showCopyFeedback('⚠️ 오프라인 모드로 저장됨');
+} else {
+    showCopyFeedback('✅ 연차가 추가되어 모든 사용자에게 공유되었습니다!');
+}
+
+// 폼 초기화
+document.getElementById('vacationDate').value = '';
+document.getElementById('vacationName').value = '';
+document.getElementById('vacationType').value = '';
+document.getElementById('vacationNote').value = '';
         }
 
         function showVacationDetail(vacation) {
@@ -868,5 +939,30 @@
             }
         }
     </script>
+<!-- Firebase SDK 추가 (기존 <script> 태그 바로 앞에 삽입) -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+// Firebase 설정
+const firebaseConfig = {
+  apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
+  authDomain: "soom-brand.firebaseapp.com",
+  projectId: "soom-brand",
+  storageBucket: "soom-brand.firebasestorage.app",
+  messagingSenderId: "765427036681",
+  appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
+};
+
+// Firebase 초기화
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 전역 변수로 설정
+window.db = db;
+window.firebaseInitialized = true;
+
+console.log('🔥 Firebase 연결 완료!');
+</script>
 </body>
 </html>
