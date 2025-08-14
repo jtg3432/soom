@@ -422,20 +422,119 @@
         let cafeData = [];
         let nextId = 1;
 
-        // 샘플 데이터 (비어있음)
-        const sampleData = [];
-
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
-            loadSavedData();
-            if (cafeData.length === 0) {
-                cafeData = [...sampleData];
-                nextId = 1;
-                autoSave();
-            }
-            renderTable();
+            initFirebaseConnection();
             updateStats();
         });
+
+        // Firebase 연결 초기화
+        async function initFirebaseConnection() {
+            if (window.firebaseInitialized && window.db) {
+                const { getDocs, collection, addDoc, deleteDoc, doc, onSnapshot, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                window.getDocs = getDocs;
+                window.collection = collection;
+                window.addDoc = addDoc;
+                window.deleteDoc = deleteDoc;
+                window.doc = doc;
+                window.onSnapshot = onSnapshot;
+                window.updateDoc = updateDoc;
+                
+                await loadCafesFromFirebase();
+                setupRealtimeSync();
+                showSaveFeedback('🔥 Firebase 연결 완료!');
+            } else {
+                loadSavedData();
+                showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드');
+            }
+        }
+
+        // Firebase에서 데이터 불러오기
+        async function loadCafesFromFirebase() {
+            if (!window.db) return false;
+            
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, 'cafes'));
+                cafeData = [];
+                let maxId = 0;
+                
+                querySnapshot.forEach((doc) => {
+                    const data = { id: doc.id, ...doc.data() };
+                    cafeData.push(data);
+                    maxId = Math.max(maxId, parseInt(doc.id) || 0);
+                });
+                
+                nextId = maxId + 1;
+                renderTable();
+                updateStats();
+                return true;
+            } catch (error) {
+                console.error('Firebase 로드 실패:', error);
+                loadSavedData();
+                return false;
+            }
+        }
+
+        // Firebase에 카페 추가
+        async function addCafeToFirebase(cafe) {
+            if (!window.db) return false;
+            
+            try {
+                await window.addDoc(window.collection(window.db, 'cafes'), cafe);
+                return true;
+            } catch (error) {
+                console.error('Firebase 추가 실패:', error);
+                return false;
+            }
+        }
+
+        // Firebase에서 카페 업데이트
+        async function updateCafeInFirebase(id, field, value) {
+            if (!window.db) return false;
+            
+            try {
+                const cafeRef = window.doc(window.db, 'cafes', id);
+                await window.updateDoc(cafeRef, { [field]: value });
+                return true;
+            } catch (error) {
+                console.error('Firebase 업데이트 실패:', error);
+                return false;
+            }
+        }
+
+        // Firebase에서 카페 삭제
+        async function deleteCafeFromFirebase(id) {
+            if (!window.db) return false;
+            
+            try {
+                await window.deleteDoc(window.doc(window.db, 'cafes', id));
+                return true;
+            } catch (error) {
+                console.error('Firebase 삭제 실패:', error);
+                return false;
+            }
+        }
+
+        // 실시간 동기화
+        function setupRealtimeSync() {
+            if (!window.db) return;
+            
+            window.onSnapshot(window.collection(window.db, 'cafes'), (snapshot) => {
+                cafeData = [];
+                let maxId = 0;
+                
+                snapshot.forEach((doc) => {
+                    const data = { id: doc.id, ...doc.data() };
+                    cafeData.push(data);
+                    maxId = Math.max(maxId, parseInt(doc.id) || 0);
+                });
+                
+                nextId = maxId + 1;
+                renderTable();
+                updateStats();
+                showSaveFeedback('🔄 실시간 동기화됨!');
+            });
+        }
 
         function renderTable() {
             const tbody = document.getElementById('cafeTableBody');
@@ -453,31 +552,33 @@
             
             tbody.innerHTML = '';
             
-            cafeData.forEach((cafe, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="row-number">${index + 1}</td>
-                    <td>
-                        <input type="text" class="cafe-name-input" value="${cafe.company}" 
-                               onchange="updateCafe(${cafe.id}, 'company', this.value)"
-                               placeholder="업체명 입력">
-                    </td>
-                    <td>
-                        <input type="text" class="cafe-name-input" value="${cafe.cafeName}" 
-                               onchange="updateCafe(${cafe.id}, 'cafeName', this.value)"
-                               placeholder="카페명 입력">
-                    </td>
-                    <td>
-                        <div class="status-badge ${cafe.status}" onclick="toggleStatus(${cafe.id})">
-                            ${getStatusText(cafe.status)}
-                        </div>
-                    </td>
-                    <td>
-                        <button class="action-btn" onclick="deleteCafe(${cafe.id})">삭제</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
+            cafeData
+                .sort((a, b) => parseInt(a.id) - parseInt(b.id))
+                .forEach((cafe, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="row-number">${index + 1}</td>
+                        <td>
+                            <input type="text" class="cafe-name-input" value="${cafe.company || ''}" 
+                                   onchange="updateCafe('${cafe.id}', 'company', this.value)"
+                                   placeholder="업체명 입력">
+                        </td>
+                        <td>
+                            <input type="text" class="cafe-name-input" value="${cafe.cafeName || ''}" 
+                                   onchange="updateCafe('${cafe.id}', 'cafeName', this.value)"
+                                   placeholder="카페명 입력">
+                        </td>
+                        <td>
+                            <div class="status-badge ${cafe.status || 'waiting'}" onclick="toggleStatus('${cafe.id}')">
+                                ${getStatusText(cafe.status || 'waiting')}
+                            </div>
+                        </td>
+                        <td>
+                            <button class="action-btn" onclick="deleteCafe('${cafe.id}')">삭제</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
         }
 
         function getStatusText(status) {
@@ -489,62 +590,82 @@
             return statusMap[status] || '대기중';
         }
 
-        function addNewRow() {
+        async function addNewRow() {
             const newCafe = {
-                id: nextId++,
                 company: '',
                 cafeName: '',
-                status: 'waiting'
+                status: 'waiting',
+                timestamp: new Date().toISOString()
             };
             
-            cafeData.push(newCafe);
-            renderTable();
-            updateStats();
-            autoSave();
+            const success = await addCafeToFirebase(newCafe);
             
-            // 새로 추가된 행의 첫 번째 입력창에 포커스
-            const newInputs = document.querySelectorAll('.cafe-name-input');
-            if (newInputs.length > 0) {
-                newInputs[newInputs.length - 2].focus();
-            }
-            
-            showSaveFeedback('➕ 새 카페가 추가되었습니다!');
-        }
-
-        function updateCafe(id, field, value) {
-            const cafe = cafeData.find(c => c.id === id);
-            if (cafe) {
-                cafe[field] = value;
-                autoSave();
-                updateStats();
-            }
-        }
-
-        function toggleStatus(id) {
-            const cafe = cafeData.find(c => c.id === id);
-            if (cafe) {
-                const statusOrder = ['waiting', 'managing', 'completed'];
-                const currentIndex = statusOrder.indexOf(cafe.status);
-                const nextIndex = (currentIndex + 1) % statusOrder.length;
-                cafe.status = statusOrder[nextIndex];
-                
+            if (!success) {
+                // Firebase 실패 시 로컬에 추가
+                newCafe.id = nextId.toString();
+                nextId++;
+                cafeData.push(newCafe);
                 renderTable();
                 updateStats();
                 autoSave();
-                showSaveFeedback('📊 상태가 변경되었습니다!');
+                showSaveFeedback('⚠️ 오프라인 모드로 저장됨');
+            } else {
+                showSaveFeedback('➕ 새 카페가 추가되어 팀원들과 공유되었습니다!');
             }
         }
 
-        function deleteCafe(id) {
+        async function updateCafe(id, field, value) {
+            const success = await updateCafeInFirebase(id, field, value);
+            
+            if (!success) {
+                // Firebase 실패 시 로컬 업데이트
+                const cafe = cafeData.find(c => c.id === id);
+                if (cafe) {
+                    cafe[field] = value;
+                    autoSave();
+                    updateStats();
+                }
+            }
+        }
+
+        async function toggleStatus(id) {
+            const cafe = cafeData.find(c => c.id === id);
+            if (cafe) {
+                const statusOrder = ['waiting', 'managing', 'completed'];
+                const currentIndex = statusOrder.indexOf(cafe.status || 'waiting');
+                const nextIndex = (currentIndex + 1) % statusOrder.length;
+                const newStatus = statusOrder[nextIndex];
+                
+                const success = await updateCafeInFirebase(id, 'status', newStatus);
+                
+                if (!success) {
+                    // Firebase 실패 시 로컬 업데이트
+                    cafe.status = newStatus;
+                    renderTable();
+                    updateStats();
+                    autoSave();
+                    showSaveFeedback('⚠️ 오프라인 모드로 상태 변경됨');
+                }
+            }
+        }
+
+        async function deleteCafe(id) {
             const cafe = cafeData.find(c => c.id === id);
             const cafeName = cafe ? (cafe.cafeName || '이름 없는 카페') : '카페';
             
             if (confirm(`"${cafeName}"를 삭제하시겠습니까?`)) {
-                cafeData = cafeData.filter(c => c.id !== id);
-                renderTable();
-                updateStats();
-                autoSave();
-                showSaveFeedback('🗑️ 카페가 삭제되었습니다!');
+                const success = await deleteCafeFromFirebase(id);
+                
+                if (!success) {
+                    // Firebase 실패 시 로컬에서 삭제
+                    cafeData = cafeData.filter(c => c.id !== id);
+                    renderTable();
+                    updateStats();
+                    autoSave();
+                    showSaveFeedback('⚠️ 오프라인 모드로 삭제됨');
+                } else {
+                    showSaveFeedback('🗑️ 카페가 삭제되어 팀원들에게 반영되었습니다!');
+                }
             }
         }
 
@@ -596,6 +717,7 @@
             
             if (savedData) {
                 cafeData = JSON.parse(savedData);
+                renderTable();
             }
             
             if (savedNextId) {
@@ -620,6 +742,32 @@
                 addNewRow();
             }
         });
+    </script>
+
+    <!-- Firebase SDK 추가 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
+            authDomain: "soom-brand.firebaseapp.com",
+            projectId: "soom-brand",
+            storageBucket: "soom-brand.firebasestorage.app",
+            messagingSenderId: "765427036681",
+            appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 전역 변수로 설정
+        window.db = db;
+        window.firebaseInitialized = true;
+
+        console.log('🔥 Firebase 연결 완료!');
     </script>
 </body>
 </html>
