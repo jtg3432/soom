@@ -159,6 +159,35 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
+        .admin-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .admin-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .admin-btn.edit {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        }
+
         .companies-grid {
             padding: 40px;
             display: grid;
@@ -209,6 +238,7 @@
             align-items: center;
             gap: 10px;
             transition: all 0.2s ease;
+            margin-bottom: 10px;
         }
 
         .company-name::before {
@@ -221,14 +251,49 @@
         }
 
         .company-info {
-            margin-top: 15px;
             font-size: 0.9rem;
             color: #6c757d;
             transition: all 0.2s ease;
+            margin-bottom: 10px;
         }
 
         .company-card:hover .company-info {
             color: rgba(255,255,255,0.9);
+        }
+
+        .company-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .edit-btn {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .toggle-special-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
         }
 
         .special-badge {
@@ -257,6 +322,103 @@
 
         .hidden {
             display: none !important;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .close {
+            color: #adb5bd;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close:hover {
+            color: #495057;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .save-feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .save-feedback.show {
+            transform: translateX(0);
         }
 
         @media (max-width: 768px) {
@@ -317,68 +479,14 @@
             <div class="search-notice">
                 💡 모든 업체 업로드 / 3자 모니터링 진행 전 정보란 및 필수작성지 확인 필수
             </div>
+            <div class="admin-controls">
+                <button class="admin-btn" onclick="openAddModal()">➕ 업체 추가</button>
+                <button class="admin-btn edit" onclick="toggleEditMode()">✏️ 편집 모드</button>
+            </div>
         </div>
 
         <div class="companies-grid" id="companiesGrid">
-            <div class="company-card" data-company="다정흉부외과" data-initial="ㄷㅈㅎㅂㅇㄱ" data-special="false">
-                <div class="company-name">다정흉부외과(애드비)</div>
-                <div class="company-info">흉부외과 전문 병원 · 일반 관리</div>
-            </div>
-            
-            <div class="company-card" data-company="더미즈병원" data-initial="ㄷㅁㅈㅂㅇ" data-special="false">
-                <div class="company-name">더미즈병원</div>
-                <div class="company-info">종합병원 · 일반 관리</div>
-            </div>
-            
-            <div class="company-card" data-company="로긴" data-initial="ㄹㄱ" data-special="false">
-                <div class="company-name">로긴</div>
-                <div class="company-info">의료기기 업체 · 일반 관리</div>
-            </div>
-            
-            <div class="company-card" data-company="릴리브" data-initial="ㄹㄹㅂ" data-special="false">
-                <div class="company-name">릴리브</div>
-                <div class="company-info">헬스케어 서비스 · 일반 관리</div>
-            </div>
-            
-            <div class="company-card" data-company="서울미즈병원" data-initial="ㅅㅇㅁㅈㅂㅇ" data-special="true">
-                <div class="special-badge">특별관리</div>
-                <div class="company-name">서울미즈병원</div>
-                <div class="company-info">산부인과 전문병원 · 특별 주의사항 있음</div>
-            </div>
-            
-            <div class="company-card" data-company="스팟" data-initial="ㅅㅍ" data-special="true">
-                <div class="special-badge">특별관리</div>
-                <div class="company-name">스팟</div>
-                <div class="company-info">의료 플랫폼 · 특별 주의사항 있음</div>
-            </div>
-            
-            <div class="company-card" data-company="연세사랑모아" data-initial="ㅇㅅㅅㄹㅁ" data-special="true">
-                <div class="special-badge">특별관리</div>
-                <div class="company-name">연세사랑모아</div>
-                <div class="company-info">산부인과 전문병원 · 특별 주의사항 있음</div>
-            </div>
-            
-            <div class="company-card" data-company="에스바른치과" data-initial="ㅇㅅㅂㄹㅊㄱ" data-special="true">
-                <div class="special-badge">특별관리</div>
-                <div class="company-name">에스바른치과</div>
-                <div class="company-info">치과 전문병원 · 특별 주의사항 있음</div>
-            </div>
-            
-            <div class="company-card" data-company="엠레드클리닉" data-initial="ㅇㄹㄷㅋㄹㄴ" data-special="false">
-                <div class="company-name">엠레드클리닉</div>
-                <div class="company-info">피부과 전문 클리닉 · 일반 관리</div>
-            </div>
-            
-            <div class="company-card" data-company="위드맘" data-initial="ㅇㄷㅁ" data-special="true">
-                <div class="special-badge">특별관리</div>
-                <div class="company-name">위드맘</div>
-                <div class="company-info">산후조리원 · 특별 주의사항 있음</div>
-            </div>
-            
-            <div class="company-card" data-company="이학수성형외과" data-initial="ㅇㅎㅅㅅㅎㅇㄱ" data-special="false">
-                <div class="company-name">이학수성형외과</div>
-                <div class="company-info">성형외과 전문병원 · 일반 관리</div>
-            </div>
+            <!-- 동적으로 생성됩니다 -->
         </div>
 
         <div class="no-results" id="noResults">
@@ -387,7 +495,190 @@
         </div>
     </div>
 
+    <!-- 업체 추가/편집 모달 -->
+    <div id="companyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">업체 추가</span>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">업체명</label>
+                <input type="text" class="form-input" id="companyName" placeholder="업체명을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label class="form-label">업체 정보</label>
+                <input type="text" class="form-input" id="companyInfo" placeholder="업체 설명을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label class="form-label">초성</label>
+                <input type="text" class="form-input" id="companyInitial" placeholder="검색용 초성 (예: ㅇㅅㅅㄹㅁ)">
+            </div>
+            <div class="form-group">
+                <label class="form-label">특별 관리</label>
+                <select class="form-select" id="companySpecial">
+                    <option value="false">일반 관리</option>
+                    <option value="true">특별 관리</option>
+                </select>
+            </div>
+            <div class="form-buttons">
+                <button class="action-btn delete-btn" onclick="closeModal()">취소</button>
+                <button class="action-btn edit-btn" onclick="saveCompany()">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="save-feedback" id="saveFeedback">
+        💾 저장되었습니다!
+    </div>
+
     <script>
+        let companies = [];
+        let editMode = false;
+        let editingId = null;
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            initFirebaseConnection();
+        });
+
+        // Firebase 연결 초기화
+        async function initFirebaseConnection() {
+            if (window.firebaseInitialized && window.db) {
+                const { getDocs, collection, addDoc, deleteDoc, doc, onSnapshot, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                window.getDocs = getDocs;
+                window.collection = collection;
+                window.addDoc = addDoc;
+                window.deleteDoc = deleteDoc;
+                window.doc = doc;
+                window.onSnapshot = onSnapshot;
+                window.updateDoc = updateDoc;
+                
+                await loadCompaniesFromFirebase();
+                setupRealtimeSync();
+                showSaveFeedback('🔥 Firebase 연결 완료!');
+            } else {
+                loadDefaultData();
+                showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드');
+            }
+        }
+
+        // Firebase에서 데이터 불러오기
+        async function loadCompaniesFromFirebase() {
+            if (!window.db) return false;
+            
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, 'companies'));
+                companies = [];
+                
+                querySnapshot.forEach((doc) => {
+                    companies.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // 기본 데이터가 없으면 추가
+                if (companies.length === 0) {
+                    await addDefaultCompanies();
+                }
+                
+                renderCompanies();
+                return true;
+            } catch (error) {
+                console.error('Firebase 로드 실패:', error);
+                loadDefaultData();
+                return false;
+            }
+        }
+
+        // 기본 데이터 추가
+        async function addDefaultCompanies() {
+            const defaultCompanies = [
+                { name: "다정흉부외과(애드비)", info: "흉부외과 전문 병원 · 일반 관리", initial: "ㄷㅈㅎㅂㅇㄱ", special: false },
+                { name: "더미즈병원", info: "종합병원 · 일반 관리", initial: "ㄷㅁㅈㅂㅇ", special: false },
+                { name: "로긴", info: "의료기기 업체 · 일반 관리", initial: "ㄹㄱ", special: false },
+                { name: "릴리브", info: "헬스케어 서비스 · 일반 관리", initial: "ㄹㄹㅂ", special: false },
+                { name: "서울미즈병원", info: "산부인과 전문병원 · 특별 주의사항 있음", initial: "ㅅㅇㅁㅈㅂㅇ", special: true },
+                { name: "스팟", info: "의료 플랫폼 · 특별 주의사항 있음", initial: "ㅅㅍ", special: true },
+                { name: "연세사랑모아", info: "산부인과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅅㄹㅁ", special: true },
+                { name: "에스바른치과", info: "치과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅂㄹㅊㄱ", special: true },
+                { name: "엠레드클리닉", info: "피부과 전문 클리닉 · 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
+                { name: "위드맘", info: "산후조리원 · 특별 주의사항 있음", initial: "ㅇㄷㅁ", special: true },
+                { name: "이학수성형외과", info: "성형외과 전문병원 · 일반 관리", initial: "ㅇㅎㅅㅅㅎㅇㄱ", special: false }
+            ];
+
+            for (const company of defaultCompanies) {
+                await window.addDoc(window.collection(window.db, 'companies'), company);
+            }
+        }
+
+        // 기본 데이터 로드 (Firebase 실패 시)
+        function loadDefaultData() {
+            companies = [
+                { id: "1", name: "다정흉부외과(애드비)", info: "흉부외과 전문 병원 · 일반 관리", initial: "ㄷㅈㅎㅂㅇㄱ", special: false },
+                { id: "2", name: "더미즈병원", info: "종합병원 · 일반 관리", initial: "ㄷㅁㅈㅂㅇ", special: false },
+                { id: "3", name: "로긴", info: "의료기기 업체 · 일반 관리", initial: "ㄹㄱ", special: false },
+                { id: "4", name: "릴리브", info: "헬스케어 서비스 · 일반 관리", initial: "ㄹㄹㅂ", special: false },
+                { id: "5", name: "서울미즈병원", info: "산부인과 전문병원 · 특별 주의사항 있음", initial: "ㅅㅇㅁㅈㅂㅇ", special: true },
+                { id: "6", name: "스팟", info: "의료 플랫폼 · 특별 주의사항 있음", initial: "ㅅㅍ", special: true },
+                { id: "7", name: "연세사랑모아", info: "산부인과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅅㄹㅁ", special: true },
+                { id: "8", name: "에스바른치과", info: "치과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅂㄹㅊㄱ", special: true },
+                { id: "9", name: "엠레드클리닉", info: "피부과 전문 클리닉 · 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
+                { id: "10", name: "위드맘", info: "산후조리원 · 특별 주의사항 있음", initial: "ㅇㄷㅁ", special: true },
+                { id: "11", name: "이학수성형외과", info: "성형외과 전문병원 · 일반 관리", initial: "ㅇㅎㅅㅅㅎㅇㄱ", special: false }
+            ];
+            renderCompanies();
+        }
+
+        // 실시간 동기화
+        function setupRealtimeSync() {
+            if (!window.db) return;
+            
+            window.onSnapshot(window.collection(window.db, 'companies'), (snapshot) => {
+                companies = [];
+                snapshot.forEach((doc) => {
+                    companies.push({ id: doc.id, ...doc.data() });
+                });
+                renderCompanies();
+                showSaveFeedback('🔄 실시간 동기화됨!');
+            });
+        }
+
+        function renderCompanies() {
+            const grid = document.getElementById('companiesGrid');
+            grid.innerHTML = '';
+
+            companies
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .forEach(company => {
+                    const card = document.createElement('div');
+                    card.className = 'company-card';
+                    card.setAttribute('data-company', company.name.toLowerCase());
+                    card.setAttribute('data-initial', company.initial || '');
+                    card.setAttribute('data-special', company.special.toString());
+
+                    card.innerHTML = `
+                        ${company.special ? '<div class="special-badge">특별관리</div>' : ''}
+                        <div class="company-name">${company.name}</div>
+                        <div class="company-info">${company.info}</div>
+                        ${editMode ? `
+                            <div class="company-actions">
+                                <button class="action-btn edit-btn" onclick="editCompany('${company.id}')">편집</button>
+                                <button class="action-btn toggle-special-btn" onclick="toggleSpecial('${company.id}')">${company.special ? '일반화' : '특별화'}</button>
+                                <button class="action-btn delete-btn" onclick="deleteCompany('${company.id}')">삭제</button>
+                            </div>
+                        ` : ''}
+                    `;
+
+                    if (!editMode) {
+                        card.addEventListener('click', function() {
+                            const isSpecial = company.special;
+                            alert(`${company.name}\n\n${isSpecial ? '⚠️ 특별 관리 대상 업체입니다.' : '✅ 일반 관리 업체입니다.'}\n\n상세 정보 페이지는 추후 추가 예정입니다.`);
+                        });
+                    }
+
+                    grid.appendChild(card);
+                });
+        }
+
         function searchCompanies() {
             const searchTerm = document.getElementById('companySearchInput').value.toLowerCase().trim();
             const companyCards = document.querySelectorAll('.company-card');
@@ -396,7 +687,7 @@
             let hasResults = false;
 
             companyCards.forEach(card => {
-                const companyName = card.getAttribute('data-company').toLowerCase();
+                const companyName = card.getAttribute('data-company');
                 const companyInitial = card.getAttribute('data-initial');
                 const isSpecial = card.getAttribute('data-special') === 'true';
                 
@@ -424,36 +715,50 @@
             searchCompanies();
         }
 
-        function showAllCompanies() {
-            const companyCards = document.querySelectorAll('.company-card');
-            const noResults = document.getElementById('noResults');
-            
-            companyCards.forEach(card => {
-                card.classList.remove('hidden');
-            });
-            
-            noResults.style.display = 'none';
-            document.getElementById('specialActionsFilter').checked = false;
+        function toggleEditMode() {
+            editMode = !editMode;
+            const btn = event.target;
+            btn.textContent = editMode ? '👁️ 보기 모드' : '✏️ 편집 모드';
+            renderCompanies();
         }
 
-        // 업체 카드 클릭 시 상세 정보 표시 (추후 확장 가능)
-        document.addEventListener('DOMContentLoaded', function() {
-            const companyCards = document.querySelectorAll('.company-card');
-            
-            companyCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    const companyName = this.getAttribute('data-company');
-                    const isSpecial = this.getAttribute('data-special') === 'true';
-                    
-                    alert(`${companyName}\n\n${isSpecial ? '⚠️ 특별 관리 대상 업체입니다.' : '✅ 일반 관리 업체입니다.'}\n\n상세 정보 페이지는 추후 추가 예정입니다.`);
-                });
-            });
-        });
+        function openAddModal() {
+            editingId = null;
+            document.getElementById('modalTitle').textContent = '업체 추가';
+            document.getElementById('companyName').value = '';
+            document.getElementById('companyInfo').value = '';
+            document.getElementById('companyInitial').value = '';
+            document.getElementById('companySpecial').value = 'false';
+            document.getElementById('companyModal').style.display = 'block';
+        }
 
-        // 검색창 포커스
-        window.onload = function() {
-            document.getElementById('companySearchInput').focus();
-        };
-    </script>
-</body>
-</html>
+        function editCompany(id) {
+            const company = companies.find(c => c.id === id);
+            if (company) {
+                editingId = id;
+                document.getElementById('modalTitle').textContent = '업체 편집';
+                document.getElementById('companyName').value = company.name;
+                document.getElementById('companyInfo').value = company.info;
+                document.getElementById('companyInitial').value = company.initial || '';
+                document.getElementById('companySpecial').value = company.special.toString();
+                document.getElementById('companyModal').style.display = 'block';
+            }
+        }
+
+        async function saveCompany() {
+            const name = document.getElementById('companyName').value.trim();
+            const info = document.getElementById('companyInfo').value.trim();
+            const initial = document.getElementById('companyInitial').value.trim();
+            const special = document.getElementById('companySpecial').value === 'true';
+
+            if (!name || !info) {
+                alert('업체명과 업체 정보는 필수 입력 항목입니다.');
+                return;
+            }
+
+            const companyData = { name, info, initial, special };
+
+            try {
+                if (editingId) {
+                    // 편집
+                    await window.updateDoc(window.doc(window.db, '
