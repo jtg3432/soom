@@ -258,7 +258,28 @@
             background: #c82333;
             transform: scale(1.05);
         }
+.copy-link-btn {
+            background: #4facfe;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 5px;
+        }
 
+        .copy-link-btn:hover {
+            background: #3d8bfe;
+            transform: scale(1.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -367,22 +388,14 @@
             </div>
             
             <div class="stats-section">
-                <div class="stat-item">
-                    <div class="stat-number" id="totalCount">0</div>
-                    <div class="stat-label">전체 카페</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="managingCount">0</div>
-                    <div class="stat-label">관리중</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="waitingCount">0</div>
-                    <div class="stat-label">대기중</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="completedCount">0</div>
-                    <div class="stat-label">완료</div>
-                </div>
+<div class="stat-item">
+    <div class="stat-number" id="linkedCount">0</div>
+    <div class="stat-label">링크 등록</div>
+</div>
+<div class="stat-item">
+    <div class="stat-number" id="unlinkedCount">0</div>
+    <div class="stat-label">링크 미등록</div>
+</div>
             </div>
         </div>
 
@@ -393,7 +406,7 @@
                         <th width="60px">번호</th>
                         <th width="30%">업체명</th>
                         <th width="35%">카페명</th>
-                        <th width="120px">상태</th>
+                        <th width="30%">카페링크</th>
                         <th width="80px">관리</th>
                     </tr>
                 </thead>
@@ -568,11 +581,12 @@
                                    onchange="updateCafe('${cafe.id}', 'cafeName', this.value)"
                                    placeholder="카페명 입력">
                         </td>
-                        <td>
-                            <div class="status-badge ${cafe.status || 'waiting'}" onclick="toggleStatus('${cafe.id}')">
-                                ${getStatusText(cafe.status || 'waiting')}
-                            </div>
-                        </td>
+<td>
+    <input type="text" class="cafe-name-input" value="${cafe.link || ''}" 
+           onchange="updateCafe('${cafe.id}', 'link', this.value)"
+           placeholder="카페 링크 입력">
+    ${cafe.link ? `<button class="copy-link-btn" onclick="copyLink('${cafe.link}')">복사</button>` : ''}
+</td>
                         <td>
                             <button class="action-btn" onclick="deleteCafe('${cafe.id}')">삭제</button>
                         </td>
@@ -581,14 +595,7 @@
                 });
         }
 
-        function getStatusText(status) {
-            const statusMap = {
-                'managing': '관리중',
-                'waiting': '대기중',
-                'completed': '완료'
-            };
-            return statusMap[status] || '대기중';
-        }
+
 
         async function addNewRow() {
             const newCafe = {
@@ -628,26 +635,7 @@
             }
         }
 
-        async function toggleStatus(id) {
-            const cafe = cafeData.find(c => c.id === id);
-            if (cafe) {
-                const statusOrder = ['waiting', 'managing', 'completed'];
-                const currentIndex = statusOrder.indexOf(cafe.status || 'waiting');
-                const nextIndex = (currentIndex + 1) % statusOrder.length;
-                const newStatus = statusOrder[nextIndex];
-                
-                const success = await updateCafeInFirebase(id, 'status', newStatus);
-                
-                if (!success) {
-                    // Firebase 실패 시 로컬 업데이트
-                    cafe.status = newStatus;
-                    renderTable();
-                    updateStats();
-                    autoSave();
-                    showSaveFeedback('⚠️ 오프라인 모드로 상태 변경됨');
-                }
-            }
-        }
+
 
         async function deleteCafe(id) {
             const cafe = cafeData.find(c => c.id === id);
@@ -694,17 +682,14 @@
             }
         }
 
-        function updateStats() {
-            const total = cafeData.length;
-            const managing = cafeData.filter(c => c.status === 'managing').length;
-            const waiting = cafeData.filter(c => c.status === 'waiting').length;
-            const completed = cafeData.filter(c => c.status === 'completed').length;
-            
-            document.getElementById('totalCount').textContent = total;
-            document.getElementById('managingCount').textContent = managing;
-            document.getElementById('waitingCount').textContent = waiting;
-            document.getElementById('completedCount').textContent = completed;
-        }
+function updateStats() {
+    const total = cafeData.length;
+    const linked = cafeData.filter(c => c.link && c.link.trim() !== '').length;
+    const unlinked = total - linked;
+    
+    document.getElementById('linkedCount').textContent = linked;
+    document.getElementById('unlinkedCount').textContent = unlinked;
+}
 
         function autoSave() {
             localStorage.setItem('cafeData', JSON.stringify(cafeData));
@@ -734,7 +719,27 @@
                 feedback.classList.remove('show');
             }, 2000);
         }
-
+        function copyLink(link) {
+            if (!link) return;
+            
+            navigator.clipboard.writeText(link).then(function() {
+                showSaveFeedback('🔗 링크가 복사되었습니다!');
+            }).catch(function(err) {
+                // 구형 브라우저 지원
+                const textArea = document.createElement("textarea");
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showSaveFeedback('🔗 링크가 복사되었습니다!');
+                } catch (err) {
+                    console.error('복사 실패:', err);
+                }
+                document.body.removeChild(textArea);
+            });
+        }
         // 키보드 단축키
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 'n') {
@@ -771,3 +776,4 @@
     </script>
 </body>
 </html>
+
