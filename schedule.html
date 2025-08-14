@@ -442,13 +442,120 @@
     <script>
         const people = ['정현', '태균', '유빈', 'unknown'];
         const totalItems = 20;
+        let scheduleData = {};
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            initFirebaseConnection();
             initializeSchedule();
-            loadSavedData();
             updateAllProgress();
         });
+
+        // Firebase 연결 초기화
+        async function initFirebaseConnection() {
+            if (window.firebaseInitialized && window.db) {
+                const { getDocs, collection, setDoc, doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                window.getDocs = getDocs;
+                window.collection = collection;
+                window.setDoc = setDoc;
+                window.doc = doc;
+                window.onSnapshot = onSnapshot;
+                
+                await loadScheduleFromFirebase();
+                setupRealtimeSync();
+                showSaveFeedback('🔥 Firebase 연결 완료!');
+            } else {
+                loadSavedData();
+                showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드');
+            }
+        }
+
+        // Firebase에서 데이터 불러오기
+        async function loadScheduleFromFirebase() {
+            if (!window.db) return false;
+            
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, 'schedules'));
+                scheduleData = {};
+                
+                querySnapshot.forEach((doc) => {
+                    scheduleData[doc.id] = doc.data();
+                });
+                
+                renderScheduleData();
+                updateAllProgress();
+                return true;
+            } catch (error) {
+                console.error('Firebase 로드 실패:', error);
+                loadSavedData();
+                return false;
+            }
+        }
+
+        // Firebase에 저장
+        async function saveScheduleToFirebase() {
+            if (!window.db) return false;
+            
+            try {
+                for (const person of people) {
+                    const personData = {};
+                    for (let i = 1; i <= totalItems; i++) {
+                        const checkbox = document.getElementById(`${person}_${i}`);
+                        const memo = document.getElementById(`memo_${person}_${i}`);
+                        
+                        personData[i] = {
+                            checked: checkbox.checked,
+                            memo: memo.value
+                        };
+                    }
+                    
+                    await window.setDoc(window.doc(window.db, 'schedules', person), personData);
+                }
+                return true;
+            } catch (error) {
+                console.error('Firebase 저장 실패:', error);
+                return false;
+            }
+        }
+
+        // 실시간 동기화
+        function setupRealtimeSync() {
+            if (!window.db) return;
+            
+            window.onSnapshot(window.collection(window.db, 'schedules'), (snapshot) => {
+                scheduleData = {};
+                snapshot.forEach((doc) => {
+                    scheduleData[doc.id] = doc.data();
+                });
+                renderScheduleData();
+                updateAllProgress();
+                showSaveFeedback('🔄 실시간 동기화됨!');
+            });
+        }
+
+        // 스케줄 데이터 렌더링
+        function renderScheduleData() {
+            people.forEach(person => {
+                if (scheduleData[person]) {
+                    for (let i = 1; i <= totalItems; i++) {
+                        if (scheduleData[person][i]) {
+                            const checkbox = document.getElementById(`${person}_${i}`);
+                            const memo = document.getElementById(`memo_${person}_${i}`);
+                            const item = checkbox.closest('.checkbox-item');
+                            
+                            checkbox.checked = scheduleData[person][i].checked;
+                            memo.value = scheduleData[person][i].memo || '';
+                            
+                            if (checkbox.checked) {
+                                item.classList.add('completed');
+                            } else {
+                                item.classList.remove('completed');
+                            }
+                        }
+                    }
+                }
+            });
+        }
 
         function initializeSchedule() {
             people.forEach(person => {
@@ -458,40 +565,18 @@
                     const item = document.createElement('div');
                     item.className = 'checkbox-item';
                     
-                    // 샘플 데이터
-                    let isChecked = false;
-                    let sampleMemo = '';
-                    
-                    if (person === '정현' && i === 1) {
-                        isChecked = true;
-                        sampleMemo = '08/11 연세';
-                    } else if (person === '정현' && i === 2) {
-                        isChecked = true;
-                        sampleMemo = '08/13 연세';
-                    } else if (person === '태균' && i === 1) {
-                        isChecked = true;
-                        sampleMemo = '08/12 연세';
-                    } else if (person === '유빈' && i === 1) {
-                        isChecked = true;
-                        sampleMemo = '08/12 위드맘';
-                    }
-                    
                     item.innerHTML = `
                         <div class="item-number">${i}</div>
-                        <input type="checkbox" id="${person}_${i}" ${isChecked ? 'checked' : ''} onchange="toggleItem('${person}', ${i})">
-                        <input type="text" class="mini-memo" id="memo_${person}_${i}" placeholder="메모" value="${sampleMemo}" oninput="saveMemo('${person}', ${i})">
+                        <input type="checkbox" id="${person}_${i}" onchange="toggleItem('${person}', ${i})">
+                        <input type="text" class="mini-memo" id="memo_${person}_${i}" placeholder="메모" oninput="saveMemo('${person}', ${i})">
                     `;
-                    
-                    if (isChecked) {
-                        item.classList.add('completed');
-                    }
                     
                     group.appendChild(item);
                 }
             });
         }
 
-        function toggleItem(person, itemNumber) {
+        async function toggleItem(person, itemNumber) {
             const checkbox = document.getElementById(`${person}_${itemNumber}`);
             const item = checkbox.closest('.checkbox-item');
             
@@ -502,11 +587,11 @@
             }
             
             updateProgress(person);
-            autoSave();
+            await autoSave();
         }
 
-        function saveMemo(person, itemNumber) {
-            autoSave();
+        async function saveMemo(person, itemNumber) {
+            await autoSave();
         }
 
         function updateProgress(person) {
@@ -527,24 +612,26 @@
             });
         }
 
-        function autoSave() {
-            const data = {};
+        async function autoSave() {
+            const success = await saveScheduleToFirebase();
             
-            people.forEach(person => {
-                data[person] = {};
-                
-                for (let i = 1; i <= totalItems; i++) {
-                    const checkbox = document.getElementById(`${person}_${i}`);
-                    const memo = document.getElementById(`memo_${person}_${i}`);
-                    
-                    data[person][i] = {
-                        checked: checkbox.checked,
-                        memo: memo.value
-                    };
-                }
-            });
-            
-            localStorage.setItem('scheduleData', JSON.stringify(data));
+            if (!success) {
+                // Firebase 실패 시 로컬 저장
+                const data = {};
+                people.forEach(person => {
+                    data[person] = {};
+                    for (let i = 1; i <= totalItems; i++) {
+                        const checkbox = document.getElementById(`${person}_${i}`);
+                        const memo = document.getElementById(`memo_${person}_${i}`);
+                        
+                        data[person][i] = {
+                            checked: checkbox.checked,
+                            memo: memo.value
+                        };
+                    }
+                });
+                localStorage.setItem('scheduleData', JSON.stringify(data));
+            }
         }
 
         function loadSavedData() {
@@ -574,15 +661,19 @@
             }
         }
 
-        function saveAllData() {
-            autoSave();
-            showSaveFeedback('💾 모든 데이터가 저장되었습니다!');
+        async function saveAllData() {
+            const success = await saveScheduleToFirebase();
+            
+            if (success) {
+                showSaveFeedback('💾 모든 데이터가 저장되어 팀원들과 공유되었습니다!');
+            } else {
+                localStorage.setItem('scheduleData', JSON.stringify(scheduleData));
+                showSaveFeedback('⚠️ 오프라인 모드로 저장되었습니다!');
+            }
         }
 
-        function resetAllData() {
+        async function resetAllData() {
             if (confirm('모든 데이터를 초기화하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
-                localStorage.removeItem('scheduleData');
-                
                 people.forEach(person => {
                     for (let i = 1; i <= totalItems; i++) {
                         const checkbox = document.getElementById(`${person}_${i}`);
@@ -595,6 +686,7 @@
                     }
                 });
                 
+                await autoSave();
                 updateAllProgress();
                 showSaveFeedback('🔄 모든 데이터가 초기화되었습니다!');
             }
@@ -617,6 +709,32 @@
                 saveAllData();
             }
         });
+    </script>
+
+    <!-- Firebase SDK 추가 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, setDoc, doc, getDocs, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
+            authDomain: "soom-brand.firebaseapp.com",
+            projectId: "soom-brand",
+            storageBucket: "soom-brand.firebasestorage.app",
+            messagingSenderId: "765427036681",
+            appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 전역 변수로 설정
+        window.db = db;
+        window.firebaseInitialized = true;
+
+        console.log('🔥 Firebase 연결 완료!');
     </script>
 </body>
 </html>
