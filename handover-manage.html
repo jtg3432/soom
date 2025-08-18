@@ -158,54 +158,8 @@
             opacity: 1;
             transform: translateY(0);
         }
-    </style>
-</head>
-<body>
-    <div class="page-container">
-        <div class="page-header">
-            <a href="handover.html" class="back-btn">← 이전으로</a>
-            <h1>인수인계</h1>
-            <h2>업무 인수인계 관리</h2>
-        </div>
 
-        <div class="table-container">
-            <table class="handover-table">
-                <thead>
-                    <tr>
-                        <th style="width: 60px;">No</th>
-                        <th style="width: 120px;">날짜</th>
-                        <th style="width: 100px;">인수자</th>
-                        <th style="width: 100px;">인계자</th>
-                        <th>내용 요약</th>
-                        <th style="width: 80px;">상태</th>
-                        <th style="width: 40px;"></th>
-                    </tr>
-                </thead>
-                <tbody id="handoverTableBody">
-                    <!-- 예시 행 -->
-                    <tr class="table-row example-row" onclick="toggleDetail(this, 0)">
-                        <td>0</td>
-                        <td><input type="text" class="simple-input" value="2025-01-15" readonly></td>
-                        <td><input type="text" class="simple-input" value="김정현" readonly></td>
-                        <td><input type="text" class="simple-input" value="이태균" readonly></td>
-                        <td><input type="text" class="simple-input" value="연세사랑모아 순번 관리 시스템..." readonly></td>
-                        <td>완료</td>
-                        <td><span class="expand-icon">▼</span></td>
-                    </tr>
-                    <tr class="detail-row" id="detail-0">
-                        <td colspan="7">
-                            <div class="detail-content">
-                                <!-- 상세 내용이 여기에 들어갑니다 -->
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</body>
-</html>
-.detail-grid {
+        .detail-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
@@ -376,57 +330,87 @@
     </style>
 </head>
 <body>
-    <!-- 예시 행의 상세 내용 채우기 -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 예시 행의 상세 내용 추가
-            const exampleDetail = document.querySelector('#detail-0 .detail-content');
-            exampleDetail.innerHTML = `
-                <div class="detail-grid">
-                    <div class="detail-field">
-                        <div class="field-label">📅 인수인계 날짜</div>
-                        <input type="date" class="field-input" value="2025-01-15">
-                    </div>
-                    <div class="detail-field">
-                        <div class="field-label">👤 인수자</div>
-                        <input type="text" class="field-input" value="김정현">
-                    </div>
-                    <div class="detail-field">
-                        <div class="field-label">👤 인계자</div>
-                        <input type="text" class="field-input" value="이태균">
-                    </div>
-                    <div class="detail-field">
-                        <div class="field-label">🔗 관련 링크</div>
-                        <input type="url" class="field-input" value="https://example.com/guide" placeholder="관련 링크 (선택사항)">
-                    </div>
-                </div>
-                <div class="detail-field">
-                    <div class="field-label">📝 상세 내용</div>
-                    <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요...">연세사랑모아 순번 관리 시스템의 전반적인 운영 방법과 주의사항을 설명하였습니다. 특히 Firebase 연동 부분과 실시간 동기화 기능에 대해 중점적으로 전달하였습니다.</textarea>
-                </div>
-                <div class="checkbox-field">
-                    <input type="checkbox" id="completed-0" checked>
-                    <label for="completed-0">인수인계 완료</label>
-                </div>
-                <div class="detail-actions">
-                    <button class="action-btn" onclick="saveRow(0)">💾 저장</button>
-                </div>
-            `;
-        });
-    </script>
+    <div class="page-container">
+        <div class="page-header">
+            <a href="handover.html" class="back-btn">← 이전으로</a>
+            <h1>인수인계</h1>
+            <h2>업무 인수인계 관리</h2>
+        </div>
 
-    <!-- 컨트롤 섹션과 피드백 추가 -->
-    <div class="controls-section">
-        <button class="control-btn" onclick="addNewRow()">➕ 새 인수인계 추가</button>
-        <button class="control-btn save" onclick="saveAllData()">💾 전체 저장</button>
+        <div class="table-container">
+            <table class="handover-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">No</th>
+                        <th style="width: 120px;">날짜</th>
+                        <th style="width: 100px;">인수자</th>
+                        <th style="width: 100px;">인계자</th>
+                        <th>내용 요약</th>
+                        <th style="width: 80px;">상태</th>
+                        <th style="width: 40px;"></th>
+                    </tr>
+                </thead>
+                <tbody id="handoverTableBody">
+                    <!-- 예시 행 -->
+                    <tr class="table-row example-row" onclick="toggleDetail(this, 0)">
+                        <td>0</td>
+                        <td><input type="text" class="simple-input" value="2025-01-15" readonly></td>
+                        <td><input type="text" class="simple-input" value="김정현" readonly></td>
+                        <td><input type="text" class="simple-input" value="이태균" readonly></td>
+                        <td><input type="text" class="simple-input" value="연세사랑모아 순번 관리 시스템..." readonly></td>
+                        <td>완료</td>
+                        <td><span class="expand-icon">▼</span></td>
+                    </tr>
+                    <tr class="detail-row" id="detail-0">
+                        <td colspan="7">
+                            <div class="detail-content">
+                                <div class="detail-grid">
+                                    <div class="detail-field">
+                                        <div class="field-label">📅 인수인계 날짜</div>
+                                        <input type="date" class="field-input" value="2025-01-15">
+                                    </div>
+                                    <div class="detail-field">
+                                        <div class="field-label">👤 인수자</div>
+                                        <input type="text" class="field-input" value="김정현">
+                                    </div>
+                                    <div class="detail-field">
+                                        <div class="field-label">👤 인계자</div>
+                                        <input type="text" class="field-input" value="이태균">
+                                    </div>
+                                    <div class="detail-field">
+                                        <div class="field-label">🔗 관련 링크</div>
+                                        <input type="url" class="field-input" value="https://example.com/guide" placeholder="관련 링크 (선택사항)">
+                                    </div>
+                                </div>
+                                <div class="detail-field">
+                                    <div class="field-label">📝 상세 내용</div>
+                                    <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요...">연세사랑모아 순번 관리 시스템의 전반적인 운영 방법과 주의사항을 설명하였습니다. 특히 Firebase 연동 부분과 실시간 동기화 기능에 대해 중점적으로 전달하였습니다.</textarea>
+                                </div>
+                                <div class="checkbox-field">
+                                    <input type="checkbox" id="completed-0" checked>
+                                    <label for="completed-0">인수인계 완료</label>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="action-btn" onclick="saveRow(0)">💾 저장</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="controls-section">
+            <button class="control-btn" onclick="addNewRow()">➕ 새 인수인계 추가</button>
+            <button class="control-btn save" onclick="saveAllData()">💾 전체 저장</button>
+        </div>
     </div>
 
     <div class="save-feedback" id="saveFeedback">
         💾 저장되었습니다!
     </div>
-</body>
-</html>
-<script>
+
+    <script>
         let rowCounter = 0;
         let handoverData = [];
 
@@ -449,10 +433,10 @@
                 
                 await loadHandoversFromFirebase();
                 setupRealtimeSync();
-                showSaveFeedback('Firebase 연결 완료!');
+                showSaveFeedback('🔥 Firebase 연결 완료!');
             } else {
                 loadSavedData();
-                showSaveFeedback('Firebase 연결 실패 - 로컬 모드');
+                showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드');
             }
         }
 
@@ -536,7 +520,7 @@
                 
                 rowCounter = maxId;
                 renderHandovers();
-                showSaveFeedback('실시간 동기화됨!');
+                showSaveFeedback('🔄 실시간 동기화됨!');
             });
         }
 
@@ -650,9 +634,9 @@
                 handoverData.push(newHandover);
                 renderHandovers();
                 localStorage.setItem('handoverData', JSON.stringify(handoverData));
-                showSaveFeedback('오프라인 모드로 저장됨');
+                showSaveFeedback('⚠️ 오프라인 모드로 저장됨');
             } else {
-                showSaveFeedback('새 인수인계가 추가되어 팀원들과 공유되었습니다!');
+                showSaveFeedback('➕ 새 인수인계가 추가되어 팀원들과 공유되었습니다!');
             }
         }
 
@@ -668,15 +652,15 @@
                     handoverData = handoverData.filter(h => h.id !== id);
                     renderHandovers();
                     localStorage.setItem('handoverData', JSON.stringify(handoverData));
-                    showSaveFeedback('오프라인 모드로 삭제됨');
+                    showSaveFeedback('⚠️ 오프라인 모드로 삭제됨');
                 } else {
-                    showSaveFeedback('인수인계가 삭제되었습니다!');
+                    showSaveFeedback('🗑️ 인수인계가 삭제되었습니다!');
                 }
             }
         }
 
         async function saveAllData() {
-            showSaveFeedback('모든 인수인계 데이터가 저장되었습니다!');
+            showSaveFeedback('💾 모든 인수인계 데이터가 저장되었습니다!');
         }
 
         function loadSavedData() {
@@ -729,7 +713,7 @@
         window.db = db;
         window.firebaseInitialized = true;
 
-        console.log('Firebase 연결 완료!');
+        console.log('🔥 Firebase 연결 완료!');
     </script>
 </body>
 </html>
