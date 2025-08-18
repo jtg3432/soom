@@ -353,12 +353,12 @@
                 <tbody id="handoverTableBody">
                     <tr class="table-row example-row" onclick="toggleDetail(this, 0)">
                         <td>0</td>
-                        <td><input type="text" class="simple-input" value="2025-01-15" readonly></td>
-                        <td><input type="text" class="simple-input" value="김정현" readonly></td>
-                        <td><input type="text" class="simple-input" value="이태균" readonly></td>
-                        <td><input type="text" class="simple-input" value="연세사랑모아 순번 관리 시스템..." readonly></td>
+                        <td><input type="text" class="simple-input" value="2025-01-15" onblur="updateExampleField('date', this.value)" onclick="event.stopPropagation(); this.focus();"></td>
+                        <td><input type="text" class="simple-input" value="김정현" onblur="updateExampleField('receiver', this.value)" onclick="event.stopPropagation(); this.focus();"></td>
+                        <td><input type="text" class="simple-input" value="이태균" onblur="updateExampleField('giver', this.value)" onclick="event.stopPropagation(); this.focus();"></td>
+                        <td><input type="text" class="simple-input" value="연세사랑모아 순번 관리 시스템..." onblur="updateExampleField('summary', this.value)" onclick="event.stopPropagation(); this.focus();"></td>
                         <td>완료</td>
-                        <td><span class="expand-icon">▼</span></td>
+                        <td onclick="toggleDetail(document.querySelector('.example-row'), 0)"><span class="expand-icon">▼</span></td>
                     </tr>
                     <tr class="detail-row" id="detail-0">
                         <td colspan="7">
@@ -531,15 +531,19 @@
         }
 
         function createHandoverRows(handover, rowId) {
+            const summaryPreview = handover.content ? 
+                (handover.content.length > 30 ? handover.content.substring(0, 30) + '...' : handover.content) 
+                : (handover.summary || '');
+
             return `
-                <tr class="table-row" onclick="toggleDetail(this, ${rowId})">
+                <tr class="table-row">
                     <td>${handover.number}</td>
                     <td><input type="text" class="simple-input" value="${handover.date || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus(); this.type='date';" onblur="autoSaveField('${handover.id}', 'date', this.value)"></td>
                     <td><input type="text" class="simple-input" value="${handover.receiver || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();" onblur="autoSaveField('${handover.id}', 'receiver', this.value)"></td>
                     <td><input type="text" class="simple-input" value="${handover.giver || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();" onblur="autoSaveField('${handover.id}', 'giver', this.value)"></td>
-                    <td><input type="text" class="simple-input" value="${handover.summary || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();" onblur="autoSaveField('${handover.id}', 'summary', this.value)"></td>
+                    <td><input type="text" class="simple-input" value="${summaryPreview}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();" onblur="autoSaveField('${handover.id}', 'summary', this.value)"></td>
                     <td>${handover.completed ? '완료' : '대기'}</td>
-                    <td><span class="expand-icon">▼</span></td>
+                    <td onclick="toggleDetail(this.closest('tr'), ${rowId})"><span class="expand-icon">▼</span></td>
                 </tr>
                 <tr class="detail-row" id="detail-${rowId}">
                     <td colspan="7">
@@ -564,7 +568,7 @@
                             </div>
                             <div class="detail-field">
                                 <div class="field-label">상세 내용</div>
-                                <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요..." onblur="autoSaveField('${handover.id}', 'content', this.value)">${handover.content || ''}</textarea>
+                                <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요..." onblur="autoSaveField('${handover.id}', 'content', this.value); updateSummaryPreview('${handover.id}', this.value);">${handover.content || ''}</textarea>
                             </div>
                             <div class="checkbox-field">
                                 <input type="checkbox" id="completed-${rowId}" ${handover.completed ? 'checked' : ''} onchange="autoSaveField('${handover.id}', 'completed', this.checked)">
@@ -669,6 +673,33 @@
                     }
                 }
             });
+        }
+
+        function updateExampleField(field, value) {
+            // 예시 행(0번) 데이터 업데이트
+            showSaveFeedback('예시 데이터 업데이트됨');
+        }
+
+        function updateSummaryPreview(id, content) {
+            // 상세 내용이 변경되면 표의 미리보기도 업데이트
+            const handover = handoverData.find(h => h.id === id);
+            if (handover) {
+                const summaryPreview = content ? 
+                    (content.length > 30 ? content.substring(0, 30) + '...' : content) 
+                    : '';
+                
+                // 해당 행의 내용 요약 필드 업데이트
+                const rows = document.querySelectorAll('.table-row');
+                rows.forEach(row => {
+                    const firstCell = row.cells[0];
+                    if (firstCell && firstCell.textContent == handover.number) {
+                        const summaryInput = row.cells[4].querySelector('.simple-input');
+                        if (summaryInput) {
+                            summaryInput.value = summaryPreview;
+                        }
+                    }
+                });
+            }
         }
 
         async function deleteRow(id) {
