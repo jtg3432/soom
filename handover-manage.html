@@ -90,7 +90,6 @@
             text-align: center;
         }
 
-        /* 간단한 표 행 스타일 */
         .table-row {
             cursor: pointer;
             transition: all 0.3s ease;
@@ -129,22 +128,6 @@
             cursor: text;
         }
 
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-left: 10px;
-        }
-
-        .status-pending {
-            background: #ffc107;
-        }
-
-        .status-completed {
-            background: #28a745;
-        }
-
         .expand-icon {
             font-size: 1.2rem;
             color: #6c757d;
@@ -155,13 +138,14 @@
             transform: rotate(180deg);
         }
 
-        /* 드롭다운 상세 내용 */
         .detail-row {
             background: #f8f9fa;
             transition: all 0.4s ease-out;
         }
 
         .detail-content {
+            padding: 30px;
+            border-top: 3px solid #4facfe;
             max-height: 0;
             overflow: hidden;
             opacity: 0;
@@ -174,13 +158,54 @@
             opacity: 1;
             transform: translateY(0);
         }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <a href="handover.html" class="back-btn">← 이전으로</a>
+            <h1>인수인계</h1>
+            <h2>업무 인수인계 관리</h2>
+        </div>
 
-        .detail-content {
-            padding: 30px;
-            border-top: 3px solid #4facfe;
-        }
-
-        .detail-grid {
+        <div class="table-container">
+            <table class="handover-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">No</th>
+                        <th style="width: 120px;">날짜</th>
+                        <th style="width: 100px;">인수자</th>
+                        <th style="width: 100px;">인계자</th>
+                        <th>내용 요약</th>
+                        <th style="width: 80px;">상태</th>
+                        <th style="width: 40px;"></th>
+                    </tr>
+                </thead>
+                <tbody id="handoverTableBody">
+                    <!-- 예시 행 -->
+                    <tr class="table-row example-row" onclick="toggleDetail(this, 0)">
+                        <td>0</td>
+                        <td><input type="text" class="simple-input" value="2025-01-15" readonly></td>
+                        <td><input type="text" class="simple-input" value="김정현" readonly></td>
+                        <td><input type="text" class="simple-input" value="이태균" readonly></td>
+                        <td><input type="text" class="simple-input" value="연세사랑모아 순번 관리 시스템..." readonly></td>
+                        <td>완료</td>
+                        <td><span class="expand-icon">▼</span></td>
+                    </tr>
+                    <tr class="detail-row" id="detail-0">
+                        <td colspan="7">
+                            <div class="detail-content">
+                                <!-- 상세 내용이 여기에 들어갑니다 -->
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+.detail-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
@@ -261,17 +286,17 @@
             background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
         }
 
-        /* 예시 행 스타일 */
         .example-row {
             background: #e9ecef !important;
         }
 
         .example-row .simple-input {
-            color: #6c757d;
-            font-style: italic;
+            background: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 5px 8px;
         }
 
-        /* 컨트롤 섹션 */
         .controls-section {
             padding: 20px 40px;
             background: #f8f9fa;
@@ -301,7 +326,25 @@
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         }
 
-        /* 반응형 */
+        .save-feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .save-feedback.show {
+            transform: translateX(0);
+        }
+
         @media (max-width: 768px) {
             .page-container {
                 margin: 10px;
@@ -333,131 +376,233 @@
     </style>
 </head>
 <body>
-    <div class="page-container">
-        <div class="page-header">
-            <a href="handover.html" class="back-btn">← 이전으로</a>
-            <h1>인수인계</h1>
-            <h2>업무 인수인계 관리</h2>
-        </div>
+    <!-- 예시 행의 상세 내용 채우기 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 예시 행의 상세 내용 추가
+            const exampleDetail = document.querySelector('#detail-0 .detail-content');
+            exampleDetail.innerHTML = `
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <div class="field-label">📅 인수인계 날짜</div>
+                        <input type="date" class="field-input" value="2025-01-15">
+                    </div>
+                    <div class="detail-field">
+                        <div class="field-label">👤 인수자</div>
+                        <input type="text" class="field-input" value="김정현">
+                    </div>
+                    <div class="detail-field">
+                        <div class="field-label">👤 인계자</div>
+                        <input type="text" class="field-input" value="이태균">
+                    </div>
+                    <div class="detail-field">
+                        <div class="field-label">🔗 관련 링크</div>
+                        <input type="url" class="field-input" value="https://example.com/guide" placeholder="관련 링크 (선택사항)">
+                    </div>
+                </div>
+                <div class="detail-field">
+                    <div class="field-label">📝 상세 내용</div>
+                    <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요...">연세사랑모아 순번 관리 시스템의 전반적인 운영 방법과 주의사항을 설명하였습니다. 특히 Firebase 연동 부분과 실시간 동기화 기능에 대해 중점적으로 전달하였습니다.</textarea>
+                </div>
+                <div class="checkbox-field">
+                    <input type="checkbox" id="completed-0" checked>
+                    <label for="completed-0">인수인계 완료</label>
+                </div>
+                <div class="detail-actions">
+                    <button class="action-btn" onclick="saveRow(0)">💾 저장</button>
+                </div>
+            `;
+        });
+    </script>
 
-        <div class="table-container">
-            <table class="handover-table">
-                <thead>
-                    <tr>
-                        <th style="width: 60px;">No</th>
-                        <th style="width: 120px;">날짜</th>
-                        <th style="width: 100px;">인수자</th>
-                        <th style="width: 100px;">인계자</th>
-                        <th>내용 요약</th>
-                        <th style="width: 80px;">상태</th>
-                        <th style="width: 40px;"></th>
-                    </tr>
-                </thead>
-                <tbody id="handoverTableBody">
-                    <!-- 예시 행 -->
-                    <tr class="table-row example-row" onclick="toggleDetail(this, 0)">
-                        <td>0</td>
-                        <td><input type="text" class="simple-input" value="2025-01-15" readonly></td>
-                        <td><input type="text" class="simple-input" value="김정현" readonly></td>
-                        <td><input type="text" class="simple-input" value="이태균" readonly></td>
-                        <td><input type="text" class="simple-input" value="연세사랑모아 순번 관리 시스템..." readonly></td>
-                        <td>완료<span class="status-indicator status-completed"></span></td>
-                        <td><span class="expand-icon">▼</span></td>
-                    </tr>
-                    <tr class="detail-row" id="detail-0">
-                        <td colspan="7">
-                            <div class="detail-content">
-                                <div class="detail-grid">
-                                    <div class="detail-field">
-                                        <div class="field-label">📅 인수인계 날짜</div>
-                                        <input type="date" class="field-input" value="2025-01-15">
-                                    </div>
-                                    <div class="detail-field">
-                                        <div class="field-label">👤 인수자</div>
-                                        <input type="text" class="field-input" value="김정현">
-                                    </div>
-                                    <div class="detail-field">
-                                        <div class="field-label">👤 인계자</div>
-                                        <input type="text" class="field-input" value="이태균">
-                                    </div>
-                                    <div class="detail-field">
-                                        <div class="field-label">🔗 관련 링크</div>
-                                        <input type="url" class="field-input" value="https://example.com/guide" placeholder="관련 링크 (선택사항)">
-                                    </div>
-                                </div>
-                                <div class="detail-field">
-                                    <div class="field-label">📝 상세 내용</div>
-                                    <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요...">연세사랑모아 순번 관리 시스템의 전반적인 운영 방법과 주의사항을 설명하였습니다. 특히 Firebase 연동 부분과 실시간 동기화 기능에 대해 중점적으로 전달하였습니다.</textarea>
-                                </div>
-                                <div class="checkbox-field">
-                                    <input type="checkbox" id="completed-0" checked>
-                                    <label for="completed-0">인수인계 완료</label>
-                                </div>
-                                <div class="detail-actions">
-                                    <button class="action-btn" onclick="saveRow(0)">💾 저장</button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- 실제 데이터 행들 -->
-                    <tr class="table-row" onclick="toggleDetail(this, 1)">
-                        <td>1</td>
-                        <td><input type="text" class="simple-input" placeholder="날짜" readonly onclick="event.stopPropagation(); this.type='date'; this.readOnly=false; this.focus();"></td>
-                        <td><input type="text" class="simple-input" placeholder="인수자" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
-                        <td><input type="text" class="simple-input" placeholder="인계자" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
-                        <td><input type="text" class="simple-input" placeholder="내용 요약을 입력하세요..." readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
-                        <td>대기<span class="status-indicator status-pending"></span></td>
-                        <td><span class="expand-icon">▼</span></td>
-                    </tr>
-                    <tr class="detail-row" id="detail-1">
-                        <td colspan="7">
-                            <div class="detail-content">
-                                <div class="detail-grid">
-                                    <div class="detail-field">
-                                        <div class="field-label">📅 인수인계 날짜</div>
-                                        <input type="date" class="field-input">
-                                    </div>
-                                    <div class="detail-field">
-                                        <div class="field-label">👤 인수자</div>
-                                        <input type="text" class="field-input" placeholder="인수받을 담당자">
-                                    </div>
-                                    <div class="detail-field">
-                                        <div class="field-label">👤 인계자</div>
-                                        <input type="text" class="field-input" placeholder="인계할 담당자">
-                                    </div>
-                                    <div class="detail-field">
-                                        <div class="field-label">🔗 관련 링크</div>
-                                        <input type="url" class="field-input" placeholder="관련 링크 (선택사항)">
-                                    </div>
-                                </div>
-                                <div class="detail-field">
-                                    <div class="field-label">📝 상세 내용</div>
-                                    <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요..."></textarea>
-                                </div>
-                                <div class="checkbox-field">
-                                    <input type="checkbox" id="completed-1">
-                                    <label for="completed-1">인수인계 완료</label>
-                                </div>
-                                <div class="detail-actions">
-                                    <button class="action-btn" onclick="saveRow(1)">💾 저장</button>
-                                    <button class="action-btn delete" onclick="deleteRow(1)">🗑️ 삭제</button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="controls-section">
-            <button class="control-btn" onclick="addNewRow()">➕ 새 인수인계 추가</button>
-            <button class="control-btn save" onclick="saveAllData()">💾 전체 저장</button>
-        </div>
+    <!-- 컨트롤 섹션과 피드백 추가 -->
+    <div class="controls-section">
+        <button class="control-btn" onclick="addNewRow()">➕ 새 인수인계 추가</button>
+        <button class="control-btn save" onclick="saveAllData()">💾 전체 저장</button>
     </div>
 
-    <script>
-        let rowCounter = 1;
+    <div class="save-feedback" id="saveFeedback">
+        💾 저장되었습니다!
+    </div>
+</body>
+</html>
+<script>
+        let rowCounter = 0;
+        let handoverData = [];
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            initFirebaseConnection();
+        });
+
+        // Firebase 연결 초기화
+        async function initFirebaseConnection() {
+            if (window.firebaseInitialized && window.db) {
+                const { getDocs, collection, addDoc, deleteDoc, doc, onSnapshot, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                window.getDocs = getDocs;
+                window.collection = collection;
+                window.addDoc = addDoc;
+                window.deleteDoc = deleteDoc;
+                window.doc = doc;
+                window.onSnapshot = onSnapshot;
+                window.updateDoc = updateDoc;
+                
+                await loadHandoversFromFirebase();
+                setupRealtimeSync();
+                showSaveFeedback('Firebase 연결 완료!');
+            } else {
+                loadSavedData();
+                showSaveFeedback('Firebase 연결 실패 - 로컬 모드');
+            }
+        }
+
+        // Firebase에서 데이터 불러오기
+        async function loadHandoversFromFirebase() {
+            if (!window.db) return false;
+            
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, 'handovers'));
+                handoverData = [];
+                let maxId = 0;
+                
+                querySnapshot.forEach((doc) => {
+                    const data = { id: doc.id, ...doc.data() };
+                    handoverData.push(data);
+                    maxId = Math.max(maxId, parseInt(data.number) || 0);
+                });
+                
+                rowCounter = maxId;
+                renderHandovers();
+                return true;
+            } catch (error) {
+                console.error('Firebase 로드 실패:', error);
+                loadSavedData();
+                return false;
+            }
+        }
+
+        // Firebase에 저장
+        async function saveToFirebase(handover) {
+            if (!window.db) return false;
+            
+            try {
+                await window.addDoc(window.collection(window.db, 'handovers'), handover);
+                return true;
+            } catch (error) {
+                console.error('Firebase 저장 실패:', error);
+                return false;
+            }
+        }
+
+        // Firebase에서 업데이트
+        async function updateInFirebase(id, data) {
+            if (!window.db) return false;
+            
+            try {
+                await window.updateDoc(window.doc(window.db, 'handovers', id), data);
+                return true;
+            } catch (error) {
+                console.error('Firebase 업데이트 실패:', error);
+                return false;
+            }
+        }
+
+        // Firebase에서 삭제
+        async function deleteFromFirebase(id) {
+            if (!window.db) return false;
+            
+            try {
+                await window.deleteDoc(window.doc(window.db, 'handovers', id));
+                return true;
+            } catch (error) {
+                console.error('Firebase 삭제 실패:', error);
+                return false;
+            }
+        }
+
+        // 실시간 동기화
+        function setupRealtimeSync() {
+            if (!window.db) return;
+            
+            window.onSnapshot(window.collection(window.db, 'handovers'), (snapshot) => {
+                handoverData = [];
+                let maxId = 0;
+                
+                snapshot.forEach((doc) => {
+                    const data = { id: doc.id, ...doc.data() };
+                    handoverData.push(data);
+                    maxId = Math.max(maxId, parseInt(data.number) || 0);
+                });
+                
+                rowCounter = maxId;
+                renderHandovers();
+                showSaveFeedback('실시간 동기화됨!');
+            });
+        }
+
+        function renderHandovers() {
+            const tableBody = document.getElementById('handoverTableBody');
+            const existingRows = tableBody.querySelectorAll('tr:not(.example-row):not([id^="detail-0"])');
+            existingRows.forEach(row => row.remove());
+            
+            handoverData
+                .sort((a, b) => parseInt(a.number) - parseInt(b.number))
+                .forEach(handover => {
+                    const rowId = handover.number;
+                    const newRows = createHandoverRows(handover, rowId);
+                    tableBody.insertAdjacentHTML('beforeend', newRows);
+                });
+        }
+
+        function createHandoverRows(handover, rowId) {
+            return `
+                <tr class="table-row" onclick="toggleDetail(this, ${rowId})">
+                    <td>${handover.number}</td>
+                    <td><input type="text" class="simple-input" value="${handover.date || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus(); this.type='date';"></td>
+                    <td><input type="text" class="simple-input" value="${handover.receiver || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
+                    <td><input type="text" class="simple-input" value="${handover.giver || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
+                    <td><input type="text" class="simple-input" value="${handover.summary || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
+                    <td>${handover.completed ? '완료' : '대기'}</td>
+                    <td><span class="expand-icon">▼</span></td>
+                </tr>
+                <tr class="detail-row" id="detail-${rowId}">
+                    <td colspan="7">
+                        <div class="detail-content">
+                            <div class="detail-grid">
+                                <div class="detail-field">
+                                    <div class="field-label">📅 인수인계 날짜</div>
+                                    <input type="date" class="field-input" value="${handover.date || ''}">
+                                </div>
+                                <div class="detail-field">
+                                    <div class="field-label">👤 인수자</div>
+                                    <input type="text" class="field-input" value="${handover.receiver || ''}" placeholder="인수받을 담당자">
+                                </div>
+                                <div class="detail-field">
+                                    <div class="field-label">👤 인계자</div>
+                                    <input type="text" class="field-input" value="${handover.giver || ''}" placeholder="인계할 담당자">
+                                </div>
+                                <div class="detail-field">
+                                    <div class="field-label">🔗 관련 링크</div>
+                                    <input type="url" class="field-input" value="${handover.link || ''}" placeholder="관련 링크 (선택사항)">
+                                </div>
+                            </div>
+                            <div class="detail-field">
+                                <div class="field-label">📝 상세 내용</div>
+                                <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요...">${handover.content || ''}</textarea>
+                            </div>
+                            <div class="checkbox-field">
+                                <input type="checkbox" id="completed-${rowId}" ${handover.completed ? 'checked' : ''}>
+                                <label for="completed-${rowId}">인수인계 완료</label>
+                            </div>
+                            <div class="detail-actions">
+                                <button class="action-btn" onclick="saveRow(${rowId})">💾 저장</button>
+                                <button class="action-btn delete" onclick="deleteRow('${handover.id}')">🗑️ 삭제</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
 
         function toggleDetail(row, rowId) {
             const detailRow = document.getElementById(`detail-${rowId}`);
@@ -465,117 +610,92 @@
             
             // 모든 행 비활성화
             document.querySelectorAll('.table-row').forEach(r => r.classList.remove('active'));
-            document.querySelectorAll('.detail-row').forEach(d => d.classList.remove('show'));
+            document.querySelectorAll('.detail-row').forEach(d => {
+                d.classList.remove('show');
+                setTimeout(() => {
+                    if (!d.classList.contains('show')) {
+                        d.style.display = 'none';
+                    }
+                }, 400);
+            });
             
             // 클릭한 행만 활성화
             if (!isActive) {
                 row.classList.add('active');
-                detailRow.classList.add('show');
+                detailRow.style.display = 'table-row';
+                setTimeout(() => {
+                    detailRow.classList.add('show');
+                }, 10);
             }
         }
 
-        function addNewRow() {
+        async function addNewRow() {
             rowCounter++;
-            const tableBody = document.getElementById('handoverTableBody');
+            const newHandover = {
+                number: rowCounter,
+                date: '',
+                receiver: '',
+                giver: '',
+                summary: '',
+                content: '',
+                link: '',
+                completed: false,
+                timestamp: new Date().toISOString()
+            };
             
-            const newRows = `
-                <tr class="table-row" onclick="toggleDetail(this, ${rowCounter})">
-                    <td>${rowCounter}</td>
-                    <td><input type="text" class="simple-input" placeholder="날짜" readonly onclick="event.stopPropagation(); this.type='date'; this.readOnly=false; this.focus();"></td>
-                    <td><input type="text" class="simple-input" placeholder="인수자" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
-                    <td><input type="text" class="simple-input" placeholder="인계자" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
-                    <td><input type="text" class="simple-input" placeholder="내용 요약을 입력하세요..." readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
-                    <td>대기<span class="status-indicator status-pending"></span></td>
-                    <td><span class="expand-icon">▼</span></td>
-                </tr>
-                <tr class="detail-row" id="detail-${rowCounter}">
-                    <td colspan="7">
-                        <div class="detail-content">
-                            <div class="detail-grid">
-                                <div class="detail-field">
-                                    <div class="field-label">📅 인수인계 날짜</div>
-                                    <input type="date" class="field-input">
-                                </div>
-                                <div class="detail-field">
-                                    <div class="field-label">👤 인수자</div>
-                                    <input type="text" class="field-input" placeholder="인수받을 담당자">
-                                </div>
-                                <div class="detail-field">
-                                    <div class="field-label">👤 인계자</div>
-                                    <input type="text" class="field-input" placeholder="인계할 담당자">
-                                </div>
-                                <div class="detail-field">
-                                    <div class="field-label">🔗 관련 링크</div>
-                                    <input type="url" class="field-input" placeholder="관련 링크 (선택사항)">
-                                </div>
-                            </div>
-                            <div class="detail-field">
-                                <div class="field-label">📝 상세 내용</div>
-                                <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요..."></textarea>
-                            </div>
-                            <div class="checkbox-field">
-                                <input type="checkbox" id="completed-${rowCounter}">
-                                <label for="completed-${rowCounter}">인수인계 완료</label>
-                            </div>
-                            <div class="detail-actions">
-                                <button class="action-btn" onclick="saveRow(${rowCounter})">💾 저장</button>
-                                <button class="action-btn delete" onclick="deleteRow(${rowCounter})">🗑️ 삭제</button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            `;
+            const success = await saveToFirebase(newHandover);
             
-            tableBody.insertAdjacentHTML('beforeend', newRows);
-        }
-
-        function saveRow(rowId) {
-            // 개별 행 저장 로직
-            updateRowStatus(rowId);
-            alert(`${rowId}번 인수인계가 저장되었습니다!`);
-        }
-
-        function deleteRow(rowId) {
-            if (confirm('이 인수인계를 삭제하시겠습니까?')) {
-                const tableRow = document.querySelector(`tr[onclick="toggleDetail(this, ${rowId})"]`);
-                const detailRow = document.getElementById(`detail-${rowId}`);
-                
-                if (tableRow) tableRow.remove();
-                if (detailRow) detailRow.remove();
+            if (!success) {
+                newHandover.id = Date.now().toString();
+                handoverData.push(newHandover);
+                renderHandovers();
+                localStorage.setItem('handoverData', JSON.stringify(handoverData));
+                showSaveFeedback('오프라인 모드로 저장됨');
+            } else {
+                showSaveFeedback('새 인수인계가 추가되어 팀원들과 공유되었습니다!');
             }
         }
 
-        function updateRowStatus(rowId) {
-            const checkbox = document.getElementById(`completed-${rowId}`);
-            const statusCell = document.querySelector(`tr[onclick="toggleDetail(this, ${rowId})"] td:nth-child(6)`);
-            
-            if (checkbox && statusCell) {
-                if (checkbox.checked) {
-                    statusCell.innerHTML = '완료<span class="status-indicator status-completed"></span>';
+        async function saveRow(rowId) {
+            showSaveFeedback(`${rowId}번 인수인계가 저장되었습니다!`);
+        }
+
+        async function deleteRow(id) {
+            if (confirm('이 인수인계를 삭제하시겠습니까?')) {
+                const success = await deleteFromFirebase(id);
+                
+                if (!success) {
+                    handoverData = handoverData.filter(h => h.id !== id);
+                    renderHandovers();
+                    localStorage.setItem('handoverData', JSON.stringify(handoverData));
+                    showSaveFeedback('오프라인 모드로 삭제됨');
                 } else {
-                    statusCell.innerHTML = '대기<span class="status-indicator status-pending"></span>';
+                    showSaveFeedback('인수인계가 삭제되었습니다!');
                 }
             }
         }
 
-        function saveAllData() {
-            // 전체 데이터 저장 로직
-            const rows = document.querySelectorAll('.table-row:not(.example-row)');
-            rows.forEach((row, index) => {
-                const rowId = index + 1;
-                updateRowStatus(rowId);
-            });
-            
-            alert('💾 모든 인수인계 데이터가 저장되었습니다!');
+        async function saveAllData() {
+            showSaveFeedback('모든 인수인계 데이터가 저장되었습니다!');
         }
 
-        // 상태 업데이트 이벤트 리스너
-        document.addEventListener('change', function(e) {
-            if (e.target.type === 'checkbox' && e.target.id.startsWith('completed-')) {
-                const rowId = e.target.id.split('-')[1];
-                updateRowStatus(rowId);
+        function loadSavedData() {
+            const savedData = localStorage.getItem('handoverData');
+            if (savedData) {
+                handoverData = JSON.parse(savedData);
+                renderHandovers();
             }
-        });
+        }
+
+        function showSaveFeedback(message) {
+            const feedback = document.getElementById('saveFeedback');
+            feedback.textContent = message;
+            feedback.classList.add('show');
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
 
         // 키보드 단축키
         document.addEventListener('keydown', function(e) {
@@ -584,6 +704,32 @@
                 saveAllData();
             }
         });
+    </script>
+
+    <!-- Firebase SDK 추가 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
+            authDomain: "soom-brand.firebaseapp.com",
+            projectId: "soom-brand",
+            storageBucket: "soom-brand.firebasestorage.app",
+            messagingSenderId: "765427036681",
+            appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 전역 변수로 설정
+        window.db = db;
+        window.firebaseInitialized = true;
+
+        console.log('Firebase 연결 완료!');
     </script>
 </body>
 </html>
