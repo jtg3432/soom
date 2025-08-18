@@ -534,10 +534,10 @@
             return `
                 <tr class="table-row" onclick="toggleDetail(this, ${rowId})">
                     <td>${handover.number}</td>
-                    <td><input type="text" class="simple-input" value="${handover.date || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus(); this.type='date';"></td>
-                    <td><input type="text" class="simple-input" value="${handover.receiver || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
-                    <td><input type="text" class="simple-input" value="${handover.giver || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
-                    <td><input type="text" class="simple-input" value="${handover.summary || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
+                    <td><input type="text" class="simple-input" value="${handover.date || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus(); this.type='date';" onblur="autoSaveField('${handover.id}', 'date', this.value)"></td>
+                    <td><input type="text" class="simple-input" value="${handover.receiver || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();" onblur="autoSaveField('${handover.id}', 'receiver', this.value)"></td>
+                    <td><input type="text" class="simple-input" value="${handover.giver || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();" onblur="autoSaveField('${handover.id}', 'giver', this.value)"></td>
+                    <td><input type="text" class="simple-input" value="${handover.summary || ''}" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();" onblur="autoSaveField('${handover.id}', 'summary', this.value)"></td>
                     <td>${handover.completed ? '완료' : '대기'}</td>
                     <td><span class="expand-icon">▼</span></td>
                 </tr>
@@ -547,31 +547,30 @@
                             <div class="detail-grid">
                                 <div class="detail-field">
                                     <div class="field-label">인수인계 날짜</div>
-                                    <input type="date" class="field-input" value="${handover.date || ''}">
+                                    <input type="date" class="field-input" value="${handover.date || ''}" onchange="autoSaveField('${handover.id}', 'date', this.value)">
                                 </div>
                                 <div class="detail-field">
                                     <div class="field-label">인수자</div>
-                                    <input type="text" class="field-input" value="${handover.receiver || ''}" placeholder="인수받을 담당자">
+                                    <input type="text" class="field-input" value="${handover.receiver || ''}" placeholder="인수받을 담당자" onblur="autoSaveField('${handover.id}', 'receiver', this.value)">
                                 </div>
                                 <div class="detail-field">
                                     <div class="field-label">인계자</div>
-                                    <input type="text" class="field-input" value="${handover.giver || ''}" placeholder="인계할 담당자">
+                                    <input type="text" class="field-input" value="${handover.giver || ''}" placeholder="인계할 담당자" onblur="autoSaveField('${handover.id}', 'giver', this.value)">
                                 </div>
                                 <div class="detail-field">
                                     <div class="field-label">관련 링크</div>
-                                    <input type="url" class="field-input" value="${handover.link || ''}" placeholder="관련 링크 (선택사항)">
+                                    <input type="url" class="field-input" value="${handover.link || ''}" placeholder="관련 링크 (선택사항)" onblur="autoSaveField('${handover.id}', 'link', this.value)">
                                 </div>
                             </div>
                             <div class="detail-field">
                                 <div class="field-label">상세 내용</div>
-                                <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요...">${handover.content || ''}</textarea>
+                                <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요..." onblur="autoSaveField('${handover.id}', 'content', this.value)">${handover.content || ''}</textarea>
                             </div>
                             <div class="checkbox-field">
-                                <input type="checkbox" id="completed-${rowId}" ${handover.completed ? 'checked' : ''}>
+                                <input type="checkbox" id="completed-${rowId}" ${handover.completed ? 'checked' : ''} onchange="autoSaveField('${handover.id}', 'completed', this.checked)">
                                 <label for="completed-${rowId}">인수인계 완료</label>
                             </div>
                             <div class="detail-actions">
-                                <button class="action-btn" onclick="saveRow(${rowId})">저장</button>
                                 <button class="action-btn delete" onclick="deleteRow('${handover.id}')">삭제</button>
                             </div>
                         </div>
@@ -632,6 +631,44 @@
 
         async function saveRow(rowId) {
             showSaveFeedback(`${rowId}번 인수인계가 저장되었습니다!`);
+        }
+
+        async function autoSaveField(id, field, value) {
+            // 로컬 데이터 업데이트
+            const handover = handoverData.find(h => h.id === id);
+            if (handover) {
+                handover[field] = value;
+                
+                // 상태가 변경된 경우 표시 업데이트
+                if (field === 'completed') {
+                    updateStatusDisplay(handover);
+                }
+                
+                // Firebase 업데이트
+                const success = await updateInFirebase(id, { [field]: value });
+                
+                if (!success) {
+                    // Firebase 실패 시 로컬 저장
+                    localStorage.setItem('handoverData', JSON.stringify(handoverData));
+                    showSaveFeedback('오프라인 모드로 저장됨');
+                } else {
+                    showSaveFeedback('자동 저장됨');
+                }
+            }
+        }
+
+        function updateStatusDisplay(handover) {
+            // 해당 행의 상태 표시 업데이트
+            const rows = document.querySelectorAll('.table-row');
+            rows.forEach(row => {
+                const firstCell = row.cells[0];
+                if (firstCell && firstCell.textContent == handover.number) {
+                    const statusCell = row.cells[5];
+                    if (statusCell) {
+                        statusCell.textContent = handover.completed ? '완료' : '대기';
+                    }
+                }
+            });
         }
 
         async function deleteRow(id) {
