@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미정 - 운영관리팀</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 80px 40px;
+        }
+
+        .coming-soon-message {
+            font-size: 1.3rem;
+            color: #6c757d;
+            margin-bottom: 50px;
+            line-height: 1.6;
+        }
+
+        .menu-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .menu-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .icon {
+            font-size: 1.8rem;
+            margin-right: 15px;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #8b94a3;
+            line-height: 1.6;
+            margin-top: 30px;
+        }
+
+        .footer {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .content {
+                padding: 60px 30px;
+            }
+
+            .coming-soon-message {
+                font-size: 1.1rem;
+            }
+
+            .menu-button {
+                font-size: 1.1rem;
+                padding: 18px 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-btn">← 메인으로</a>
+            <h1>준비중</h1>
+            <p>새로운 기능을 준비하고 있습니다</p>
+        </div>
+        <div class="content">
+            <a href="handover-manage.html" class="menu-button">
+                <span class="icon">❓</span>
+                미정
+            </a>
+            
+            <div class="description">
+                업무 인수인계 관리 시스템으로 이동하거나<br>
+                메인 페이지로 돌아가서 다른 메뉴를 이용해주세요.
+            </div>
+        </div>
+        <div class="footer">
+            © 2025 운영관리팀. 모든 권리 보유.
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인수인계 - 운영관리팀</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-header h2 {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .table-container {
+            padding: 40px;
+            overflow-x: auto;
+        }
+
+        .handover-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            min-width: 800px;
+        }
+
+        .handover-table th {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .handover-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f3f4;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .handover-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .handover-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* 예시 행 스타일 */
+        .example-row {
+            background: #e9ecef !important;
+        }
+
+        .example-row .input-field {
+            background: #f8f9fa;
+            border-color: #ced4da;
+        }
+
+        /* 입력 필드 스타일 */
+        .input-field {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .input-field:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .input-field.date {
+            max-width: 120px;
+        }
+
+        .input-field.name {
+            max-width: 100px;
+        }
+
+        .input-field.content {
+            min-width: 200px;
+            text-align: left;
+        }
+
+        .input-field.link {
+            min-width: 150px;
+            text-align: left;
+        }
+
+        /* 체크박스 스타일 */
+        .checkbox-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            transform: scale(1.3);
+            accent-color: #4facfe;
+        }
+
+        /* 넘버 컬럼 */
+        .number-col {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            width: 80px;
+        }
+
+        /* 컨트롤 섹션 */
+        .controls-section {
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .control-btn.add {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .page-container {
+                margin: 10px;
+            }
+            
+            .table-container {
+                padding: 20px;
+            }
+
+            .handover-table th,
+            .handover-table td {
+                padding: 10px 8px;
+                font-size: 0.8rem;
+            }
+
+            .input-field {
+                font-size: 0.8rem;
+                padding: 6px 8px;
+            }
+
+            .controls-section {
+                padding: 20px;
+            }
+
+            .control-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <a href="handover.html" class="back-btn">← 이전으로</a>
+            <h1>인수인계</h1>
+            <h2>업무 인수인계 관리</h2>
+        </div>
+
+        <div class="table-container">
+            <table class="handover-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>날짜</th>
+                        <th>인수자</th>
+                        <th>인계자</th>
+                        <th>내용</th>
+                        <th>체크</th>
+                        <th>링크</th>
+                    </tr>
+                </thead>
+                <tbody id="handoverTableBody">
+                    <!-- 예시 행 (0번) -->
+                    <tr class="example-row">
+                        <td class="number-col">0</td>
+                        <td>
+                            <input type="date" class="input-field date" value="2025-01-15">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field name" value="김정현">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field name" value="이태균">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field content" value="연세사랑모아 순번 관리 시스템 운영 방법">
+                        </td>
+                        <td>
+                            <div class="checkbox-container">
+                                <input type="checkbox" checked>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="url" class="input-field link" value="https://example.com/guide">
+                        </td>
+                    </tr>
+                    
+                    <!-- 실제 입력 행들 -->
+                    <tr>
+                        <td class="number-col">1</td>
+                        <td>
+                            <input type="date" class="input-field date" placeholder="날짜">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field name" placeholder="인수자">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field name" placeholder="인계자">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field content" placeholder="인수인계 내용을 입력하세요">
+                        </td>
+                        <td>
+                            <div class="checkbox-container">
+                                <input type="checkbox">
+                            </div>
+                        </td>
+                        <td>
+                            <input type="url" class="input-field link" placeholder="관련 링크 (선택)">
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="number-col">2</td>
+                        <td>
+                            <input type="date" class="input-field date" placeholder="날짜">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field name" placeholder="인수자">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field name" placeholder="인계자">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field content" placeholder="인수인계 내용을 입력하세요">
+                        </td>
+                        <td>
+                            <div class="checkbox-container">
+                                <input type="checkbox">
+                            </div>
+                        </td>
+                        <td>
+                            <input type="url" class="input-field link" placeholder="관련 링크 (선택)">
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="number-col">3</td>
+                        <td>
+                            <input type="date" class="input-field date" placeholder="날짜">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field name" placeholder="인수자">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field name" placeholder="인계자">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field content" placeholder="인수인계 내용을 입력하세요">
+                        </td>
+                        <td>
+                            <div class="checkbox-container">
+                                <input type="checkbox">
+                            </div>
+                        </td>
+                        <td>
+                            <input type="url" class="input-field link" placeholder="관련 링크 (선택)">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="controls-section">
+            <button class="control-btn add" onclick="addNewRow()">➕ 행 추가</button>
+            <button class="control-btn save" onclick="saveData()">💾 저장하기</button>
+        </div>
+    </div>
+
+    <script>
+        let rowCounter = 3; // 현재 마지막 행 번호
+
+        // 새로운 행 추가
+        function addNewRow() {
+            rowCounter++;
+            const tableBody = document.getElementById('handoverTableBody');
+            
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="number-col">${rowCounter}</td>
+                <td>
+                    <input type="date" class="input-field date" placeholder="날짜">
+                </td>
+                <td>
+                    <input type="text" class="input-field name" placeholder="인수자">
+                </td>
+                <td>
+                    <input type="text" class="input-field name" placeholder="인계자">
+                </td>
+                <td>
+                    <input type="text" class="input-field content" placeholder="인수인계 내용을 입력하세요">
+                </td>
+                <td>
+                    <div class="checkbox-container">
+                        <input type="checkbox">
+                    </div>
+                </td>
+                <td>
+                    <input type="url" class="input-field link" placeholder="관련 링크 (선택)">
+                </td>
+            `;
+            
+            tableBody.appendChild(newRow);
+        }
+
+        // 데이터 저장
+        function saveData() {
+            const rows = document.querySelectorAll('#handoverTableBody tr:not(.example-row)');
+            const data = [];
+            
+            rows.forEach((row, index) => {
+                const inputs = row.querySelectorAll('.input-field');
+                const checkbox = row.querySelector('input[type="checkbox"]');
+                
+                const rowData = {
+                    number: index + 1,
+                    date: inputs[0].value,
+                    receiver: inputs[1].value,
+                    giver: inputs[2].value,
+                    content: inputs[3].value,
+                    checked: checkbox.checked,
+                    link: inputs[4].value
+                };
+                
+                data.push(rowData);
+            });
+            
+            // 로컬 스토리지에 저장
+            localStorage.setItem('handoverData', JSON.stringify(data));
+            
+            // 저장 완료 알림
+            alert('💾 인수인계 데이터가 저장되었습니다!');
+        }
+
+        // 페이지 로드 시 저장된 데이터 불러오기
+        function loadData() {
+            const savedData = localStorage.getItem('handoverData');
+            
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                const tableBody = document.getElementById('handoverTableBody');
+                
+                // 기존 입력 행들 제거 (예시 행 제외)
+                const existingRows = tableBody.querySelectorAll('tr:not(.example-row)');
+                existingRows.forEach(row => row.remove());
+                
+                // 저장된 데이터로 행 생성
+                data.forEach((rowData, index) => {
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td class="number-col">${rowData.number}</td>
+                        <td>
+                            <input type="date" class="input-field date" value="${rowData.date}">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field name" value="${rowData.receiver}">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field name" value="${rowData.giver}">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field content" value="${rowData.content}">
+                        </td>
+                        <td>
+                            <div class="checkbox-container">
+                                <input type="checkbox" ${rowData.checked ? 'checked' : ''}>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="url" class="input-field link" value="${rowData.link}">
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(newRow);
+                });
+                
+                rowCounter = data.length;
+            }
+        }
+
+        // 페이지 로드 시 데이터 불러오기
+        document.addEventListener('DOMContentLoaded', loadData);
+
+        // 키보드 단축키 (Ctrl+S로 저장)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveData();
+            }
+        });
+    </script>
+</body>
+</html>
