@@ -19,7 +19,7 @@
         }
 
         .page-container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -79,7 +79,6 @@
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            min-width: 800px;
         }
 
         .handover-table th {
@@ -89,22 +88,177 @@
             font-size: 1.1rem;
             font-weight: 600;
             text-align: center;
-            white-space: nowrap;
         }
 
-        .handover-table td {
-            padding: 15px;
+        /* 간단한 표 행 스타일 */
+        .table-row {
+            cursor: pointer;
+            transition: all 0.3s ease;
             border-bottom: 1px solid #f1f3f4;
+        }
+
+        .table-row:hover {
+            background: #f8f9fa;
+        }
+
+        .table-row.active {
+            background: #e3f2fd;
+        }
+
+        .table-row td {
+            padding: 15px;
             text-align: center;
             vertical-align: middle;
         }
 
-        .handover-table tbody tr:hover {
-            background: #f8f9fa;
+        .simple-input {
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            text-align: center;
+            width: 100%;
+            outline: none;
+            cursor: pointer;
         }
 
-        .handover-table tbody tr:last-child td {
-            border-bottom: none;
+        .simple-input:focus {
+            background: white;
+            border: 2px solid #4facfe;
+            border-radius: 5px;
+            padding: 5px;
+            cursor: text;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .status-pending {
+            background: #ffc107;
+        }
+
+        .status-completed {
+            background: #28a745;
+        }
+
+        .expand-icon {
+            font-size: 1.2rem;
+            color: #6c757d;
+            transition: transform 0.3s ease;
+        }
+
+        .table-row.active .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* 드롭다운 상세 내용 */
+        .detail-row {
+            background: #f8f9fa;
+            transition: all 0.4s ease-out;
+        }
+
+        .detail-content {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.4s ease-out;
+            transform: translateY(-20px);
+        }
+
+        .detail-row.show .detail-content {
+            max-height: 800px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .detail-content {
+            padding: 30px;
+            border-top: 3px solid #4facfe;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-field {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .field-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .field-input:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .field-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-field input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #4facfe;
+        }
+
+        .detail-actions {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .action-btn.delete {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
         }
 
         /* 예시 행 스타일 */
@@ -112,66 +266,9 @@
             background: #e9ecef !important;
         }
 
-        .example-row .input-field {
-            background: #f8f9fa;
-            border-color: #ced4da;
-        }
-
-        /* 입력 필드 스타일 */
-        .input-field {
-            width: 100%;
-            padding: 8px 12px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            outline: none;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .input-field:focus {
-            border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-        }
-
-        .input-field.date {
-            max-width: 120px;
-        }
-
-        .input-field.name {
-            max-width: 100px;
-        }
-
-        .input-field.content {
-            min-width: 200px;
-            text-align: left;
-        }
-
-        .input-field.link {
-            min-width: 150px;
-            text-align: left;
-        }
-
-        /* 체크박스 스타일 */
-        .checkbox-container {
-            display: flex;
-            justify-content: center;
-        }
-
-        .checkbox-container input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            transform: scale(1.3);
-            accent-color: #4facfe;
-        }
-
-        /* 넘버 컬럼 */
-        .number-col {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #495057;
-            width: 80px;
+        .example-row .simple-input {
+            color: #6c757d;
+            font-style: italic;
         }
 
         /* 컨트롤 섹션 */
@@ -183,7 +280,7 @@
         }
 
         .control-btn {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
             color: white;
             border: none;
             padding: 12px 25px;
@@ -200,8 +297,8 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .control-btn.add {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        .control-btn.save {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         }
 
         /* 반응형 */
@@ -214,15 +311,13 @@
                 padding: 20px;
             }
 
-            .handover-table th,
-            .handover-table td {
-                padding: 10px 8px;
-                font-size: 0.8rem;
+            .detail-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
             }
 
-            .input-field {
-                font-size: 0.8rem;
-                padding: 6px 8px;
+            .detail-content {
+                padding: 20px;
             }
 
             .controls-section {
@@ -249,111 +344,106 @@
             <table class="handover-table">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>날짜</th>
-                        <th>인수자</th>
-                        <th>인계자</th>
-                        <th>내용</th>
-                        <th>체크</th>
-                        <th>링크</th>
+                        <th style="width: 60px;">No</th>
+                        <th style="width: 120px;">날짜</th>
+                        <th style="width: 100px;">인수자</th>
+                        <th style="width: 100px;">인계자</th>
+                        <th>내용 요약</th>
+                        <th style="width: 80px;">상태</th>
+                        <th style="width: 40px;"></th>
                     </tr>
                 </thead>
                 <tbody id="handoverTableBody">
-                    <!-- 예시 행 (0번) -->
-                    <tr class="example-row">
-                        <td class="number-col">0</td>
-                        <td>
-                            <input type="date" class="input-field date" value="2025-01-15">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field name" value="김정현">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field name" value="이태균">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field content" value="연세사랑모아 순번 관리 시스템 운영 방법">
-                        </td>
-                        <td>
-                            <div class="checkbox-container">
-                                <input type="checkbox" checked>
+                    <!-- 예시 행 -->
+                    <tr class="table-row example-row" onclick="toggleDetail(this, 0)">
+                        <td>0</td>
+                        <td><input type="text" class="simple-input" value="2025-01-15" readonly></td>
+                        <td><input type="text" class="simple-input" value="김정현" readonly></td>
+                        <td><input type="text" class="simple-input" value="이태균" readonly></td>
+                        <td><input type="text" class="simple-input" value="연세사랑모아 순번 관리 시스템..." readonly></td>
+                        <td>완료<span class="status-indicator status-completed"></span></td>
+                        <td><span class="expand-icon">▼</span></td>
+                    </tr>
+                    <tr class="detail-row" id="detail-0">
+                        <td colspan="7">
+                            <div class="detail-content">
+                                <div class="detail-grid">
+                                    <div class="detail-field">
+                                        <div class="field-label">📅 인수인계 날짜</div>
+                                        <input type="date" class="field-input" value="2025-01-15">
+                                    </div>
+                                    <div class="detail-field">
+                                        <div class="field-label">👤 인수자</div>
+                                        <input type="text" class="field-input" value="김정현">
+                                    </div>
+                                    <div class="detail-field">
+                                        <div class="field-label">👤 인계자</div>
+                                        <input type="text" class="field-input" value="이태균">
+                                    </div>
+                                    <div class="detail-field">
+                                        <div class="field-label">🔗 관련 링크</div>
+                                        <input type="url" class="field-input" value="https://example.com/guide" placeholder="관련 링크 (선택사항)">
+                                    </div>
+                                </div>
+                                <div class="detail-field">
+                                    <div class="field-label">📝 상세 내용</div>
+                                    <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요...">연세사랑모아 순번 관리 시스템의 전반적인 운영 방법과 주의사항을 설명하였습니다. 특히 Firebase 연동 부분과 실시간 동기화 기능에 대해 중점적으로 전달하였습니다.</textarea>
+                                </div>
+                                <div class="checkbox-field">
+                                    <input type="checkbox" id="completed-0" checked>
+                                    <label for="completed-0">인수인계 완료</label>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="action-btn" onclick="saveRow(0)">💾 저장</button>
+                                </div>
                             </div>
-                        </td>
-                        <td>
-                            <input type="url" class="input-field link" value="https://example.com/guide">
                         </td>
                     </tr>
-                    
-                    <!-- 실제 입력 행들 -->
-                    <tr>
-                        <td class="number-col">1</td>
-                        <td>
-                            <input type="date" class="input-field date" placeholder="날짜">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field name" placeholder="인수자">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field name" placeholder="인계자">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field content" placeholder="인수인계 내용을 입력하세요">
-                        </td>
-                        <td>
-                            <div class="checkbox-container">
-                                <input type="checkbox">
-                            </div>
-                        </td>
-                        <td>
-                            <input type="url" class="input-field link" placeholder="관련 링크 (선택)">
-                        </td>
+
+                    <!-- 실제 데이터 행들 -->
+                    <tr class="table-row" onclick="toggleDetail(this, 1)">
+                        <td>1</td>
+                        <td><input type="text" class="simple-input" placeholder="날짜" readonly onclick="event.stopPropagation(); this.type='date'; this.readOnly=false; this.focus();"></td>
+                        <td><input type="text" class="simple-input" placeholder="인수자" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
+                        <td><input type="text" class="simple-input" placeholder="인계자" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
+                        <td><input type="text" class="simple-input" placeholder="내용 요약을 입력하세요..." readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
+                        <td>대기<span class="status-indicator status-pending"></span></td>
+                        <td><span class="expand-icon">▼</span></td>
                     </tr>
-                    
-                    <tr>
-                        <td class="number-col">2</td>
-                        <td>
-                            <input type="date" class="input-field date" placeholder="날짜">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field name" placeholder="인수자">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field name" placeholder="인계자">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field content" placeholder="인수인계 내용을 입력하세요">
-                        </td>
-                        <td>
-                            <div class="checkbox-container">
-                                <input type="checkbox">
+                    <tr class="detail-row" id="detail-1">
+                        <td colspan="7">
+                            <div class="detail-content">
+                                <div class="detail-grid">
+                                    <div class="detail-field">
+                                        <div class="field-label">📅 인수인계 날짜</div>
+                                        <input type="date" class="field-input">
+                                    </div>
+                                    <div class="detail-field">
+                                        <div class="field-label">👤 인수자</div>
+                                        <input type="text" class="field-input" placeholder="인수받을 담당자">
+                                    </div>
+                                    <div class="detail-field">
+                                        <div class="field-label">👤 인계자</div>
+                                        <input type="text" class="field-input" placeholder="인계할 담당자">
+                                    </div>
+                                    <div class="detail-field">
+                                        <div class="field-label">🔗 관련 링크</div>
+                                        <input type="url" class="field-input" placeholder="관련 링크 (선택사항)">
+                                    </div>
+                                </div>
+                                <div class="detail-field">
+                                    <div class="field-label">📝 상세 내용</div>
+                                    <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요..."></textarea>
+                                </div>
+                                <div class="checkbox-field">
+                                    <input type="checkbox" id="completed-1">
+                                    <label for="completed-1">인수인계 완료</label>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="action-btn" onclick="saveRow(1)">💾 저장</button>
+                                    <button class="action-btn delete" onclick="deleteRow(1)">🗑️ 삭제</button>
+                                </div>
                             </div>
-                        </td>
-                        <td>
-                            <input type="url" class="input-field link" placeholder="관련 링크 (선택)">
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <td class="number-col">3</td>
-                        <td>
-                            <input type="date" class="input-field date" placeholder="날짜">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field name" placeholder="인수자">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field name" placeholder="인계자">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field content" placeholder="인수인계 내용을 입력하세요">
-                        </td>
-                        <td>
-                            <div class="checkbox-container">
-                                <input type="checkbox">
-                            </div>
-                        </td>
-                        <td>
-                            <input type="url" class="input-field link" placeholder="관련 링크 (선택)">
                         </td>
                     </tr>
                 </tbody>
@@ -361,130 +451,137 @@
         </div>
 
         <div class="controls-section">
-            <button class="control-btn add" onclick="addNewRow()">➕ 행 추가</button>
-            <button class="control-btn save" onclick="saveData()">💾 저장하기</button>
+            <button class="control-btn" onclick="addNewRow()">➕ 새 인수인계 추가</button>
+            <button class="control-btn save" onclick="saveAllData()">💾 전체 저장</button>
         </div>
     </div>
 
     <script>
-        let rowCounter = 3; // 현재 마지막 행 번호
+        let rowCounter = 1;
 
-        // 새로운 행 추가
+        function toggleDetail(row, rowId) {
+            const detailRow = document.getElementById(`detail-${rowId}`);
+            const isActive = row.classList.contains('active');
+            
+            // 모든 행 비활성화
+            document.querySelectorAll('.table-row').forEach(r => r.classList.remove('active'));
+            document.querySelectorAll('.detail-row').forEach(d => d.classList.remove('show'));
+            
+            // 클릭한 행만 활성화
+            if (!isActive) {
+                row.classList.add('active');
+                detailRow.classList.add('show');
+            }
+        }
+
         function addNewRow() {
             rowCounter++;
             const tableBody = document.getElementById('handoverTableBody');
             
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td class="number-col">${rowCounter}</td>
-                <td>
-                    <input type="date" class="input-field date" placeholder="날짜">
-                </td>
-                <td>
-                    <input type="text" class="input-field name" placeholder="인수자">
-                </td>
-                <td>
-                    <input type="text" class="input-field name" placeholder="인계자">
-                </td>
-                <td>
-                    <input type="text" class="input-field content" placeholder="인수인계 내용을 입력하세요">
-                </td>
-                <td>
-                    <div class="checkbox-container">
-                        <input type="checkbox">
-                    </div>
-                </td>
-                <td>
-                    <input type="url" class="input-field link" placeholder="관련 링크 (선택)">
-                </td>
+            const newRows = `
+                <tr class="table-row" onclick="toggleDetail(this, ${rowCounter})">
+                    <td>${rowCounter}</td>
+                    <td><input type="text" class="simple-input" placeholder="날짜" readonly onclick="event.stopPropagation(); this.type='date'; this.readOnly=false; this.focus();"></td>
+                    <td><input type="text" class="simple-input" placeholder="인수자" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
+                    <td><input type="text" class="simple-input" placeholder="인계자" readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
+                    <td><input type="text" class="simple-input" placeholder="내용 요약을 입력하세요..." readonly onclick="event.stopPropagation(); this.readOnly=false; this.focus();"></td>
+                    <td>대기<span class="status-indicator status-pending"></span></td>
+                    <td><span class="expand-icon">▼</span></td>
+                </tr>
+                <tr class="detail-row" id="detail-${rowCounter}">
+                    <td colspan="7">
+                        <div class="detail-content">
+                            <div class="detail-grid">
+                                <div class="detail-field">
+                                    <div class="field-label">📅 인수인계 날짜</div>
+                                    <input type="date" class="field-input">
+                                </div>
+                                <div class="detail-field">
+                                    <div class="field-label">👤 인수자</div>
+                                    <input type="text" class="field-input" placeholder="인수받을 담당자">
+                                </div>
+                                <div class="detail-field">
+                                    <div class="field-label">👤 인계자</div>
+                                    <input type="text" class="field-input" placeholder="인계할 담당자">
+                                </div>
+                                <div class="detail-field">
+                                    <div class="field-label">🔗 관련 링크</div>
+                                    <input type="url" class="field-input" placeholder="관련 링크 (선택사항)">
+                                </div>
+                            </div>
+                            <div class="detail-field">
+                                <div class="field-label">📝 상세 내용</div>
+                                <textarea class="field-input field-textarea" placeholder="인수인계 상세 내용을 입력하세요..."></textarea>
+                            </div>
+                            <div class="checkbox-field">
+                                <input type="checkbox" id="completed-${rowCounter}">
+                                <label for="completed-${rowCounter}">인수인계 완료</label>
+                            </div>
+                            <div class="detail-actions">
+                                <button class="action-btn" onclick="saveRow(${rowCounter})">💾 저장</button>
+                                <button class="action-btn delete" onclick="deleteRow(${rowCounter})">🗑️ 삭제</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
             `;
             
-            tableBody.appendChild(newRow);
+            tableBody.insertAdjacentHTML('beforeend', newRows);
         }
 
-        // 데이터 저장
-        function saveData() {
-            const rows = document.querySelectorAll('#handoverTableBody tr:not(.example-row)');
-            const data = [];
-            
-            rows.forEach((row, index) => {
-                const inputs = row.querySelectorAll('.input-field');
-                const checkbox = row.querySelector('input[type="checkbox"]');
-                
-                const rowData = {
-                    number: index + 1,
-                    date: inputs[0].value,
-                    receiver: inputs[1].value,
-                    giver: inputs[2].value,
-                    content: inputs[3].value,
-                    checked: checkbox.checked,
-                    link: inputs[4].value
-                };
-                
-                data.push(rowData);
-            });
-            
-            // 로컬 스토리지에 저장
-            localStorage.setItem('handoverData', JSON.stringify(data));
-            
-            // 저장 완료 알림
-            alert('💾 인수인계 데이터가 저장되었습니다!');
+        function saveRow(rowId) {
+            // 개별 행 저장 로직
+            updateRowStatus(rowId);
+            alert(`${rowId}번 인수인계가 저장되었습니다!`);
         }
 
-        // 페이지 로드 시 저장된 데이터 불러오기
-        function loadData() {
-            const savedData = localStorage.getItem('handoverData');
-            
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                const tableBody = document.getElementById('handoverTableBody');
+        function deleteRow(rowId) {
+            if (confirm('이 인수인계를 삭제하시겠습니까?')) {
+                const tableRow = document.querySelector(`tr[onclick="toggleDetail(this, ${rowId})"]`);
+                const detailRow = document.getElementById(`detail-${rowId}`);
                 
-                // 기존 입력 행들 제거 (예시 행 제외)
-                const existingRows = tableBody.querySelectorAll('tr:not(.example-row)');
-                existingRows.forEach(row => row.remove());
-                
-                // 저장된 데이터로 행 생성
-                data.forEach((rowData, index) => {
-                    const newRow = document.createElement('tr');
-                    newRow.innerHTML = `
-                        <td class="number-col">${rowData.number}</td>
-                        <td>
-                            <input type="date" class="input-field date" value="${rowData.date}">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field name" value="${rowData.receiver}">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field name" value="${rowData.giver}">
-                        </td>
-                        <td>
-                            <input type="text" class="input-field content" value="${rowData.content}">
-                        </td>
-                        <td>
-                            <div class="checkbox-container">
-                                <input type="checkbox" ${rowData.checked ? 'checked' : ''}>
-                            </div>
-                        </td>
-                        <td>
-                            <input type="url" class="input-field link" value="${rowData.link}">
-                        </td>
-                    `;
-                    
-                    tableBody.appendChild(newRow);
-                });
-                
-                rowCounter = data.length;
+                if (tableRow) tableRow.remove();
+                if (detailRow) detailRow.remove();
             }
         }
 
-        // 페이지 로드 시 데이터 불러오기
-        document.addEventListener('DOMContentLoaded', loadData);
+        function updateRowStatus(rowId) {
+            const checkbox = document.getElementById(`completed-${rowId}`);
+            const statusCell = document.querySelector(`tr[onclick="toggleDetail(this, ${rowId})"] td:nth-child(6)`);
+            
+            if (checkbox && statusCell) {
+                if (checkbox.checked) {
+                    statusCell.innerHTML = '완료<span class="status-indicator status-completed"></span>';
+                } else {
+                    statusCell.innerHTML = '대기<span class="status-indicator status-pending"></span>';
+                }
+            }
+        }
 
-        // 키보드 단축키 (Ctrl+S로 저장)
+        function saveAllData() {
+            // 전체 데이터 저장 로직
+            const rows = document.querySelectorAll('.table-row:not(.example-row)');
+            rows.forEach((row, index) => {
+                const rowId = index + 1;
+                updateRowStatus(rowId);
+            });
+            
+            alert('💾 모든 인수인계 데이터가 저장되었습니다!');
+        }
+
+        // 상태 업데이트 이벤트 리스너
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox' && e.target.id.startsWith('completed-')) {
+                const rowId = e.target.id.split('-')[1];
+                updateRowStatus(rowId);
+            }
+        });
+
+        // 키보드 단축키
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 's') {
                 e.preventDefault();
-                saveData();
+                saveAllData();
             }
         });
     </script>
