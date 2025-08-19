@@ -679,7 +679,7 @@
                         <div class="item-number">${index + 1}</div>
                         <textarea class="item-content" id="content-${itemId}" readonly>${item.content || ''}</textarea>
                         <input type="checkbox" class="item-checkbox" ${item.completed ? 'checked' : ''} 
-                               onchange="toggleItemComplete('${day}', '${itemId}')">
+                               onchange="toggleItemComplete('${day}', '${itemId}', this)">>
                         <div class="item-actions">
                             <button class="action-btn edit-btn" onclick="requestPasswordForEdit('${itemId}')">수정</button>
                             <button class="action-btn delete-btn" onclick="requestPasswordForDelete('${day}', '${itemId}')">삭제</button>
@@ -690,7 +690,7 @@
                 });
         }
 
-        async function toggleItemComplete(day, itemId) {
+        async function toggleItemComplete(day, itemId, checkbox) {
             const dayKey = `day${day}`;
             if (!handoverData[dayKey]) {
                 handoverData[dayKey] = { items: {} };
@@ -699,7 +699,6 @@
                 handoverData[dayKey].items[itemId] = {};
             }
             
-            const checkbox = event.target;
             handoverData[dayKey].items[itemId].completed = checkbox.checked;
             
             const success = await saveHandoverToFirebase(day, handoverData[dayKey]);
