@@ -150,6 +150,7 @@
         .control-buttons {
             display: flex;
             gap: 20px;
+            align-items: center;
         }
 
         .control-btn {
@@ -163,8 +164,8 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .add-btn {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        .edit-mode-btn {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
             color: white;
         }
 
@@ -178,70 +179,94 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        .items-container {
+        .edit-status {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .items-table {
             background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             border: 1px solid #e2e8f0;
+            overflow-x: auto;
         }
 
-        .item-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 25px;
-            padding: 25px;
-            margin-bottom: 20px;
-            border-radius: 15px;
-            transition: all 0.3s ease;
+        table {
+            width: 100%;
+            border-collapse: collapse;
             background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border: 1px solid #f1f5f9;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
 
-        .item-row:hover {
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
             background: #f8fafc;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
 
         .item-number {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            width: 45px;
-            height: 45px;
-            border-radius: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 1.2rem;
-            flex-shrink: 0;
+            font-size: 1.1rem;
+            margin: 0 auto;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
-        .item-content {
-            flex: 1;
+        .item-input {
+            width: 100%;
             padding: 15px 20px;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             outline: none;
             transition: all 0.3s ease;
             background: white;
             resize: vertical;
-            min-height: 80px;
-            line-height: 1.6;
+            min-height: 60px;
+            line-height: 1.5;
             font-family: inherit;
         }
 
-        .item-content:focus {
+        .item-input:focus {
             border-color: #667eea;
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
             background: #fafbff;
         }
 
-        .item-content:read-only {
+        .item-input:read-only {
             background: #f8fafc;
             cursor: default;
             border-color: #e2e8f0;
@@ -253,80 +278,15 @@
             cursor: pointer;
             accent-color: #48bb78;
             transform: scale(1.4);
-            flex-shrink: 0;
-            margin-top: 10px;
         }
 
-        .item-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-
-        .action-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .edit-btn {
-            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
-            color: white;
-        }
-
-        .delete-btn {
-            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-            color: white;
-        }
-
-        .save-btn {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-            color: white;
-        }
-
-        .cancel-btn {
-            background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
-            color: white;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .item-row.completed {
+        .completed-row {
             background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
-            border-color: #68d391;
-            box-shadow: 0 4px 20px rgba(72, 187, 120, 0.1);
         }
 
-        .item-row.completed .item-number {
+        .completed-row .item-number {
             background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
             box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 80px 40px;
-            color: #718096;
-        }
-
-        .empty-state h3 {
-            font-size: 2rem;
-            margin-bottom: 15px;
-            color: #4a5568;
-            font-weight: 600;
-        }
-
-        .empty-state p {
-            font-size: 1.2rem;
-            line-height: 1.6;
         }
 
         .modal {
@@ -343,77 +303,81 @@
         .modal-content {
             background-color: white;
             margin: 15% auto;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 40px;
+            border-radius: 20px;
             width: 90%;
-            max-width: 400px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 450px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
             text-align: center;
         }
 
         .modal-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 25px;
         }
 
         .password-input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1rem;
             outline: none;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
         }
 
         .password-input:focus {
-            border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
 
         .modal-buttons {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             justify-content: center;
         }
 
         .modal-btn {
-            padding: 10px 20px;
+            padding: 12px 25px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            font-size: 1rem;
         }
 
         .confirm-btn {
-            background: #4facfe;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
 
         .cancel-btn {
-            background: #6c757d;
+            background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
             color: white;
         }
 
         .modal-btn:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
         .error-message {
-            color: #dc3545;
+            color: #e53e3e;
             font-size: 0.9rem;
-            margin-top: 10px;
+            margin-top: 15px;
+            font-weight: 500;
         }
 
         .save-feedback {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #28a745;
+            background: #48bb78;
             color: white;
             padding: 15px 25px;
             border-radius: 50px;
@@ -430,35 +394,40 @@
 
         @media (max-width: 768px) {
             .page-container {
-                margin: 20px;
+                margin: 10px;
             }
             
             .main-view {
-                padding: 20px;
+                padding: 30px 20px;
             }
 
             .days-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 10px;
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 15px;
+                padding: 10px;
             }
 
             .day-btn {
-                padding: 15px 10px;
-                font-size: 1rem;
+                padding: 20px 15px;
+                font-size: 1.1rem;
             }
 
             .day-detail-view {
+                padding: 30px 20px;
+            }
+
+            .items-table {
                 padding: 20px;
             }
 
-            .item-row {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
+            .item-input {
+                min-height: 50px;
+                padding: 10px 15px;
             }
 
-            .item-actions {
-                justify-content: center;
+            .control-buttons {
+                flex-direction: column;
+                gap: 10px;
             }
         }
     </style>
@@ -482,16 +451,25 @@
                 <div class="day-detail-header">
                     <div class="day-detail-title" id="dayDetailTitle">1일차</div>
                     <div class="control-buttons">
-                        <button class="control-btn add-btn" onclick="requestPasswordForAdd()">항목 추가</button>
+                        <button class="control-btn edit-mode-btn" onclick="toggleEditMode()" id="editModeBtn">편집 모드</button>
+                        <div class="edit-status" id="editStatus" style="display: none;">편집 모드 활성</div>
                         <button class="control-btn back-to-list-btn" onclick="showDaysList()">목록으로</button>
                     </div>
                 </div>
 
-                <div class="items-container" id="itemsContainer">
-                    <div class="empty-state" id="emptyState">
-                        <h3>등록된 항목이 없습니다</h3>
-                        <p>첫 번째 항목을 추가해보세요!</p>
-                    </div>
+                <div class="items-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th width="80px">번호</th>
+                                <th>업무 내용</th>
+                                <th width="100px">완료</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsTableBody">
+                            <!-- 동적으로 생성됩니다 -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -500,7 +478,8 @@
     <!-- 비밀번호 확인 모달 -->
     <div id="passwordModal" class="modal">
         <div class="modal-content">
-            <div class="modal-title">비밀번호 확인</div>
+            <div class="modal-title">편집 모드 활성화</div>
+            <p style="color: #718096; margin-bottom: 20px;">업무 내용을 수정하려면 비밀번호를 입력하세요</p>
             <input type="password" class="password-input" id="passwordInput" placeholder="비밀번호를 입력하세요">
             <div class="modal-buttons">
                 <button class="modal-btn confirm-btn" onclick="confirmPassword()">확인</button>
@@ -513,13 +492,12 @@
     <div class="save-feedback" id="saveFeedback">
         저장되었습니다!
     </div>
-
     <script>
         let handoverData = {};
         let currentDay = null;
-        let editingItemId = null;
-        let pendingAction = null;
+        let editMode = false;
         const validPasswords = ['6635', '7338', '6169'];
+        const itemsPerDay = 10; // 각 일차별 항목 수
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
@@ -630,11 +608,11 @@
                 const progressEl = document.getElementById(`progress-${i}`);
                 
                 if (dayData && dayData.items) {
-                    const total = Object.keys(dayData.items).length;
+                    const total = itemsPerDay;
                     const completed = Object.values(dayData.items).filter(item => item.completed).length;
                     progressEl.textContent = `${completed}/${total}`;
                 } else {
-                    progressEl.textContent = '0/0';
+                    progressEl.textContent = `0/${itemsPerDay}`;
                 }
             }
         }
@@ -643,6 +621,8 @@
             document.getElementById('daysGrid').style.display = 'grid';
             document.getElementById('dayDetailView').style.display = 'none';
             currentDay = null;
+            editMode = false;
+            updateEditModeUI();
         }
 
         function showDayDetail(day) {
@@ -651,87 +631,96 @@
             document.getElementById('dayDetailView').style.display = 'block';
             document.getElementById('dayDetailTitle').textContent = `${day}일차`;
             
+            // 해당 일차 데이터가 없으면 초기화
+            const dayKey = `day${day}`;
+            if (!handoverData[dayKey]) {
+                handoverData[dayKey] = { items: {} };
+                for (let i = 1; i <= itemsPerDay; i++) {
+                    handoverData[dayKey].items[i] = {
+                        content: '',
+                        completed: false
+                    };
+                }
+            } else if (!handoverData[dayKey].items) {
+                handoverData[dayKey].items = {};
+                for (let i = 1; i <= itemsPerDay; i++) {
+                    handoverData[dayKey].items[i] = {
+                        content: '',
+                        completed: false
+                    };
+                }
+            } else {
+                // 기존 데이터가 있어도 부족한 항목은 추가
+                for (let i = 1; i <= itemsPerDay; i++) {
+                    if (!handoverData[dayKey].items[i]) {
+                        handoverData[dayKey].items[i] = {
+                            content: '',
+                            completed: false
+                        };
+                    }
+                }
+            }
+            
             renderDayItems(day);
         }
 
         function renderDayItems(day) {
-            const container = document.getElementById('itemsContainer');
-            const emptyState = document.getElementById('emptyState');
+            const tbody = document.getElementById('itemsTableBody');
             const dayKey = `day${day}`;
             const dayData = handoverData[dayKey];
             
-            if (!dayData || !dayData.items || Object.keys(dayData.items).length === 0) {
-                container.innerHTML = '';
-                container.appendChild(emptyState);
-                return;
-            }
+            tbody.innerHTML = '';
             
-            container.innerHTML = '';
-            
-            Object.entries(dayData.items)
-                .sort(([a], [b]) => parseInt(a) - parseInt(b))
-                .forEach(([itemId, item], index) => {
-                    const itemRow = document.createElement('div');
-                    itemRow.className = `item-row ${item.completed ? 'completed' : ''}`;
-                    itemRow.id = `item-${itemId}`;
-                    
-                    itemRow.innerHTML = `
-                        <div class="item-number">${index + 1}</div>
-                        <textarea class="item-content" id="content-${itemId}" readonly>${item.content || ''}</textarea>
+            for (let i = 1; i <= itemsPerDay; i++) {
+                const item = dayData.items[i];
+                const row = document.createElement('tr');
+                row.className = item.completed ? 'completed-row' : '';
+                
+                row.innerHTML = `
+                    <td>
+                        <div class="item-number">${i}</div>
+                    </td>
+                    <td>
+                        <textarea class="item-input" id="item-${i}" 
+                                  placeholder="업무 내용을 입력하세요..." 
+                                  ${editMode ? '' : 'readonly'}
+                                  onchange="saveItemContent(${day}, ${i})">${item.content || ''}</textarea>
+                    </td>
+                    <td>
                         <input type="checkbox" class="item-checkbox" ${item.completed ? 'checked' : ''} 
-                               onchange="toggleItemComplete('${day}', '${itemId}', this)">>
-                        <div class="item-actions">
-                            <button class="action-btn edit-btn" onclick="requestPasswordForEdit('${itemId}')">수정</button>
-                            <button class="action-btn delete-btn" onclick="requestPasswordForDelete('${day}', '${itemId}')">삭제</button>
-                        </div>
-                    `;
-                    
-                    container.appendChild(itemRow);
-                });
+                               onchange="toggleItemComplete(${day}, ${i}, this)">
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            }
         }
 
-        async function toggleItemComplete(day, itemId, checkbox) {
-            const dayKey = `day${day}`;
-            if (!handoverData[dayKey]) {
-                handoverData[dayKey] = { items: {} };
-            }
-            if (!handoverData[dayKey].items[itemId]) {
-                handoverData[dayKey].items[itemId] = {};
-            }
-            
-            handoverData[dayKey].items[itemId].completed = checkbox.checked;
-            
-            const success = await saveHandoverToFirebase(day, handoverData[dayKey]);
-            
-            if (!success) {
-                localStorage.setItem('handoverData', JSON.stringify(handoverData));
-                showSaveFeedback('오프라인 모드로 저장됨');
-            }
-            
-            // UI 업데이트
-            const itemRow = document.getElementById(`item-${itemId}`);
-            if (checkbox.checked) {
-                itemRow.classList.add('completed');
+        function toggleEditMode() {
+            if (!editMode) {
+                showPasswordModal();
             } else {
-                itemRow.classList.remove('completed');
+                editMode = false;
+                updateEditModeUI();
+                if (currentDay) {
+                    renderDayItems(currentDay);
+                }
             }
+        }
+
+        function updateEditModeUI() {
+            const btn = document.getElementById('editModeBtn');
+            const status = document.getElementById('editStatus');
             
-            updateDaysProgress();
-        }
-
-        function requestPasswordForAdd() {
-            pendingAction = { type: 'add', day: currentDay };
-            showPasswordModal();
-        }
-
-        function requestPasswordForEdit(itemId) {
-            pendingAction = { type: 'edit', itemId: itemId };
-            showPasswordModal();
-        }
-
-        function requestPasswordForDelete(day, itemId) {
-            pendingAction = { type: 'delete', day: day, itemId: itemId };
-            showPasswordModal();
+            if (editMode) {
+                btn.textContent = '편집 완료';
+                btn.style.background = 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)';
+                status.style.display = 'block';
+            } else {
+                btn.textContent = '편집 모드';
+                btn.style.background = 'linear-gradient(135deg, #ed8936 0%, #dd6b20 100%)';
+                status.style.display = 'none';
+            }
         }
 
         function showPasswordModal() {
@@ -743,130 +732,61 @@
 
         function closePasswordModal() {
             document.getElementById('passwordModal').style.display = 'none';
-            pendingAction = null;
         }
 
         function confirmPassword() {
             const password = document.getElementById('passwordInput').value;
             const errorEl = document.getElementById('errorMessage');
             
-            console.log('입력된 비밀번호:', password); // 디버깅용
-            console.log('유효한 비밀번호들:', validPasswords); // 디버깅용
-            
             if (validPasswords.includes(password)) {
-                console.log('비밀번호 인증 성공'); // 디버깅용
+                editMode = true;
+                updateEditModeUI();
                 closePasswordModal();
-                
-                if (pendingAction) {
-                    console.log('실행할 액션:', pendingAction); // 디버깅용
-                    switch (pendingAction.type) {
-                        case 'add':
-                            addNewItem(pendingAction.day);
-                            break;
-                        case 'edit':
-                            editItem(pendingAction.itemId);
-                            break;
-                        case 'delete':
-                            deleteItem(pendingAction.day, pendingAction.itemId);
-                            break;
-                    }
-                } else {
-                    console.log('pendingAction이 null입니다'); // 디버깅용
+                if (currentDay) {
+                    renderDayItems(currentDay);
                 }
+                showSaveFeedback('편집 모드가 활성화되었습니다!');
             } else {
-                console.log('비밀번호 인증 실패'); // 디버깅용
                 errorEl.textContent = '비밀번호가 올바르지 않습니다.';
                 document.getElementById('passwordInput').value = '';
                 document.getElementById('passwordInput').focus();
             }
         }
 
-        async function addNewItem(day) {
-            console.log('addNewItem 함수 시작, day:', day); // 디버깅용
+        async function saveItemContent(day, itemIndex) {
             const dayKey = `day${day}`;
-            if (!handoverData[dayKey]) {
-                handoverData[dayKey] = { items: {} };
-            }
+            const content = document.getElementById(`item-${itemIndex}`).value;
             
-            const newItemId = Date.now().toString();
-            handoverData[dayKey].items[newItemId] = {
-                content: '',
-                completed: false,
-                createdAt: new Date().toISOString()
-            };
-            
-            console.log('새 항목 생성:', handoverData[dayKey].items[newItemId]); // 디버깅용
+            handoverData[dayKey].items[itemIndex].content = content;
             
             const success = await saveHandoverToFirebase(day, handoverData[dayKey]);
-            console.log('Firebase 저장 결과:', success); // 디버깅용
             
             if (!success) {
                 localStorage.setItem('handoverData', JSON.stringify(handoverData));
                 showSaveFeedback('오프라인 모드로 저장됨');
-            } else {
-                showSaveFeedback('항목이 추가되었습니다!');
+            }
+        }
+
+        async function toggleItemComplete(day, itemIndex, checkbox) {
+            const dayKey = `day${day}`;
+            handoverData[dayKey].items[itemIndex].completed = checkbox.checked;
+            
+            const success = await saveHandoverToFirebase(day, handoverData[dayKey]);
+            
+            if (!success) {
+                localStorage.setItem('handoverData', JSON.stringify(handoverData));
+                showSaveFeedback('오프라인 모드로 저장됨');
             }
             
-            renderDayItems(day);
+            // UI 업데이트
+            const row = checkbox.closest('tr');
+            if (checkbox.checked) {
+                row.classList.add('completed-row');
+            } else {
+                row.classList.remove('completed-row');
+            }
+            
             updateDaysProgress();
-            
-            // 새 항목을 편집 모드로 전환
-            setTimeout(() => editItem(newItemId), 100);
-        }
-
-        function editItem(itemId) {
-            const contentEl = document.getElementById(`content-${itemId}`);
-            const itemRow = document.getElementById(`item-${itemId}`);
-            const actionsEl = itemRow.querySelector('.item-actions');
-            
-            contentEl.readOnly = false;
-            contentEl.focus();
-            
-            actionsEl.innerHTML = `
-                <button class="action-btn save-btn" onclick="saveItem('${currentDay}', '${itemId}')">저장</button>
-                <button class="action-btn cancel-btn" onclick="cancelEdit('${itemId}')">취소</button>
-            `;
-        }
-
-        async function saveItem(day, itemId) {
-            const contentEl = document.getElementById(`content-${itemId}`);
-            const dayKey = `day${day}`;
-            
-            handoverData[dayKey].items[itemId].content = contentEl.value;
-            
-            const success = await saveHandoverToFirebase(day, handoverData[dayKey]);
-            
-            if (!success) {
-                localStorage.setItem('handoverData', JSON.stringify(handoverData));
-                showSaveFeedback('오프라인 모드로 저장됨');
-            } else {
-                showSaveFeedback('항목이 저장되었습니다!');
-            }
-            
-            renderDayItems(day);
-        }
-
-        function cancelEdit(itemId) {
-            renderDayItems(currentDay);
-        }
-
-        async function deleteItem(day, itemId) {
-            if (confirm('이 항목을 삭제하시겠습니까?')) {
-                const dayKey = `day${day}`;
-                delete handoverData[dayKey].items[itemId];
-                
-                const success = await saveHandoverToFirebase(day, handoverData[dayKey]);
-                
-                if (!success) {
-                    localStorage.setItem('handoverData', JSON.stringify(handoverData));
-                    showSaveFeedback('오프라인 모드로 저장됨');
-                } else {
-                    showSaveFeedback('항목이 삭제되었습니다!');
-                }
-                
-                renderDayItems(day);
-                updateDaysProgress();
-            }
         }
 
         function loadSavedData() {
