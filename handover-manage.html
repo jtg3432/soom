@@ -750,10 +750,15 @@
             const password = document.getElementById('passwordInput').value;
             const errorEl = document.getElementById('errorMessage');
             
+            console.log('입력된 비밀번호:', password); // 디버깅용
+            console.log('유효한 비밀번호들:', validPasswords); // 디버깅용
+            
             if (validPasswords.includes(password)) {
+                console.log('비밀번호 인증 성공'); // 디버깅용
                 closePasswordModal();
                 
                 if (pendingAction) {
+                    console.log('실행할 액션:', pendingAction); // 디버깅용
                     switch (pendingAction.type) {
                         case 'add':
                             addNewItem(pendingAction.day);
@@ -765,8 +770,11 @@
                             deleteItem(pendingAction.day, pendingAction.itemId);
                             break;
                     }
+                } else {
+                    console.log('pendingAction이 null입니다'); // 디버깅용
                 }
             } else {
+                console.log('비밀번호 인증 실패'); // 디버깅용
                 errorEl.textContent = '비밀번호가 올바르지 않습니다.';
                 document.getElementById('passwordInput').value = '';
                 document.getElementById('passwordInput').focus();
@@ -774,6 +782,7 @@
         }
 
         async function addNewItem(day) {
+            console.log('addNewItem 함수 시작, day:', day); // 디버깅용
             const dayKey = `day${day}`;
             if (!handoverData[dayKey]) {
                 handoverData[dayKey] = { items: {} };
@@ -786,11 +795,16 @@
                 createdAt: new Date().toISOString()
             };
             
+            console.log('새 항목 생성:', handoverData[dayKey].items[newItemId]); // 디버깅용
+            
             const success = await saveHandoverToFirebase(day, handoverData[dayKey]);
+            console.log('Firebase 저장 결과:', success); // 디버깅용
             
             if (!success) {
                 localStorage.setItem('handoverData', JSON.stringify(handoverData));
                 showSaveFeedback('오프라인 모드로 저장됨');
+            } else {
+                showSaveFeedback('항목이 추가되었습니다!');
             }
             
             renderDayItems(day);
