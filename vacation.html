@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+        <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -417,6 +418,27 @@
             transform: translateX(0);
         }
 
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .connection-status.online {
+            background: #28a745;
+            color: white;
+        }
+
+        .connection-status.offline {
+            background: #ffc107;
+            color: #000;
+        }
+
         @media (max-width: 768px) {
             .page-container {
                 margin: 20px;
@@ -535,19 +557,21 @@
     <div class="copy-feedback" id="copyFeedback">
         작업이 완료되었습니다!
     </div>
+
+    <div class="connection-status offline" id="connectionStatus">
+        연결 확인 중...
+    </div>
+
     <script>
         let currentDate = new Date();
         let vacations = [];
-        let isUpdating = false; // 실시간 동기화 중복 방지
+        let isUpdating = false;
+        let firebaseConnected = false;
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
-            initFirebaseConnection();
-            generateCalendar();
-            updateUpcomingList();
-            
-            // 오늘 날짜를 기본값으로 설정 (시간대 문제 해결)
             setTodayAsDefault();
+            initFirebaseConnection();
         });
 
         function setTodayAsDefault() {
@@ -561,36 +585,57 @@
 
         // Firebase 연결 초기화
         async function initFirebaseConnection() {
-            if (window.firebaseInitialized && window.db) {
-                const { getDocs, collection, addDoc, deleteDoc, doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-                window.getDocs = getDocs;
-                window.collection = collection; 
-                window.addDoc = addDoc;
-                window.deleteDoc = deleteDoc;
-                window.doc = doc;
-                window.onSnapshot = onSnapshot;
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Firebase 로딩 대기
                 
-                await loadVacationsFromFirebase();
-                setupRealtimeSync();
-                showCopyFeedback('Firebase 연결 완료!');
-            } else {
+                if (window.firebaseInitialized && window.db) {
+                    const { getDocs, collection, addDoc, deleteDoc, doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                    window.getDocs = getDocs;
+                    window.collection = collection; 
+                    window.addDoc = addDoc;
+                    window.deleteDoc = deleteDoc;
+                    window.doc = doc;
+                    window.onSnapshot = onSnapshot;
+                    
+                    await loadVacationsFromFirebase();
+                    setupRealtimeSync();
+                    firebaseConnected = true;
+                    updateConnectionStatus('online', 'Firebase 연결됨');
+                } else {
+                    throw new Error('Firebase 연결 실패');
+                }
+            } catch (error) {
+                console.error('Firebase 연결 실패:', error);
                 loadSavedData();
-                showCopyFeedback('Firebase 연결 실패 - 로컬 모드');
+                firebaseConnected = false;
+                updateConnectionStatus('offline', '오프라인 모드');
             }
+            
+            generateCalendar();
+            updateUpcomingList();
+        }
+
+        function updateConnectionStatus(status, message) {
+            const statusElement = document.getElementById('connectionStatus');
+            statusElement.className = `connection-status ${status}`;
+            statusElement.textContent = message;
         }
 
         // Firebase에서 데이터 불러오기
         async function loadVacationsFromFirebase() {
-            if (!window.db) return false;
+            if (!window.db || !firebaseConnected) return false;
             
             try {
                 const querySnapshot = await window.getDocs(window.collection(window.db, 'vacations'));
                 vacations = [];
-                querySnapshot.forEach((doc) => {
-                    vacations.push({ id: doc.id, ...doc.data() });
+                querySnapshot.forEach((docSnapshot) => {
+                    const data = docSnapshot.data();
+                    vacations.push({ 
+                        id: docSnapshot.id, 
+                        ...data 
+                    });
                 });
-                generateCalendar();
-                updateUpcomingList();
+                console.log('Firebase에서 로드된 연차:', vacations);
                 return true;
             } catch (error) {
                 console.error('Firebase 로드 실패:', error);
@@ -601,11 +646,12 @@
 
         // Firebase에 연차 저장
         async function saveVacationToFirebase(vacation) {
-            if (!window.db) return false;
+            if (!window.db || !firebaseConnected) return false;
             
             try {
-                await window.addDoc(window.collection(window.db, 'vacations'), vacation);
-                return true;
+                const docRef = await window.addDoc(window.collection(window.db, 'vacations'), vacation);
+                console.log('Firebase에 저장됨:', docRef.id);
+                return docRef.id;
             } catch (error) {
                 console.error('Firebase 저장 실패:', error);
                 return false;
@@ -613,60 +659,80 @@
         }
 
         // Firebase에서 연차 삭제
-        async function deleteVacationFromFirebase(id) {
-            if (!window.db) return false;
+        async function deleteVacationFromFirebase(docId) {
+            if (!window.db || !firebaseConnected || !docId) return false;
             
             try {
-                await window.deleteDoc(window.doc(window.db, 'vacations', id));
+                if (typeof docId !== 'string' || docId.trim() === '') {
+                    console.error('유효하지 않은 document ID:', docId);
+                    return false;
+                }
+                
+                const docRef = window.doc(window.db, 'vacations', docId);
+                await window.deleteDoc(docRef);
+                console.log('Firebase에서 삭제됨:', docId);
                 return true;
             } catch (error) {
-                console.error('Firebase 삭제 실패:', error);
+                console.error('Firebase 삭제 실패:', error, 'Document ID:', docId);
                 return false;
             }
         }
 
-        // 실시간 동기화 (중복 방지)
+        // 실시간 동기화
         function setupRealtimeSync() {
-            if (!window.db) return;
+            if (!window.db || !firebaseConnected) return;
             
-            window.onSnapshot(window.collection(window.db, 'vacations'), (snapshot) => {
-                if (isUpdating) return; // 업데이트 중이면 무시
-                
-                isUpdating = true;
-                vacations = [];
-                snapshot.forEach((doc) => {
-                    vacations.push({ id: doc.id, ...doc.data() });
+            try {
+                window.onSnapshot(window.collection(window.db, 'vacations'), (snapshot) => {
+                    if (isUpdating) return;
+                    
+                    isUpdating = true;
+                    vacations = [];
+                    snapshot.forEach((docSnapshot) => {
+                        const data = docSnapshot.data();
+                        vacations.push({ 
+                            id: docSnapshot.id, 
+                            ...data 
+                        });
+                    });
+                    
+                    generateCalendar();
+                    updateUpcomingList();
+                    console.log('실시간 동기화 완료:', vacations.length, '개');
+                    
+                    setTimeout(() => {
+                        isUpdating = false;
+                    }, 500);
                 });
-                generateCalendar();
-                updateUpcomingList();
-                
-                setTimeout(() => {
-                    isUpdating = false;
-                }, 500); // 0.5초 후 플래그 해제
-            });
+            } catch (error) {
+                console.error('실시간 동기화 설정 실패:', error);
+            }
+        }
+
+        function loadSavedData() {
+            const saved = localStorage.getItem('vacationData');
+            if (saved) {
+                vacations = JSON.parse(saved);
+            }
         }
 
         function generateCalendar() {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
             
-            // 현재 월 표시
             const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월",
                 "7월", "8월", "9월", "10월", "11월", "12월"];
             document.getElementById('currentMonth').textContent = `${year}년 ${monthNames[month]}`;
 
-            // 달력 그리드 초기화 (헤더 제외)
             const calendarGrid = document.getElementById('calendarGrid');
             const headers = calendarGrid.querySelectorAll('.calendar-header');
             calendarGrid.innerHTML = '';
             headers.forEach(header => calendarGrid.appendChild(header));
 
-            // 해당 월의 첫 번째 날과 마지막 날 
             const firstDay = new Date(year, month, 1);
             const startDate = new Date(firstDay);
             startDate.setDate(startDate.getDate() - firstDay.getDay());
 
-            // 6주 분량의 날짜 생성 (42개)
             for (let i = 0; i < 42; i++) {
                 const date = new Date(startDate);
                 date.setDate(startDate.getDate() + i);
@@ -684,23 +750,19 @@
             dayNumber.className = 'day-number';
             dayNumber.textContent = date.getDate();
             
-            // 다른 월의 날짜인 경우
             if (date.getMonth() !== currentMonth) {
                 dayElement.classList.add('other-month');
             }
             
-            // 오늘 날짜인 경우
             const today = new Date();
             if (date.toDateString() === today.toDateString()) {
                 dayElement.classList.add('today');
             }
             
-            // 주말인 경우
             if (date.getDay() === 0 || date.getDay() === 6) {
                 dayElement.classList.add('weekend');
             }
             
-            // 연차 목록 생성
             const vacationList = document.createElement('div');
             vacationList.className = 'vacation-list';
             
@@ -712,7 +774,6 @@
                 vacationItem.className = 'vacation-item';
                 vacationItem.textContent = `${vacation.name} ${vacation.type}`;
                 
-                // 연차 종류별 스타일
                 if (vacation.type === '반차') vacationItem.classList.add('half-day');
                 else if (vacation.type === '병가') vacationItem.classList.add('sick-leave');
                 else if (vacation.type === '경조사') vacationItem.classList.add('family-event');
@@ -722,7 +783,6 @@
                 vacationList.appendChild(vacationItem);
             });
             
-            // 연차 추가 버튼
             const addBtn = document.createElement('button');
             addBtn.className = 'add-vacation-btn';
             addBtn.textContent = '+';
@@ -755,13 +815,11 @@
         }
 
         function openAddVacationForm(dateString) {
-            // 날짜 설정 (시간대 문제 해결)
             document.getElementById('vacationDate').value = dateString;
             document.getElementById('vacationName').value = '';
             document.getElementById('vacationType').value = '';
             document.getElementById('vacationNote').value = '';
             
-            // 폼으로 스크롤
             document.querySelector('.vacation-form-section').scrollIntoView({ 
                 behavior: 'smooth' 
             });
@@ -782,37 +840,42 @@
                 date: date,
                 name: name,
                 type: type,
-                note: note,
+                note: note || '',
                 timestamp: new Date().toISOString()
             };
 
-            isUpdating = true; // 동기화 방지 플래그 설정
+            isUpdating = true;
             
-            // Firebase에 저장 시도
-            const success = await saveVacationToFirebase(newVacation);
-            
-            if (!success) {
-                // Firebase 실패 시 로컬 저장
-                newVacation.id = Date.now().toString();
-                vacations.push(newVacation);
-                localStorage.setItem('vacationData', JSON.stringify(vacations));
-                generateCalendar();
-                updateUpcomingList();
-                showCopyFeedback('오프라인 모드로 저장됨');
-            } else {
-                showCopyFeedback('연차가 추가되어 모든 사용자에게 공유되었습니다!');
+            try {
+                if (firebaseConnected) {
+                    const docId = await saveVacationToFirebase(newVacation);
+                    if (docId) {
+                        showCopyFeedback('연차가 추가되어 모든 사용자에게 공유되었습니다!');
+                        setTodayAsDefault();
+                        document.getElementById('vacationName').value = '';
+                        document.getElementById('vacationType').value = '';
+                        document.getElementById('vacationNote').value = '';
+                    } else {
+                        throw new Error('Firebase 저장 실패');
+                    }
+                } else {
+                    newVacation.id = 'local_' + Date.now();
+                    vacations.push(newVacation);
+                    localStorage.setItem('vacationData', JSON.stringify(vacations));
+                    generateCalendar();
+                    updateUpcomingList();
+                    showCopyFeedback('오프라인 모드로 저장됨');
+                }
+            } catch (error) {
+                console.error('연차 추가 실패:', error);
+                showCopyFeedback('연차 추가에 실패했습니다.');
+            } finally {
+                setTimeout(() => {
+                    isUpdating = false;
+                }, 1000);
             }
-            
-            // 폼 초기화
-            document.getElementById('vacationDate').value = '';
-            document.getElementById('vacationName').value = '';
-            document.getElementById('vacationType').value = '';
-            document.getElementById('vacationNote').value = '';
-            
-            setTimeout(() => {
-                isUpdating = false;
-            }, 1000);
         }
+
         function showVacationDetail(vacation) {
             const modalBody = document.getElementById('modalBody');
             modalBody.innerHTML = `
@@ -830,27 +893,32 @@
 
         async function deleteVacation(id) {
             if (confirm('이 연차를 삭제하시겠습니까?')) {
-                isUpdating = true; // 동기화 방지 플래그 설정
+                isUpdating = true;
                 
-                // Firebase에서 삭제 시도
-                const success = await deleteVacationFromFirebase(id);
-                
-                if (!success) {
-                    // Firebase 실패 시 로컬 삭제
-                    vacations = vacations.filter(v => v.id !== id);
-                    localStorage.setItem('vacationData', JSON.stringify(vacations));
-                    generateCalendar();
-                    updateUpcomingList();
-                    showCopyFeedback('오프라인 모드로 삭제됨');
-                } else {
-                    showCopyFeedback('연차가 삭제되었습니다!');
+                try {
+                    if (firebaseConnected && !id.startsWith('local_')) {
+                        const success = await deleteVacationFromFirebase(id);
+                        if (success) {
+                            showCopyFeedback('연차가 삭제되었습니다!');
+                        } else {
+                            throw new Error('Firebase 삭제 실패');
+                        }
+                    } else {
+                        vacations = vacations.filter(v => v.id !== id);
+                        localStorage.setItem('vacationData', JSON.stringify(vacations));
+                        generateCalendar();
+                        updateUpcomingList();
+                        showCopyFeedback('오프라인 모드로 삭제됨');
+                    }
+                } catch (error) {
+                    console.error('연차 삭제 실패:', error);
+                    showCopyFeedback('연차 삭제에 실패했습니다.');
+                } finally {
+                    closeModal();
+                    setTimeout(() => {
+                        isUpdating = false;
+                    }, 1000);
                 }
-                
-                closeModal();
-                
-                setTimeout(() => {
-                    isUpdating = false;
-                }, 1000);
             }
         }
 
@@ -863,7 +931,6 @@
             const today = new Date();
             const todayString = formatDateForComparison(today);
             
-            // 오늘 이후의 연차만 필터링하고 날짜순 정렬
             const upcomingVacations = vacations
                 .filter(v => v.date >= todayString)
                 .sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -907,7 +974,7 @@
         }
 
         function formatDate(dateString) {
-            const date = new Date(dateString + 'T12:00:00'); // 정오 시간으로 설정하여 시간대 문제 방지
+            const date = new Date(dateString + 'T12:00:00');
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
@@ -915,15 +982,6 @@
             const dayName = dayNames[date.getDay()];
             
             return `${year}.${month}.${day} (${dayName})`;
-        }
-
-        function loadSavedData() {
-            const saved = localStorage.getItem('vacationData');
-            if (saved) {
-                vacations = JSON.parse(saved);
-                generateCalendar();
-                updateUpcomingList();
-            }
         }
 
         function showCopyFeedback(message = '작업이 완료되었습니다!') {
@@ -948,7 +1006,7 @@
     <!-- Firebase SDK 추가 -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         // Firebase 설정
         const firebaseConfig = {
@@ -960,15 +1018,20 @@
             appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
         };
 
-        // Firebase 초기화
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        try {
+            // Firebase 초기화
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
 
-        // 전역 변수로 설정
-        window.db = db;
-        window.firebaseInitialized = true;
+            // 전역 변수로 설정
+            window.db = db;
+            window.firebaseInitialized = true;
 
-        console.log('Firebase 연결 완료!');
+            console.log('Firebase 연결 완료!');
+        } catch (error) {
+            console.error('Firebase 초기화 실패:', error);
+            window.firebaseInitialized = false;
+        }
     </script>
 </body>
 </html>
