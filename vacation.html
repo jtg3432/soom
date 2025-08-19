@@ -1,5 +1,4 @@
-
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -561,7 +560,6 @@
     <div class="connection-status offline" id="connectionStatus">
         연결 확인 중...
     </div>
-
     <script>
         let currentDate = new Date();
         let vacations = [];
@@ -824,8 +822,7 @@
                 behavior: 'smooth' 
             });
         }
-
-        async function addVacation() {
+            async function addVacation() {
             const date = document.getElementById('vacationDate').value;
             const name = document.getElementById('vacationName').value;
             const type = document.getElementById('vacationType').value;
@@ -1002,7 +999,6 @@
             }
         }
     </script>
-
     <!-- Firebase SDK 추가 -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
