@@ -843,17 +843,26 @@
             isUpdating = true;
             
             try {
-                if (firebaseConnected) {
-                    const docId = await saveVacationToFirebase(newVacation);
-                    if (docId) {
-                        showCopyFeedback('연차가 추가되어 모든 사용자에게 공유되었습니다!');
-                        setTodayAsDefault();
-                        document.getElementById('vacationName').value = '';
-                        document.getElementById('vacationType').value = '';
-                        document.getElementById('vacationNote').value = '';
-                    } else {
-                        throw new Error('Firebase 저장 실패');
-                    }
+if (firebaseConnected) {
+    const docId = await saveVacationToFirebase(newVacation);
+    if (docId) {
+        // 수동으로 로컬 배열에 추가
+        newVacation.id = docId;
+        vacations.push(newVacation);
+        
+        // 즉시 화면 업데이트
+        generateCalendar();
+        updateUpcomingList();
+        
+        showCopyFeedback('연차가 추가되어 모든 사용자에게 공유되었습니다!');
+        setTodayAsDefault();
+        document.getElementById('vacationName').value = '';
+        document.getElementById('vacationType').value = '';
+        document.getElementById('vacationNote').value = '';
+    } else {
+        throw new Error('Firebase 저장 실패');
+    }
+}
                 } else {
                     newVacation.id = 'local_' + Date.now();
                     vacations.push(newVacation);
@@ -1030,4 +1039,5 @@
     </script>
 </body>
 </html>
+
 
