@@ -20,7 +20,7 @@
             justify-content: center;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
             background: white;
             border-radius: 20px;
@@ -51,10 +51,10 @@
             margin-bottom: 40px;
         }
         .menu-buttons {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-            max-width: 400px;
+            max-width: 600px;
             margin: 0 auto;
         }
         .menu-btn {
@@ -80,6 +80,22 @@
             padding: 30px 40px;
             background: #f8f9fa;
             color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-buttons {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .container {
+                margin: 10px;
+            }
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            .content {
+                padding: 40px 30px;
+            }
         }
     </style>
 </head>
@@ -118,6 +134,10 @@
                 <a href="handover.html" class="menu-btn">
                     <span class="icon">🤝</span>
                     인수인계
+                </a>
+                <a href="monitoring.html" class="menu-btn">
+                    <span class="icon">🔍</span>
+                    컨텐츠 모니터링
                 </a>
             </div>
         </div>
