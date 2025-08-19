@@ -383,18 +383,31 @@
 
         // Firebase 연결 초기화
         async function initFirebaseConnection() {
+            console.log('Firebase 초기화 시작');
+            console.log('window.firebaseInitialized:', window.firebaseInitialized);
+            console.log('window.db:', window.db);
+            
             if (window.firebaseInitialized && window.db) {
-                const { getDocs, collection, setDoc, doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-                window.getDocs = getDocs;
-                window.collection = collection;
-                window.setDoc = setDoc;
-                window.doc = doc;
-                window.onSnapshot = onSnapshot;
-                
-                await loadMonitoringFromFirebase();
-                setupRealtimeSync();
-                showSaveFeedback('Firebase 연결 완료!');
+                try {
+                    const { getDocs, collection, setDoc, doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                    window.getDocs = getDocs;
+                    window.collection = collection;
+                    window.setDoc = setDoc;
+                    window.doc = doc;
+                    window.onSnapshot = onSnapshot;
+                    
+                    console.log('Firebase 함수들 로드 완료');
+                    
+                    await loadMonitoringFromFirebase();
+                    setupRealtimeSync();
+                    showSaveFeedback('Firebase 연결 완료!');
+                } catch (error) {
+                    console.error('Firebase 함수 로드 오류:', error);
+                    loadSavedData();
+                    showSaveFeedback('Firebase 함수 로드 실패 - 로컬 모드');
+                }
             } else {
+                console.log('Firebase 초기화되지 않음');
                 loadSavedData();
                 showSaveFeedback('Firebase 연결 실패 - 로컬 모드');
             }
@@ -432,15 +445,27 @@
 
         // Firebase에 저장
         async function saveMonitoringToFirebase() {
-            if (!window.db) return false;
+            if (!window.db) {
+                console.log('Firebase DB 연결 없음');
+                return false;
+            }
             
             try {
+                console.log('Firebase 저장 시도 중...');
+                console.log('저장할 데이터:', {
+                    data: tableData,
+                    columnCount: columnCount,
+                    rowCount: rowCount
+                });
+                
                 await window.setDoc(window.doc(window.db, 'monitoring', 'tableData'), {
                     data: tableData,
                     columnCount: columnCount,
                     rowCount: rowCount,
                     lastUpdated: new Date().toISOString()
                 });
+                
+                console.log('Firebase 저장 성공');
                 return true;
             } catch (error) {
                 console.error('Firebase 저장 실패:', error);
