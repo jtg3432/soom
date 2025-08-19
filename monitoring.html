@@ -428,9 +428,21 @@
                 });
                 
                 if (savedData) {
-                    tableData = savedData.data || [];
+                    // 평면화된 데이터를 2차원 배열로 복원
+                    const flattenedData = savedData.data || {};
                     columnCount = savedData.columnCount || 2;
                     rowCount = savedData.rowCount || 5;
+                    
+                    // 2차원 배열 초기화
+                    tableData = [];
+                    for (let i = 0; i < rowCount; i++) {
+                        const row = [];
+                        for (let j = 0; j < columnCount; j++) {
+                            row.push(flattenedData[`cell_${i}_${j}`] || '');
+                        }
+                        tableData.push(row);
+                    }
+                    
                     renderTable();
                 } else {
                     initializeTable();
@@ -452,14 +464,19 @@
             
             try {
                 console.log('Firebase 저장 시도 중...');
-                console.log('저장할 데이터:', {
-                    data: tableData,
-                    columnCount: columnCount,
-                    rowCount: rowCount
-                });
+                
+                // 2차원 배열을 평면화하여 저장
+                const flattenedData = {};
+                for (let i = 0; i < tableData.length; i++) {
+                    for (let j = 0; j < tableData[i].length; j++) {
+                        flattenedData[`cell_${i}_${j}`] = tableData[i][j] || '';
+                    }
+                }
+                
+                console.log('평면화된 데이터:', flattenedData);
                 
                 await window.setDoc(window.doc(window.db, 'monitoring', 'tableData'), {
-                    data: tableData,
+                    data: flattenedData,
                     columnCount: columnCount,
                     rowCount: rowCount,
                     lastUpdated: new Date().toISOString()
@@ -481,9 +498,22 @@
                 snapshot.forEach((doc) => {
                     if (doc.id === 'tableData') {
                         const data = doc.data();
-                        tableData = data.data || [];
+                        
+                        // 평면화된 데이터를 2차원 배열로 복원
+                        const flattenedData = data.data || {};
                         columnCount = data.columnCount || 2;
                         rowCount = data.rowCount || 5;
+                        
+                        // 2차원 배열 초기화
+                        tableData = [];
+                        for (let i = 0; i < rowCount; i++) {
+                            const row = [];
+                            for (let j = 0; j < columnCount; j++) {
+                                row.push(flattenedData[`cell_${i}_${j}`] || '');
+                            }
+                            tableData.push(row);
+                        }
+                        
                         renderTable();
                         showSaveFeedback('실시간 동기화됨!');
                     }
