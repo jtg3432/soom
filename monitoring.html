@@ -670,6 +670,9 @@
         }
 
         async function saveData() {
+            console.log('saveData 함수 시작');
+            console.log('현재 tableData:', tableData);
+            
             const success = await saveMonitoringToFirebase();
             
             if (!success) {
