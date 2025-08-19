@@ -428,8 +428,6 @@
                 });
                 
                 if (savedData) {
-                    // 평면화된 데이터를 2차원 배열로 복원
-                    const flattenedData = savedData.data || {};
                     columnCount = savedData.columnCount || 2;
                     rowCount = savedData.rowCount || 5;
                     
@@ -438,7 +436,7 @@
                     for (let i = 0; i < rowCount; i++) {
                         const row = [];
                         for (let j = 0; j < columnCount; j++) {
-                            row.push(flattenedData[`cell_${i}_${j}`] || '');
+                            row.push(savedData[`r${i}c${j}`] || '');
                         }
                         tableData.push(row);
                     }
@@ -465,22 +463,23 @@
             try {
                 console.log('Firebase 저장 시도 중...');
                 
-                // 2차원 배열을 평면화하여 저장
-                const flattenedData = {};
-                for (let i = 0; i < tableData.length; i++) {
-                    for (let j = 0; j < tableData[i].length; j++) {
-                        flattenedData[`cell_${i}_${j}`] = tableData[i][j] || '';
-                    }
-                }
-                
-                console.log('평면화된 데이터:', flattenedData);
-                
-                await window.setDoc(window.doc(window.db, 'monitoring', 'tableData'), {
-                    data: flattenedData,
+                // 완전히 새로운 방식: 각 셀을 개별 필드로 저장
+                const saveData = {
                     columnCount: columnCount,
                     rowCount: rowCount,
                     lastUpdated: new Date().toISOString()
-                });
+                };
+                
+                // 각 셀을 개별 필드로 추가
+                for (let i = 0; i < tableData.length; i++) {
+                    for (let j = 0; j < (tableData[i] ? tableData[i].length : 0); j++) {
+                        saveData[`r${i}c${j}`] = tableData[i][j] || '';
+                    }
+                }
+                
+                console.log('Firebase에 저장할 데이터:', saveData);
+                
+                await window.setDoc(window.doc(window.db, 'monitoring', 'tableData'), saveData);
                 
                 console.log('Firebase 저장 성공');
                 return true;
@@ -499,8 +498,6 @@
                     if (doc.id === 'tableData') {
                         const data = doc.data();
                         
-                        // 평면화된 데이터를 2차원 배열로 복원
-                        const flattenedData = data.data || {};
                         columnCount = data.columnCount || 2;
                         rowCount = data.rowCount || 5;
                         
@@ -509,7 +506,7 @@
                         for (let i = 0; i < rowCount; i++) {
                             const row = [];
                             for (let j = 0; j < columnCount; j++) {
-                                row.push(flattenedData[`cell_${i}_${j}`] || '');
+                                row.push(data[`r${i}c${j}`] || '');
                             }
                             tableData.push(row);
                         }
