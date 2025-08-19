@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인수인계 관리 - 운영관리팀</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 60px 40px;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-size: 3.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            letter-spacing: -1px;
+        }
+
+        .page-header h2 {
+            font-size: 1.6rem;
+            font-weight: 300;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .main-view {
+            padding: 60px 50px;
+            background: linear-gradient(135deg, #f8fbff 0%, #f1f7ff 100%);
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+            padding: 20px;
+        }
+
+        .day-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 30px 20px;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .day-btn:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .day-btn.active {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
+        }
+
+        .day-progress {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            opacity: 0.9;
+            background: rgba(255,255,255,0.2);
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        .day-detail-view {
+            display: none;
+            background: white;
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        .day-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #f1f5f9;
+        }
+
+        .day-detail-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .control-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .back-to-list-btn {
+            background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .items-container {
+            background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .item-row:hover {
+            background: #f8fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .item-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .item-content {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.6;
+            font-family: inherit;
+        }
+
+        .item-content:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            background: #fafbff;
+        }
+
+        .item-content:read-only {
+            background: #f8fafc;
+            cursor: default;
+            border-color: #e2e8f0;
+        }
+
+        .item-checkbox {
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            accent-color: #48bb78;
+            transform: scale(1.4);
+            flex-shrink: 0;
+            margin-top: 10px;
+        }
+
+        .item-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            color: white;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .cancel-btn {
+            background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .item-row.completed {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+            border-color: #68d391;
+            box-shadow: 0 4px 20px rgba(72, 187, 120, 0.1);
+        }
+
+        .item-row.completed .item-number {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            color: #718096;
+        }
+
+        .empty-state h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .password-input:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .confirm-btn {
+            background: #4facfe;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .save-feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .save-feedback.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                margin: 20px;
+            }
+            
+            .main-view {
+                padding: 20px;
+            }
+
+            .days-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 10px;
+            }
+
+            .day-btn {
+                padding: 15px 10px;
+                font-size: 1rem;
+            }
+
+            .day-detail-view {
+                padding: 20px;
+            }
+
+            .item-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .item-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <a href="handover.html" class="back-btn">← 뒤로가기</a>
+            <h1>운영관리팀</h1>
+            <h2>인수인계 관리</h2>
+        </div>
+
+        <div class="main-view">
+            <!-- 일차별 버튼 그리드 -->
+            <div class="days-grid" id="daysGrid">
+                <!-- 동적으로 생성됩니다 -->
+            </div>
+
+            <!-- 선택된 일차의 상세 페이지 -->
+            <div class="day-detail-view" id="dayDetailView">
+                <div class="day-detail-header">
+                    <div class="day-detail-title" id="dayDetailTitle">1일차</div>
+                    <div class="control-buttons">
+                        <button class="control-btn add-btn" onclick="requestPasswordForAdd()">항목 추가</button>
+                        <button class="control-btn back-to-list-btn" onclick="showDaysList()">목록으로</button>
+                    </div>
+                </div>
+
+                <div class="items-container" id="itemsContainer">
+                    <div class="empty-state" id="emptyState">
+                        <h3>등록된 항목이 없습니다</h3>
+                        <p>첫 번째 항목을 추가해보세요!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 비밀번호 확인 모달 -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">비밀번호 확인</div>
+            <input type="password" class="password-input" id="passwordInput" placeholder="비밀번호를 입력하세요">
+            <div class="modal-buttons">
+                <button class="modal-btn confirm-btn" onclick="confirmPassword()">확인</button>
+                <button class="modal-btn cancel-btn" onclick="closePasswordModal()">취소</button>
+            </div>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+    </div>
+
+    <div class="save-feedback" id="saveFeedback">
+        저장되었습니다!
+    </div>
+
+    <script>
+        let handoverData = {};
+        let currentDay = null;
+        let editingItemId = null;
+        let pendingAction = null;
+        const validPasswords = ['6635', '7338', '6169'];
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            initFirebaseConnection();
+            generateDaysGrid();
+            showDaysList();
+        });
+
+        // Firebase 연결 초기화
+        async function initFirebaseConnection() {
+            if (window.firebaseInitialized && window.db) {
+                const { getDocs, collection, setDoc, doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                window.getDocs = getDocs;
+                window.collection = collection;
+                window.setDoc = setDoc;
+                window.doc = doc;
+                window.onSnapshot = onSnapshot;
+                
+                await loadHandoverFromFirebase();
+                setupRealtimeSync();
+                showSaveFeedback('Firebase 연결 완료!');
+            } else {
+                loadSavedData();
+                showSaveFeedback('Firebase 연결 실패 - 로컬 모드');
+            }
+        }
+
+        // Firebase에서 데이터 불러오기
+        async function loadHandoverFromFirebase() {
+            if (!window.db) return false;
+            
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, 'handover'));
+                handoverData = {};
+                
+                querySnapshot.forEach((doc) => {
+                    handoverData[doc.id] = doc.data();
+                });
+                
+                updateDaysProgress();
+                if (currentDay) {
+                    renderDayItems(currentDay);
+                }
+                return true;
+            } catch (error) {
+                console.error('Firebase 로드 실패:', error);
+                loadSavedData();
+                return false;
+            }
+        }
+
+        // Firebase에 저장
+        async function saveHandoverToFirebase(day, dayData) {
+            if (!window.db) return false;
+            
+            try {
+                await window.setDoc(window.doc(window.db, 'handover', `day${day}`), dayData);
+                return true;
+            } catch (error) {
+                console.error('Firebase 저장 실패:', error);
+                return false;
+            }
+        }
+
+        // 실시간 동기화
+        function setupRealtimeSync() {
+            if (!window.db) return;
+            
+            window.onSnapshot(window.collection(window.db, 'handover'), (snapshot) => {
+                handoverData = {};
+                snapshot.forEach((doc) => {
+                    handoverData[doc.id] = doc.data();
+                });
+                updateDaysProgress();
+                if (currentDay) {
+                    renderDayItems(currentDay);
+                }
+                showSaveFeedback('실시간 동기화됨!');
+            });
+        }
+
+        function generateDaysGrid() {
+            const grid = document.getElementById('daysGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 1; i <= 30; i++) {
+                const dayBtn = document.createElement('button');
+                dayBtn.className = 'day-btn';
+                dayBtn.onclick = () => showDayDetail(i);
+                
+                const progress = document.createElement('div');
+                progress.className = 'day-progress';
+                progress.id = `progress-${i}`;
+                
+                dayBtn.innerHTML = `${i}일차`;
+                dayBtn.appendChild(progress);
+                
+                grid.appendChild(dayBtn);
+            }
+            
+            updateDaysProgress();
+        }
+
+        function updateDaysProgress() {
+            for (let i = 1; i <= 30; i++) {
+                const dayKey = `day${i}`;
+                const dayData = handoverData[dayKey];
+                const progressEl = document.getElementById(`progress-${i}`);
+                
+                if (dayData && dayData.items) {
+                    const total = Object.keys(dayData.items).length;
+                    const completed = Object.values(dayData.items).filter(item => item.completed).length;
+                    progressEl.textContent = `${completed}/${total}`;
+                } else {
+                    progressEl.textContent = '0/0';
+                }
+            }
+        }
+
+        function showDaysList() {
+            document.getElementById('daysGrid').style.display = 'grid';
+            document.getElementById('dayDetailView').style.display = 'none';
+            currentDay = null;
+        }
+
+        function showDayDetail(day) {
+            currentDay = day;
+            document.getElementById('daysGrid').style.display = 'none';
+            document.getElementById('dayDetailView').style.display = 'block';
+            document.getElementById('dayDetailTitle').textContent = `${day}일차`;
+            
+            renderDayItems(day);
+        }
+
+        function renderDayItems(day) {
+            const container = document.getElementById('itemsContainer');
+            const emptyState = document.getElementById('emptyState');
+            const dayKey = `day${day}`;
+            const dayData = handoverData[dayKey];
+            
+            if (!dayData || !dayData.items || Object.keys(dayData.items).length === 0) {
+                container.innerHTML = '';
+                container.appendChild(emptyState);
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            Object.entries(dayData.items)
+                .sort(([a], [b]) => parseInt(a) - parseInt(b))
+                .forEach(([itemId, item], index) => {
+                    const itemRow = document.createElement('div');
+                    itemRow.className = `item-row ${item.completed ? 'completed' : ''}`;
+                    itemRow.id = `item-${itemId}`;
+                    
+                    itemRow.innerHTML = `
+                        <div class="item-number">${index + 1}</div>
+                        <textarea class="item-content" id="content-${itemId}" readonly>${item.content || ''}</textarea>
+                        <input type="checkbox" class="item-checkbox" ${item.completed ? 'checked' : ''} 
+                               onchange="toggleItemComplete('${day}', '${itemId}')">
+                        <div class="item-actions">
+                            <button class="action-btn edit-btn" onclick="requestPasswordForEdit('${itemId}')">수정</button>
+                            <button class="action-btn delete-btn" onclick="requestPasswordForDelete('${day}', '${itemId}')">삭제</button>
+                        </div>
+                    `;
+                    
+                    container.appendChild(itemRow);
+                });
+        }
+
+        async function toggleItemComplete(day, itemId) {
+            const dayKey = `day${day}`;
+            if (!handoverData[dayKey]) {
+                handoverData[dayKey] = { items: {} };
+            }
+            if (!handoverData[dayKey].items[itemId]) {
+                handoverData[dayKey].items[itemId] = {};
+            }
+            
+            const checkbox = event.target;
+            handoverData[dayKey].items[itemId].completed = checkbox.checked;
+            
+            const success = await saveHandoverToFirebase(day, handoverData[dayKey]);
+            
+            if (!success) {
+                localStorage.setItem('handoverData', JSON.stringify(handoverData));
+                showSaveFeedback('오프라인 모드로 저장됨');
+            }
+            
+            // UI 업데이트
+            const itemRow = document.getElementById(`item-${itemId}`);
+            if (checkbox.checked) {
+                itemRow.classList.add('completed');
+            } else {
+                itemRow.classList.remove('completed');
+            }
+            
+            updateDaysProgress();
+        }
+
+        function requestPasswordForAdd() {
+            pendingAction = { type: 'add', day: currentDay };
+            showPasswordModal();
+        }
+
+        function requestPasswordForEdit(itemId) {
+            pendingAction = { type: 'edit', itemId: itemId };
+            showPasswordModal();
+        }
+
+        function requestPasswordForDelete(day, itemId) {
+            pendingAction = { type: 'delete', day: day, itemId: itemId };
+            showPasswordModal();
+        }
+
+        function showPasswordModal() {
+            document.getElementById('passwordModal').style.display = 'block';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('errorMessage').textContent = '';
+            document.getElementById('passwordInput').focus();
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+            pendingAction = null;
+        }
+
+        function confirmPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const errorEl = document.getElementById('errorMessage');
+            
+            if (validPasswords.includes(password)) {
+                closePasswordModal();
+                
+                if (pendingAction) {
+                    switch (pendingAction.type) {
+                        case 'add':
+                            addNewItem(pendingAction.day);
+                            break;
+                        case 'edit':
+                            editItem(pendingAction.itemId);
+                            break;
+                        case 'delete':
+                            deleteItem(pendingAction.day, pendingAction.itemId);
+                            break;
+                    }
+                }
+            } else {
+                errorEl.textContent = '비밀번호가 올바르지 않습니다.';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        }
+
+        async function addNewItem(day) {
+            const dayKey = `day${day}`;
+            if (!handoverData[dayKey]) {
+                handoverData[dayKey] = { items: {} };
+            }
+            
+            const newItemId = Date.now().toString();
+            handoverData[dayKey].items[newItemId] = {
+                content: '',
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+            
+            const success = await saveHandoverToFirebase(day, handoverData[dayKey]);
+            
+            if (!success) {
+                localStorage.setItem('handoverData', JSON.stringify(handoverData));
+                showSaveFeedback('오프라인 모드로 저장됨');
+            }
+            
+            renderDayItems(day);
+            updateDaysProgress();
+            
+            // 새 항목을 편집 모드로 전환
+            setTimeout(() => editItem(newItemId), 100);
+        }
+
+        function editItem(itemId) {
+            const contentEl = document.getElementById(`content-${itemId}`);
+            const itemRow = document.getElementById(`item-${itemId}`);
+            const actionsEl = itemRow.querySelector('.item-actions');
+            
+            contentEl.readOnly = false;
+            contentEl.focus();
+            
+            actionsEl.innerHTML = `
+                <button class="action-btn save-btn" onclick="saveItem('${currentDay}', '${itemId}')">저장</button>
+                <button class="action-btn cancel-btn" onclick="cancelEdit('${itemId}')">취소</button>
+            `;
+        }
+
+        async function saveItem(day, itemId) {
+            const contentEl = document.getElementById(`content-${itemId}`);
+            const dayKey = `day${day}`;
+            
+            handoverData[dayKey].items[itemId].content = contentEl.value;
+            
+            const success = await saveHandoverToFirebase(day, handoverData[dayKey]);
+            
+            if (!success) {
+                localStorage.setItem('handoverData', JSON.stringify(handoverData));
+                showSaveFeedback('오프라인 모드로 저장됨');
+            } else {
+                showSaveFeedback('항목이 저장되었습니다!');
+            }
+            
+            renderDayItems(day);
+        }
+
+        function cancelEdit(itemId) {
+            renderDayItems(currentDay);
+        }
+
+        async function deleteItem(day, itemId) {
+            if (confirm('이 항목을 삭제하시겠습니까?')) {
+                const dayKey = `day${day}`;
+                delete handoverData[dayKey].items[itemId];
+                
+                const success = await saveHandoverToFirebase(day, handoverData[dayKey]);
+                
+                if (!success) {
+                    localStorage.setItem('handoverData', JSON.stringify(handoverData));
+                    showSaveFeedback('오프라인 모드로 저장됨');
+                } else {
+                    showSaveFeedback('항목이 삭제되었습니다!');
+                }
+                
+                renderDayItems(day);
+                updateDaysProgress();
+            }
+        }
+
+        function loadSavedData() {
+            const saved = localStorage.getItem('handoverData');
+            if (saved) {
+                handoverData = JSON.parse(saved);
+                updateDaysProgress();
+            }
+        }
+
+        function showSaveFeedback(message) {
+            const feedback = document.getElementById('saveFeedback');
+            feedback.textContent = message;
+            feedback.classList.add('show');
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        // 엔터키로 비밀번호 확인
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && document.getElementById('passwordModal').style.display === 'block') {
+                confirmPassword();
+            }
+        });
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('passwordModal');
+            if (event.target === modal) {
+                closePasswordModal();
+            }
+        }
+    </script>
+
+    <!-- Firebase SDK 추가 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, setDoc, doc, getDocs, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
+            authDomain: "soom-brand.firebaseapp.com",
+            projectId: "soom-brand",
+            storageBucket: "soom-brand.firebasestorage.app",
+            messagingSenderId: "765427036681",
+            appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 전역 변수로 설정
+        window.db = db;
+        window.firebaseInitialized = true;
+
+        console.log('Firebase 연결 완료!');
+    </script>
+</body>
+</html>
