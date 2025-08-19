@@ -682,8 +682,7 @@
             
             try {
                 window.onSnapshot(window.collection(window.db, 'vacations'), (snapshot) => {
-                    if (isUpdating) return;
-                    
+                                      
                     isUpdating = true;
                     vacations = [];
                     snapshot.forEach((docSnapshot) => {
@@ -1031,3 +1030,4 @@
     </script>
 </body>
 </html>
+
