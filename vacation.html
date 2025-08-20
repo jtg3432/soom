@@ -1,90 +1,895 @@
-
-<script type="module">
-    // ... (기존 코드 유지)
-const formEl = document.getElementById('vacation-form');
-    // 캘린더 렌더링 함수
-    function renderCalendar() {
-        calendarEl.innerHTML = `
-            <div class="day-name">일</div><div class="day-name">월</div><div class="day-name">화</div><div class="day-name">수</div><div class="day-name">목</div><div class="day-name">금</div><div class="day-name">토</div>
-        `;
-        
-        const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
-        const firstDayOfWeek = firstDayOfMonth.getDay();
-        const lastDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-
-        monthYearEl.textContent = `${currentMonth.getFullYear()}년 ${currentMonth.getMonth() + 1}월`;
-
-        for (let i = 0; i < firstDayOfWeek; i++) {
-            calendarEl.innerHTML += `<div class="day other-month"></div>`;
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연차 캘린더 - 운영관리팀</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        for (let day = 1; day <= lastDayOfMonth; day++) {
-            const dayEl = document.createElement('div');
-            dayEl.className = 'day';
-            dayEl.innerHTML = `<span class="day-number">${day}</span>`;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .page-header h2 {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .calendar-section {
+            padding: 30px 40px;
+        }
+
+        .calendar-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .current-month {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: #dee2e6;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .calendar-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px 5px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .calendar-day {
+            background: white;
+            min-height: 120px;
+            padding: 8px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            background: #f8f9fa;
+        }
+
+        .calendar-day.other-month {
+            background: #f8f9fa;
+            color: #adb5bd;
+        }
+
+        .calendar-day.today {
+            background: #e6f3ff;
+            border: 2px solid #4facfe;
+        }
+
+        .calendar-day.weekend {
+            background: #fff5f5;
+        }
+
+        .calendar-day.weekend.other-month {
+            background: #f5f5f5;
+        }
+
+        .day-number {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .calendar-day.other-month .day-number {
+            color: #adb5bd;
+        }
+
+        .calendar-day.weekend .day-number {
+            color: #e53e3e;
+        }
+
+        .vacation-list {
+            font-size: 0.75rem;
+            line-height: 1.2;
+        }
+
+        .vacation-item {
+            background: #4facfe;
+            color: white;
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-bottom: 2px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .vacation-item:hover {
+            background: #3d8bfe;
+            transform: scale(1.05);
+        }
+
+        .vacation-item.half-day {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .vacation-item.sick-leave {
+            background: #dc3545;
+        }
+
+        .vacation-item.family-event {
+            background: #28a745;
+        }
+
+        .vacation-item.other {
+            background: #6c757d;
+        }
+
+        .add-vacation-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: #28a745;
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .add-vacation-btn:hover {
+            background: #218838;
+            transform: scale(1.1);
+        }
+
+        .vacation-form-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .vacation-form-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .vacation-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+
+        .form-input, .form-select {
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .upcoming-vacations {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .upcoming-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .upcoming-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #f1f3f4;
+            transition: background 0.2s ease;
+        }
+
+        .upcoming-item:hover {
+            background: #f8f9fa;
+        }
+
+        .upcoming-item:last-child {
+            border-bottom: none;
+        }
+
+        .upcoming-info {
+            flex: 1;
+        }
+
+        .upcoming-date {
+            font-weight: 600;
+            color: #4facfe;
+        }
+
+        .upcoming-details {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .close {
+            color: #adb5bd;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close:hover {
+            color: #495057;
+        }
+
+        .copy-feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .copy-feedback.show {
+            transform: translateX(0);
+        }
+
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .connection-status.online {
+            background: #28a745;
+            color: white;
+        }
+
+        .connection-status.offline {
+            background: #ffc107;
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                margin: 20px;
+            }
             
-            const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-            
-            // ⭐ 수정된 부분: 로컬 시간대 보정을 위한 날짜 생성
-            const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-            const isoDate = localDate.toISOString().split('T')[0];
-            
-            if (date.toDateString() === new Date().toDateString()) {
-                dayEl.classList.add('today');
+            .calendar-section {
+                padding: 20px;
             }
 
-            dayEl.onclick = () => {
-                vacationDateInput.value = isoDate;
-            };
+            .calendar-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
 
-            const dayVacations = allVacations.filter(v => {
-                return v.date === isoDate;
-            });
+            .calendar-day {
+                min-height: 80px;
+                padding: 5px;
+            }
 
-            dayVacations.forEach(v => {
-                const vacationItem = document.createElement('div');
-                vacationItem.className = 'vacation-item';
-                vacationItem.textContent = `${v.name} (${v.type})`;
-                
-                if (v.type === '반차') vacationItem.classList.add('half-day');
-                if (v.type === '병가') vacationItem.classList.add('sick-leave');
-                if (v.type === '경조사') vacationItem.classList.add('family-event');
-                if (v.type === '기타') vacationItem.classList.add('other');
+            .vacation-form {
+                grid-template-columns: 1fr;
+            }
 
-                vacationItem.onclick = (e) => {
-                    e.stopPropagation();
-                    openModal(v);
-                };
-                dayEl.appendChild(vacationItem);
-            });
-
-            calendarEl.appendChild(dayEl);
+            .current-month {
+                font-size: 1.2rem;
+                min-width: auto;
+            }
         }
-    }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <a href="index.html" class="back-btn">← 메인으로</a>
+            <h1>운영관리팀</h1>
+            <h2>연차 캘린더</h2>
+        </div>
 
-    // 연차 추가
-    formEl.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const date = document.getElementById('vacation-date').value;
-        const name = document.getElementById('vacation-name').value;
-        const type = document.getElementById('vacation-type').value;
-        const note = document.getElementById('vacation-note').value;
+        <div class="calendar-section">
+            <div class="calendar-controls">
+                <button class="nav-button" onclick="previousMonth()">◀ 이전</button>
+                <div class="current-month" id="currentMonth"></div>
+                <button class="nav-button" onclick="nextMonth()">다음 ▶</button>
+            </div>
 
-        if (!date || !name || !type) {
-            showMessage('날짜, 이름, 종류를 모두 입력해주세요!', 'error');
-            return;
-        }
+            <div class="calendar-grid" id="calendarGrid">
+                <div class="calendar-header">일</div>
+                <div class="calendar-header">월</div>
+                <div class="calendar-header">화</div>
+                <div class="calendar-header">수</div>
+                <div class="calendar-header">목</div>
+                <div class="calendar-header">금</div>
+                <div class="calendar-header">토</div>
+            </div>
+
+            <div class="vacation-form-section">
+                <div class="vacation-form-title">연차 추가</div>
+                <form class="vacation-form" id="vacation-form">
+                    <div class="form-group">
+                        <label class="form-label" for="vacation-date">날짜</label>
+                        <input type="date" class="form-input" id="vacation-date">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="vacation-name">이름</label>
+                        <select class="form-select" id="vacation-name">
+                            <option value="">선택하세요</option>
+                            <option value="정현">정현</option>
+                            <option value="태균">태균</option>
+                            <option value="유빈">유빈</option>
+                            <option value="세진">세진</option>
+                            <option value="unknown">unknown</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="vacation-type">연차 종류</label>
+                        <select class="form-select" id="vacation-type">
+                            <option value="">선택하세요</option>
+                            <option value="연차">연차</option>
+                            <option value="반차">반차</option>
+                            <option value="병가">병가</option>
+                            <option value="경조사">경조사</option>
+                            <option value="기타">기타</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="vacation-note">비고</label>
+                        <input type="text" class="form-input" id="vacation-note" placeholder="비고 입력">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="add-btn">추가</button>
+                    </div>
+                </form>
+
+                <div class="upcoming-vacations">
+                    <div class="upcoming-title">예정된 연차</div>
+                    <div id="upcomingList">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="vacationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">연차 상세</span>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody">
+                </div>
+        </div>
+    </div>
+
+    <div class="copy-feedback" id="copyFeedback">
+        작업이 완료되었습니다!
+    </div>
+
+    <div class="connection-status offline" id="connectionStatus">
+        연결 확인 중...
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, getDocs, collection, addDoc, deleteDoc, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
+            authDomain: "soom-brand.firebaseapp.com",
+            projectId: "soom-brand",
+            storageBucket: "soom-brand.firebasestorage.app",
+            messagingSenderId: "765427036681",
+            appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
+        };
 
         try {
-            await addDoc(vacationsCollection, { date, name, type, note });
-            showMessage('연차가 성공적으로 추가되었습니다!', 'success');
-            formEl.reset();
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+
+            window.db = db;
+            window.firebaseInitialized = true;
+
+            console.log('Firebase 연결 완료!');
         } catch (error) {
-            console.error("연차 추가 실패: ", error);
-            showMessage('연차 추가에 실패했습니다.', 'error');
+            console.error('Firebase 초기화 실패:', error);
+            window.firebaseInitialized = false;
         }
-    });
 
-    // ... (나머지 기존 코드 유지)
-</script>
+        // DOM 요소 가져오기
+        const formEl = document.getElementById('vacation-form');
+        const vacationDateInput = document.getElementById('vacation-date');
+        const calendarGridEl = document.getElementById('calendarGrid');
+        const currentMonthEl = document.getElementById('currentMonth');
 
+        // 변수 초기화
+        let allVacations = [];
+        let currentMonth = new Date();
+        let isUpdating = false;
+        let firebaseConnected = false;
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            vacationDateInput.value = new Date().toISOString().split('T')[0];
+            initFirebaseConnection();
+        });
+
+        // Firebase 연결 초기화
+        async function initFirebaseConnection() {
+            try {
+                if (window.firebaseInitialized && window.db) {
+                    await loadVacationsFromFirebase();
+                    setupRealtimeSync();
+                    firebaseConnected = true;
+                    updateConnectionStatus('online', 'Firebase 연결됨');
+                } else {
+                    throw new Error('Firebase 연결 실패');
+                }
+            } catch (error) {
+                console.error('Firebase 연결 실패:', error);
+                firebaseConnected = false;
+                updateConnectionStatus('offline', '오프라인 모드');
+            }
+            
+            renderCalendar();
+            updateUpcomingList();
+        }
+
+        function updateConnectionStatus(status, message) {
+            const statusElement = document.getElementById('connectionStatus');
+            statusElement.className = `connection-status ${status}`;
+            statusElement.textContent = message;
+        }
+
+        async function loadVacationsFromFirebase() {
+            if (!window.db) return;
+            try {
+                const querySnapshot = await getDocs(collection(window.db, 'vacations'));
+                allVacations = [];
+                querySnapshot.forEach((docSnapshot) => {
+                    allVacations.push({
+                        id: docSnapshot.id,
+                        ...docSnapshot.data()
+                    });
+                });
+            } catch (error) {
+                console.error('Firebase에서 데이터 로드 실패:', error);
+            }
+        }
+
+        function setupRealtimeSync() {
+            if (!window.db) return;
+            onSnapshot(collection(window.db, 'vacations'), (snapshot) => {
+                if (isUpdating) return;
+                
+                isUpdating = true;
+                allVacations = [];
+                snapshot.forEach((doc) => {
+                    allVacations.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                renderCalendar();
+                updateUpcomingList();
+                
+                setTimeout(() => { isUpdating = false; }, 500);
+            });
+        }
+        
+        // 캘린더 렌더링
+        function renderCalendar() {
+            calendarGridEl.innerHTML = '';
+            
+            const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+            const firstDayOfWeek = firstDayOfMonth.getDay();
+            const lastDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+
+            currentMonthEl.textContent = `${currentMonth.getFullYear()}년 ${currentMonth.getMonth() + 1}월`;
+
+            for (let i = 0; i < 7; i++) {
+                const header = document.createElement('div');
+                header.className = 'calendar-header';
+                const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+                header.textContent = dayNames[i];
+                calendarGridEl.appendChild(header);
+            }
+
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day other-month';
+                calendarGridEl.appendChild(dayEl);
+            }
+
+            for (let day = 1; day <= lastDayOfMonth; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+                dayEl.innerHTML = `<span class="day-number">${day}</span>`;
+                
+                const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+                const isoDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+                if (date.toDateString() === new Date().toDateString()) {
+                    dayEl.classList.add('today');
+                }
+
+                if (date.getDay() === 0 || date.getDay() === 6) {
+                    dayEl.classList.add('weekend');
+                }
+
+                dayEl.onclick = () => {
+                    vacationDateInput.value = isoDate;
+                };
+
+                const dayVacations = allVacations.filter(v => v.date === isoDate);
+
+                dayVacations.forEach(v => {
+                    const vacationItem = document.createElement('div');
+                    vacationItem.className = 'vacation-item';
+                    vacationItem.textContent = `${v.name} (${v.type})`;
+                    
+                    if (v.type === '반차') vacationItem.classList.add('half-day');
+                    if (v.type === '병가') vacationItem.classList.add('sick-leave');
+                    if (v.type === '경조사') vacationItem.classList.add('family-event');
+                    if (v.type === '기타') vacationItem.classList.add('other');
+
+                    vacationItem.onclick = (e) => {
+                        e.stopPropagation();
+                        showVacationDetail(v);
+                    };
+                    dayEl.appendChild(vacationItem);
+                });
+
+                calendarGridEl.appendChild(dayEl);
+            }
+        }
+
+        // 월 이동
+        window.previousMonth = () => {
+            currentMonth.setMonth(currentMonth.getMonth() - 1);
+            renderCalendar();
+        };
+
+        window.nextMonth = () => {
+            currentMonth.setMonth(currentMonth.getMonth() + 1);
+            renderCalendar();
+        };
+
+        // 폼 제출 이벤트
+        formEl.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const date = document.getElementById('vacation-date').value;
+            const name = document.getElementById('vacation-name').value;
+            const type = document.getElementById('vacation-type').value;
+            const note = document.getElementById('vacation-note').value;
+
+            if (!date || !name || !type) {
+                alert('날짜, 이름, 종류를 모두 입력해주세요!');
+                return;
+            }
+
+            const newVacation = { date, name, type, note: note || '' };
+
+            isUpdating = true;
+            
+            try {
+                if (firebaseConnected) {
+                    await addDoc(collection(window.db, 'vacations'), newVacation);
+                    showCopyFeedback('연차를 추가했습니다!');
+                } else {
+                    alert('오프라인 모드에서는 추가할 수 없습니다.');
+                }
+            } catch (error) {
+                console.error("연차 추가 실패: ", error);
+                alert('연차 추가에 실패했습니다.');
+            } finally {
+                e.target.reset();
+                vacationDateInput.value = new Date().toISOString().split('T')[0];
+                setTimeout(() => { isUpdating = false; }, 1000);
+            }
+        });
+
+        // 모달 관련 함수
+        function showVacationDetail(vacation) {
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div style="line-height: 1.6;">
+                    <p><strong>날짜:</strong> ${vacation.date}</p>
+                    <p><strong>이름:</strong> ${vacation.name}</p>
+                    <p><strong>종류:</strong> ${vacation.type}</p>
+                    <p><strong>비고:</strong> ${vacation.note || '없음'}</p>
+                    <br>
+                    <button class="delete-btn" onclick="deleteVacation('${vacation.id}')">삭제</button>
+                </div>
+            `;
+            document.getElementById('vacationModal').style.display = 'block';
+        }
+
+        window.closeModal = () => {
+            document.getElementById('vacationModal').style.display = 'none';
+        };
+
+        window.deleteVacation = async (id) => {
+            if (confirm('이 연차를 삭제하시겠습니까?')) {
+                isUpdating = true;
+                try {
+                    await deleteDoc(doc(window.db, 'vacations', id));
+                    showCopyFeedback('연차가 삭제되었습니다!');
+                } catch (error) {
+                    console.error('연차 삭제 실패:', error);
+                    alert('연차 삭제에 실패했습니다.');
+                } finally {
+                    closeModal();
+                    setTimeout(() => { isUpdating = false; }, 1000);
+                }
+            }
+        };
+
+        // 기타 유틸리티 함수
+        function updateUpcomingList() {
+            const upcomingList = document.getElementById('upcomingList');
+            const today = new Date().toISOString().split('T')[0];
+            
+            const upcomingVacations = allVacations
+                .filter(v => v.date >= today)
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            if (upcomingVacations.length === 0) {
+                upcomingList.innerHTML = '<p style="color: #6c757d; text-align: center; padding: 20px;">예정된 연차가 없습니다.</p>';
+                return;
+            }
+            
+            upcomingList.innerHTML = '';
+            upcomingVacations.forEach(vacation => {
+                const item = document.createElement('div');
+                item.className = 'upcoming-item';
+                
+                const info = document.createElement('div');
+                info.className = 'upcoming-info';
+                
+                const date = document.createElement('div');
+                date.className = 'upcoming-date';
+                date.textContent = formatDate(vacation.date);
+                
+                const details = document.createElement('div');
+                details.className = 'upcoming-details';
+                details.textContent = `${vacation.name} - ${vacation.type}`;
+                if (vacation.note) {
+                    details.textContent += ` (${vacation.note})`;
+                }
+                
+                info.appendChild(date);
+                info.appendChild(details);
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = '삭제';
+                deleteBtn.onclick = () => window.deleteVacation(vacation.id);
+                
+                item.appendChild(info);
+                item.appendChild(deleteBtn);
+                upcomingList.appendChild(item);
+            });
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString + 'T12:00:00');
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+            const dayName = dayNames[date.getDay()];
+            
+            return `${year}.${month}.${day} (${dayName})`;
+        }
+
+        function showCopyFeedback(message = '작업이 완료되었습니다!') {
+            const feedback = document.getElementById('copyFeedback');
+            feedback.textContent = message;
+            feedback.classList.add('show');
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        window.onclick = (event) => {
+            const modal = document.getElementById('vacationModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
