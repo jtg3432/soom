@@ -683,7 +683,7 @@
         }
 
         window.deleteVacation = async function(id) {
-            if (!confirm('이 연차를 삭제하시겠습니까?')) return;
+            if (!confirm('정말로 이 연차를 삭제하시겠습니까?')) return;
             isUpdating = true;
             try {
                 await deleteDoc(doc(db, 'vacations', id));
