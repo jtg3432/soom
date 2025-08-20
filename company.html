@@ -255,6 +255,16 @@
             transition: all 0.2s ease;
             margin-bottom: 10px;
         }
+        
+        .company-info ul {
+            list-style-type: '• ';
+            margin-left: 15px;
+            padding: 0;
+        }
+
+        .company-info li {
+            margin-bottom: 5px;
+        }
 
         .company-card:hover .company-info {
             color: rgba(255,255,255,0.9);
@@ -485,8 +495,7 @@
         </div>
 
         <div class="companies-grid" id="companiesGrid">
-            <!-- 동적으로 생성됩니다 -->
-        </div>
+            </div>
 
         <div class="no-results" id="noResults">
             <p>🔍 검색 결과가 없습니다.</p>
@@ -494,7 +503,6 @@
         </div>
     </div>
 
-    <!-- 업체 추가/편집 모달 -->
     <div id="companyModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -590,17 +598,17 @@
         // 기본 데이터 추가
         async function addDefaultCompanies() {
             const defaultCompanies = [
-                { name: "다정흉부외과(애드비)", info: "흉부외과 전문 병원 · 일반 관리", initial: "ㄷㅈㅎㅂㅇㄱ", special: false },
-                { name: "더미즈병원", info: "종합병원 · 일반 관리", initial: "ㄷㅁㅈㅂㅇ", special: false },
-                { name: "로긴", info: "의료기기 업체 · 일반 관리", initial: "ㄹㄱ", special: false },
-                { name: "릴리브", info: "헬스케어 서비스 · 일반 관리", initial: "ㄹㄹㅂ", special: false },
-                { name: "서울미즈병원", info: "산부인과 전문병원 · 특별 주의사항 있음", initial: "ㅅㅇㅁㅈㅂㅇ", special: true },
-                { name: "스팟", info: "의료 플랫폼 · 특별 주의사항 있음", initial: "ㅅㅍ", special: true },
-                { name: "연세사랑모아", info: "산부인과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅅㄹㅁ", special: true },
-                { name: "에스바른치과", info: "치과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅂㄹㅊㄱ", special: true },
-                { name: "엘레드클리닉", info: "피부과 전문 클리닉 · 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
-                { name: "위드맘", info: "산후조리원 · 특별 주의사항 있음", initial: "ㅇㄷㅁ", special: true },
-                { name: "이학수성형외과", info: "성형외과 전문병원 · 일반 관리", initial: "ㅇㅎㅅㅅㅎㅇㄱ", special: false }
+                { name: "다정흉부외과(애드비)", info: "흉부외과 전문 병원 / 일반 관리", initial: "ㄷㅈㅎㅂㅇㄱ", special: false },
+                { name: "더미즈병원", info: "종합병원 / 일반 관리", initial: "ㄷㅁㅈㅂㅇ", special: false },
+                { name: "로긴", info: "의료기기 업체 / 일반 관리", initial: "ㄹㄱ", special: false },
+                { name: "릴리브", info: "헬스케어 서비스 / 일반 관리", initial: "ㄹㄹㅂ", special: false },
+                { name: "서울미즈병원", info: "산부인과 전문병원 / 특별 주의사항 있음", initial: "ㅅㅇㅁㅈㅂㅇ", special: true },
+                { name: "스팟", info: "의료 플랫폼 / 특별 주의사항 있음", initial: "ㅅㅍ", special: true },
+                { name: "연세사랑모아", info: "산부인과 전문병원 / 특별 주의사항 있음", initial: "ㅇㅅㅅㄹㅁ", special: true },
+                { name: "에스바른치과", info: "치과 전문병원 / 특별 주의사항 있음", initial: "ㅇㅅㅂㄹㅊㄱ", special: true },
+                { name: "엘레드클리닉", info: "피부과 전문 클리닉 / 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
+                { name: "위드맘", info: "산후조리원 / 특별 주의사항 있음", initial: "ㅇㄷㅁ", special: true },
+                { name: "이학수성형외과", info: "성형외과 전문병원 / 일반 관리", initial: "ㅇㅎㅅㅅㅎㅇㄱ", special: false }
             ];
 
             for (const company of defaultCompanies) {
@@ -614,17 +622,17 @@
         // 기본 데이터 로드 (Firebase 실패 시)
         function loadDefaultData() {
             companies = [
-                { id: "1", name: "다정흉부외과(애드비)", info: "흉부외과 전문 병원 · 일반 관리", initial: "ㄷㅈㅎㅂㅇㄱ", special: false },
-                { id: "2", name: "더미즈병원", info: "종합병원 · 일반 관리", initial: "ㄷㅁㅈㅂㅇ", special: false },
-                { id: "3", name: "로긴", info: "의료기기 업체 · 일반 관리", initial: "ㄹㄱ", special: false },
-                { id: "4", name: "릴리브", info: "헬스케어 서비스 · 일반 관리", initial: "ㄹㄹㅂ", special: false },
-                { id: "5", name: "서울미즈병원", info: "산부인과 전문병원 · 특별 주의사항 있음", initial: "ㅅㅇㅁㅈㅂㅇ", special: true },
-                { id: "6", name: "스팟", info: "의료 플랫폼 · 특별 주의사항 있음", initial: "ㅅㅍ", special: true },
-                { id: "7", name: "연세사랑모아", info: "산부인과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅅㄹㅁ", special: true },
-                { id: "8", name: "에스바른치과", info: "치과 전문병원 · 특별 주의사항 있음", initial: "ㅇㅅㅂㄹㅊㄱ", special: true },
-                { id: "9", name: "엘레드클리닉", info: "피부과 전문 클리닉 · 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
-                { id: "10", name: "위드맘", info: "산후조리원 · 특별 주의사항 있음", initial: "ㅇㄷㅁ", special: true },
-                { id: "11", name: "이학수성형외과", info: "성형외과 전문병원 · 일반 관리", initial: "ㅇㅎㅅㅅㅎㅇㄱ", special: false }
+                { id: "1", name: "다정흉부외과(애드비)", info: "흉부외과 전문 병원 / 일반 관리", initial: "ㄷㅈㅎㅂㅇㄱ", special: false },
+                { id: "2", name: "더미즈병원", info: "종합병원 / 일반 관리", initial: "ㄷㅁㅈㅂㅇ", special: false },
+                { id: "3", name: "로긴", info: "의료기기 업체 / 일반 관리", initial: "ㄹㄱ", special: false },
+                { id: "4", name: "릴리브", info: "헬스케어 서비스 / 일반 관리", initial: "ㄹㄹㅂ", special: false },
+                { id: "5", name: "서울미즈병원", info: "산부인과 전문병원 / 특별 주의사항 있음", initial: "ㅅㅇㅁㅈㅂㅇ", special: true },
+                { id: "6", name: "스팟", info: "의료 플랫폼 / 특별 주의사항 있음", initial: "ㅅㅍ", special: true },
+                { id: "7", name: "연세사랑모아", info: "산부인과 전문병원 / 특별 주의사항 있음", initial: "ㅇㅅㅅㄹㅁ", special: true },
+                { id: "8", name: "에스바른치과", info: "치과 전문병원 / 특별 주의사항 있음", initial: "ㅇㅅㅂㄹㅊㄱ", special: true },
+                { id: "9", name: "엘레드클리닉", info: "피부과 전문 클리닉 / 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
+                { id: "10", name: "위드맘", info: "산후조리원 / 특별 주의사항 있음", initial: "ㅇㄷㅁ", special: true },
+                { id: "11", name: "이학수성형외과", info: "성형외과 전문병원 / 일반 관리", initial: "ㅇㅎㅅㅅㅎㅇㄱ", special: false }
             ];
             renderCompanies();
         }
@@ -650,6 +658,9 @@
             companies
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .forEach(company => {
+                    const infoItems = company.info.split(' / ').map(item => `<li>${item.trim()}</li>`).join('');
+                    const infoList = `<ul>${infoItems}</ul>`;
+                    
                     const card = document.createElement('div');
                     card.className = 'company-card';
                     card.setAttribute('data-company', company.name.toLowerCase());
@@ -659,7 +670,7 @@
                     card.innerHTML = `
                         ${company.special ? '<div class="special-badge">특별관리</div>' : ''}
                         <div class="company-name">${company.name}</div>
-                        <div class="company-info">${company.info}</div>
+                        <div class="company-info">${infoList}</div>
                         ${editMode ? `
                             <div class="company-actions">
                                 <button class="action-btn edit-btn" onclick="editCompany('${company.id}')">편집</button>
@@ -867,7 +878,6 @@
         });
     </script>
 
-    <!-- Firebase SDK 추가 -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
