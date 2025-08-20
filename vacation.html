@@ -1,497 +1,88 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>연차 캘린더 - 운영관리팀</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<script type="module">
+    // ... (기존 코드 유지)
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .page-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .page-header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
-            position: relative;
-        }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 5px;
-        }
-
-        .page-header p {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: white;
-            text-decoration: none;
-            font-size: 1rem;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .content-section {
-            padding: 40px;
-            display: flex;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-
-        .calendar-section {
-            flex: 2;
-            min-width: 600px;
-        }
+    // 캘린더 렌더링 함수
+    function renderCalendar() {
+        calendarEl.innerHTML = `
+            <div class="day-name">일</div><div class="day-name">월</div><div class="day-name">화</div><div class="day-name">수</div><div class="day-name">목</div><div class="day-name">금</div><div class="day-name">토</div>
+        `;
         
-        .calendar-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .calendar-nav button {
-            background: #4a90e2;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-size: 1rem;
-        }
-        
-        .calendar-nav button:hover {
-            background: #3a7bc2;
-        }
-        
-        .calendar-nav h2 {
-            font-size: 1.5rem;
-            color: #333;
+        const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+        const firstDayOfWeek = firstDayOfMonth.getDay();
+        const lastDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+
+        monthYearEl.textContent = `${currentMonth.getFullYear()}년 ${currentMonth.getMonth() + 1}월`;
+
+        for (let i = 0; i < firstDayOfWeek; i++) {
+            calendarEl.innerHTML += `<div class="day other-month"></div>`;
         }
 
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .calendar-grid .day-name {
-            background: #4a90e2;
-            color: white;
-            text-align: center;
-            padding: 12px;
-            font-weight: bold;
-        }
-
-        .calendar-grid .day {
-            min-height: 120px;
-            padding: 10px;
-            border: 1px solid #e0e0e0;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer; /* 날짜 클릭 가능하도록 설정 */
-        }
-        
-        .calendar-grid .day.other-month {
-            background-color: #f8f8f8;
-            color: #ccc;
-        }
-
-        .calendar-grid .day.today {
-            background-color: #e6f7ff;
-            border: 2px solid #4a90e2;
-        }
-
-        .calendar-grid .day-number {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .vacation-item {
-            background: #007bff;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem; /* 글자 크기 조정 */
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            white-space: nowrap; /* 줄바꿈 방지 */
-            overflow: hidden; /* 넘치는 텍스트 숨기기 */
-            text-overflow: ellipsis; /* ...으로 표시 */
-        }
-        .vacation-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .vacation-item.half-day { background: #ffc107; color: black; }
-        .vacation-item.sick-leave { background: #dc3545; }
-        .vacation-item.family-event { background: #28a745; }
-        .vacation-item.other { background: #6c757d; }
-
-        .form-section {
-            flex: 1;
-            min-width: 300px;
-            background: #f9f9f9;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            align-self: flex-start;
-        }
-
-        .form-section h3 {
-            margin-bottom: 20px;
-            color: #333;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: bold;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        #add-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 15px;
-            width: 100%;
-            cursor: pointer;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            transition: background 0.3s;
-        }
-
-        #add-btn:hover {
-            background: #218838;
-        }
-        
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 30px; border: 1px solid #888; width: 90%; max-width: 450px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); text-align: center; }
-        .modal-content p { margin-bottom: 10px; font-size: 1rem; }
-        .modal-content strong { color: #333; }
-        .close-btn { color: #aaa; float: right; font-size: 30px; font-weight: bold; cursor: pointer; }
-        .close-btn:hover, .close-btn:focus { color: #000; text-decoration: none; }
-        .delete-btn { background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 20px; font-size: 1rem; }
-        .delete-btn:hover { background: #c82333; }
-        
-        .message-box { position: fixed; bottom: 30px; right: 30px; background: #333; color: white; padding: 15px 25px; border-radius: 8px; z-index: 100; opacity: 0; transition: opacity 0.5s, transform 0.5s; transform: translateY(20px); }
-        .message-box.show { opacity: 1; transform: translateY(0); }
-
-        @media (max-width: 768px) {
-            .content-section {
-                flex-direction: column;
-            }
-            .calendar-section, .form-section {
-                min-width: 100%;
-            }
-            .page-container {
-                border-radius: 0;
-            }
-            .page-header {
-                border-radius: 0;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="page-container">
-        <header class="page-header">
-            <a href="index.html" class="back-btn">← 메인으로</a>
-            <h1>연차 캘린더</h1>
-            <p>운영관리팀 연차 사용 현황</p>
-        </header>
-
-        <section class="content-section">
-            <div class="calendar-section">
-                <div class="calendar-nav">
-                    <button id="prev-month">◀ 이전</button>
-                    <h2 id="current-month-year"></h2>
-                    <button id="next-month">다음 ▶</button>
-                </div>
-                <div class="calendar-grid" id="calendar">
-                    <div class="day-name">일</div>
-                    <div class="day-name">월</div>
-                    <div class="day-name">화</div>
-                    <div class="day-name">수</div>
-                    <div class="day-name">목</div>
-                    <div class="day-name">금</div>
-                    <div class="day-name">토</div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3>연차 추가</h3>
-                <form id="vacation-form">
-                    <div class="form-group">
-                        <label for="vacation-date">날짜</label>
-                        <input type="date" id="vacation-date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="vacation-name">이름</label>
-                        <select id="vacation-name" required>
-                            <option value="">선택</option>
-                            <option value="정현">정현</option>
-                            <option value="태균">태균</option>
-                            <option value="유빈">유빈</option>
-                            <option value="세진">세진</option>
-                            <option value="unknown">unknown</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="vacation-type">종류</label>
-                        <select id="vacation-type" required>
-                            <option value="">선택</option>
-                            <option value="연차">연차</option>
-                            <option value="반차">반차</option>
-                            <option value="병가">병가</option>
-                            <option value="경조사">경조사</option>
-                            <option value="기타">기타</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="vacation-note">비고</label>
-                        <input type="text" id="vacation-note" placeholder="비고를 입력하세요">
-                    </div>
-                    <button type="submit" id="add-btn">연차 추가</button>
-                </form>
-            </div>
-        </section>
-    </div>
-
-    <div id="vacation-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <div id="modal-details"></div>
-            <button id="modal-delete-btn" class="delete-btn" style="display:none;">삭제</button>
-        </div>
-    </div>
-
-    <div id="message-box" class="message-box"></div>
-
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
-            authDomain: "soom-brand.firebaseapp.com",
-            projectId: "soom-brand",
-            storageBucket: "soom-brand.firebasestorage.app",
-            messagingSenderId: "765427036681",
-            appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
-        };
-        
-        initializeApp(firebaseConfig);
-        const db = getFirestore();
-        const vacationsCollection = collection(db, 'vacations');
-
-        let currentMonth = new Date();
-        let allVacations = []; // 모든 연차 데이터를 저장할 배열
-
-        const calendarEl = document.getElementById('calendar');
-        const monthYearEl = document.getElementById('current-month-year');
-        const formEl = document.getElementById('vacation-form');
-        const vacationDateInput = document.getElementById('vacation-date');
-        const modalEl = document.getElementById('vacation-modal');
-        const modalDetailsEl = document.getElementById('modal-details');
-        const modalDeleteBtnEl = document.getElementById('modal-delete-btn');
-        const messageBoxEl = document.getElementById('message-box');
-
-        // Firestore 실시간 동기화 설정
-        onSnapshot(vacationsCollection, (snapshot) => {
-            allVacations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderCalendar(); // 데이터가 변경될 때마다 캘린더 렌더링
-        });
-
-        // 캘린더 렌더링 함수
-        function renderCalendar() {
-            calendarEl.innerHTML = `
-                <div class="day-name">일</div><div class="day-name">월</div><div class="day-name">화</div><div class="day-name">수</div><div class="day-name">목</div><div class="day-name">금</div><div class="day-name">토</div>
-            `;
+        for (let day = 1; day <= lastDayOfMonth; day++) {
+            const dayEl = document.createElement('div');
+            dayEl.className = 'day';
+            dayEl.innerHTML = `<span class="day-number">${day}</span>`;
             
-            const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
-            const firstDayOfWeek = firstDayOfMonth.getDay();
-            const lastDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-
-            monthYearEl.textContent = `${currentMonth.getFullYear()}년 ${currentMonth.getMonth() + 1}월`;
-
-            for (let i = 0; i < firstDayOfWeek; i++) {
-                calendarEl.innerHTML += `<div class="day other-month"></div>`;
+            const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+            
+            // ⭐ 수정된 부분: 로컬 시간대 보정을 위한 날짜 생성
+            const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            const isoDate = localDate.toISOString().split('T')[0];
+            
+            if (date.toDateString() === new Date().toDateString()) {
+                dayEl.classList.add('today');
             }
 
-            for (let day = 1; day <= lastDayOfMonth; day++) {
-                const dayEl = document.createElement('div');
-                dayEl.className = 'day';
-                dayEl.innerHTML = `<span class="day-number">${day}</span>`;
+            dayEl.onclick = () => {
+                vacationDateInput.value = isoDate;
+            };
+
+            const dayVacations = allVacations.filter(v => {
+                return v.date === isoDate;
+            });
+
+            dayVacations.forEach(v => {
+                const vacationItem = document.createElement('div');
+                vacationItem.className = 'vacation-item';
+                vacationItem.textContent = `${v.name} (${v.type})`;
                 
-                const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-                const isoDate = date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
+                if (v.type === '반차') vacationItem.classList.add('half-day');
+                if (v.type === '병가') vacationItem.classList.add('sick-leave');
+                if (v.type === '경조사') vacationItem.classList.add('family-event');
+                if (v.type === '기타') vacationItem.classList.add('other');
 
-                if (date.toDateString() === new Date().toDateString()) {
-                    dayEl.classList.add('today');
-                }
-
-                dayEl.onclick = () => {
-                    vacationDateInput.value = isoDate;
+                vacationItem.onclick = (e) => {
+                    e.stopPropagation();
+                    openModal(v);
                 };
+                dayEl.appendChild(vacationItem);
+            });
 
-                const dayVacations = allVacations.filter(v => {
-                    return v.date === isoDate;
-                });
+            calendarEl.appendChild(dayEl);
+        }
+    }
 
-                dayVacations.forEach(v => {
-                    const vacationItem = document.createElement('div');
-                    vacationItem.className = 'vacation-item';
-                    vacationItem.textContent = `${v.name} (${v.type})`;
-                    
-                    if (v.type === '반차') vacationItem.classList.add('half-day');
-                    if (v.type === '병가') vacationItem.classList.add('sick-leave');
-                    if (v.type === '경조사') vacationItem.classList.add('family-event');
-                    if (v.type === '기타') vacationItem.classList.add('other');
+    // 연차 추가
+    formEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const date = document.getElementById('vacation-date').value;
+        const name = document.getElementById('vacation-name').value;
+        const type = document.getElementById('vacation-type').value;
+        const note = document.getElementById('vacation-note').value;
 
-                    vacationItem.onclick = (e) => {
-                        e.stopPropagation(); // 부모 요소 클릭 이벤트 방지
-                        openModal(v);
-                    };
-                    dayEl.appendChild(vacationItem);
-                });
-
-                calendarEl.appendChild(dayEl);
-            }
+        if (!date || !name || !type) {
+            showMessage('날짜, 이름, 종류를 모두 입력해주세요!', 'error');
+            return;
         }
 
-        // 연차 추가
-        formEl.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const date = document.getElementById('vacation-date').value;
-            const name = document.getElementById('vacation-name').value;
-            const type = document.getElementById('vacation-type').value;
-            const note = document.getElementById('vacation-note').value;
-
-            if (!date || !name || !type) {
-                showMessage('날짜, 이름, 종류를 모두 입력해주세요!', 'error');
-                return;
-            }
-
-            try {
-                await addDoc(vacationsCollection, { date, name, type, note });
-                showMessage('연차가 성공적으로 추가되었습니다!', 'success');
-                formEl.reset();
-            } catch (error) {
-                console.error("연차 추가 실패: ", error);
-                showMessage('연차 추가에 실패했습니다.', 'error');
-            }
-        });
-
-        // 모달 열기
-        function openModal(vacation) {
-            modalDetailsEl.innerHTML = `
-                <p><strong>날짜:</strong> ${vacation.date}</p>
-                <p><strong>이름:</strong> ${vacation.name}</p>
-                <p><strong>종류:</strong> ${vacation.type}</p>
-                <p><strong>비고:</strong> ${vacation.note || '없음'}</p>
-            `;
-            modalDeleteBtnEl.onclick = () => deleteVacation(vacation.id);
-            modalDeleteBtnEl.style.display = 'block';
-            modalEl.style.display = 'flex';
+        try {
+            await addDoc(vacationsCollection, { date, name, type, note });
+            showMessage('연차가 성공적으로 추가되었습니다!', 'success');
+            formEl.reset();
+        } catch (error) {
+            console.error("연차 추가 실패: ", error);
+            showMessage('연차 추가에 실패했습니다.', 'error');
         }
+    });
 
-        // 모달 닫기
-        document.querySelector('.close-btn').onclick = () => modalEl.style.display = 'none';
-        window.onclick = (event) => {
-            if (event.target === modalEl) modalEl.style.display = 'none';
-        }
-
-        // 연차 삭제
-        async function deleteVacation(id) {
-            if (!confirm("정말로 이 연차를 삭제하시겠습니까?")) return;
-            try {
-                await deleteDoc(doc(db, 'vacations', id));
-                showMessage('연차가 삭제되었습니다!', 'success');
-                modalEl.style.display = 'none';
-            } catch (error) {
-                console.error("연차 삭제 실패: ", error);
-                showMessage('연차 삭제에 실패했습니다.', 'error');
-            }
-        }
-
-        // 메시지 표시 함수
-        function showMessage(msg, type) {
-            messageBoxEl.textContent = msg;
-            messageBoxEl.style.background = type === 'success' ? '#28a745' : '#dc3545';
-            messageBoxEl.classList.add('show');
-            setTimeout(() => {
-                messageBoxEl.classList.remove('show');
-            }, 3000);
-        }
-
-        // 이전 달, 다음 달 이동
-        document.getElementById('prev-month').onclick = () => {
-            currentMonth.setMonth(currentMonth.getMonth() - 1);
-            renderCalendar();
-        };
-        document.getElementById('next-month').onclick = () => {
-            currentMonth.setMonth(currentMonth.getMonth() + 1);
-            renderCalendar();
-        };
-
-        // 초기 렌더링
-        renderCalendar();
-        // 현재 날짜로 기본값 설정
-        document.getElementById('vacation-date').valueAsDate = new Date();
-    </script>
-</body>
-</html>
+    // ... (나머지 기존 코드 유지)
+</script>
