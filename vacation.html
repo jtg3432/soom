@@ -125,8 +125,9 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
+            cursor: pointer; /* 날짜 클릭 가능하도록 설정 */
         }
-
+        
         .calendar-grid .day.other-month {
             background-color: #f8f8f8;
             color: #ccc;
@@ -149,10 +150,13 @@
             color: white;
             padding: 4px 8px;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem; /* 글자 크기 조정 */
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            white-space: nowrap; /* 줄바꿈 방지 */
+            overflow: hidden; /* 넘치는 텍스트 숨기기 */
+            text-overflow: ellipsis; /* ...으로 표시 */
         }
         .vacation-item:hover {
             transform: translateY(-2px);
@@ -335,9 +339,12 @@
         const vacationsCollection = collection(db, 'vacations');
 
         let currentMonth = new Date();
+        let allVacations = []; // 모든 연차 데이터를 저장할 배열
+
         const calendarEl = document.getElementById('calendar');
         const monthYearEl = document.getElementById('current-month-year');
         const formEl = document.getElementById('vacation-form');
+        const vacationDateInput = document.getElementById('vacation-date');
         const modalEl = document.getElementById('vacation-modal');
         const modalDetailsEl = document.getElementById('modal-details');
         const modalDeleteBtnEl = document.getElementById('modal-delete-btn');
@@ -345,12 +352,12 @@
 
         // Firestore 실시간 동기화 설정
         onSnapshot(vacationsCollection, (snapshot) => {
-            const vacations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderCalendar(vacations);
+            allVacations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderCalendar(); // 데이터가 변경될 때마다 캘린더 렌더링
         });
 
         // 캘린더 렌더링 함수
-        function renderCalendar(vacations) {
+        function renderCalendar() {
             calendarEl.innerHTML = `
                 <div class="day-name">일</div><div class="day-name">월</div><div class="day-name">화</div><div class="day-name">수</div><div class="day-name">목</div><div class="day-name">금</div><div class="day-name">토</div>
             `;
@@ -371,15 +378,18 @@
                 dayEl.innerHTML = `<span class="day-number">${day}</span>`;
                 
                 const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+                const isoDate = date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
+
                 if (date.toDateString() === new Date().toDateString()) {
                     dayEl.classList.add('today');
                 }
 
-                const dayVacations = vacations.filter(v => {
-                    const vacationDate = new Date(v.date);
-                    return vacationDate.getFullYear() === date.getFullYear() && 
-                           vacationDate.getMonth() === date.getMonth() && 
-                           vacationDate.getDate() === date.getDate();
+                dayEl.onclick = () => {
+                    vacationDateInput.value = isoDate;
+                };
+
+                const dayVacations = allVacations.filter(v => {
+                    return v.date === isoDate;
                 });
 
                 dayVacations.forEach(v => {
@@ -392,7 +402,10 @@
                     if (v.type === '경조사') vacationItem.classList.add('family-event');
                     if (v.type === '기타') vacationItem.classList.add('other');
 
-                    vacationItem.onclick = () => openModal(v);
+                    vacationItem.onclick = (e) => {
+                        e.stopPropagation(); // 부모 요소 클릭 이벤트 방지
+                        openModal(v);
+                    };
                     dayEl.appendChild(vacationItem);
                 });
 
@@ -468,17 +481,15 @@
         // 이전 달, 다음 달 이동
         document.getElementById('prev-month').onclick = () => {
             currentMonth.setMonth(currentMonth.getMonth() - 1);
-            // onSnapshot이 자동으로 캘린더를 렌더링하므로 별도 호출 불필요
-            renderCalendar([]);
+            renderCalendar();
         };
         document.getElementById('next-month').onclick = () => {
             currentMonth.setMonth(currentMonth.getMonth() + 1);
-            // onSnapshot이 자동으로 캘린더를 렌더링하므로 별도 호출 불필요
-            renderCalendar([]);
+            renderCalendar();
         };
 
         // 초기 렌더링
-        renderCalendar([]);
+        renderCalendar();
         // 현재 날짜로 기본값 설정
         document.getElementById('vacation-date').valueAsDate = new Date();
     </script>
