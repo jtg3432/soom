@@ -12,43 +12,60 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            color: white; /* 텍스트 색상을 흰색으로 변경하여 배경 영상 위에서 잘 보이게 함 */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* 텍스트 가독성을 높이기 위한 그림자 효과 */
         }
+        
+        /* YouTube 영상 배경 스타일 */
+        #video-background {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            filter: blur(5px) brightness(60%); /* 블러 및 밝기 조절 효과 */
+        }
+        
         .container {
             max-width: 800px;
             width: 100%;
-            background: white;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4); /* 콘텐츠 영역의 반투명 배경 */
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             text-align: center;
+            z-index: 1;
         }
         .header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 60px 20px;
+            padding: 40px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 20px;
         }
         .header h1 {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .header p {
-            font-size: 1.2rem;
+            font-size: 1rem;
             opacity: 0.9;
         }
         .content {
-            padding: 60px 40px;
+            padding: 20px 0;
         }
         .welcome-message {
-            font-size: 1.1rem;
-            color: #6c757d;
-            margin-bottom: 40px;
+            font-size: 1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
         }
         .menu-buttons {
             display: grid;
@@ -58,7 +75,7 @@
             margin: 0 auto;
         }
         .menu-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: rgba(255, 255, 255, 0.2);
             color: white;
             padding: 20px 30px;
             border-radius: 15px;
@@ -69,19 +86,24 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         .menu-btn:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.4);
         }
         .icon {
             font-size: 1.5rem;
             margin-right: 10px;
         }
         .footer {
-            padding: 30px 40px;
-            background: #f8f9fa;
-            color: #6c757d;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.8rem;
+            opacity: 0.7;
         }
         
         @media (max-width: 768px) {
@@ -89,19 +111,21 @@
                 grid-template-columns: 1fr;
                 gap: 15px;
             }
-            .container {
-                margin: 10px;
-            }
             .header h1 {
-                font-size: 2.2rem;
-            }
-            .content {
-                padding: 40px 30px;
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
+    <iframe
+        id="video-background"
+        src="https://www.youtube.com/embed/LIU7JfhIsi0?controls=0&autoplay=1&mute=1&loop=1&playlist=LIU7JfhIsi0&showinfo=0&rel=0&iv_load_policy=3"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen>
+    </iframe>
+
     <div class="container">
         <div class="header">
             <h1>운영관리팀</h1>
