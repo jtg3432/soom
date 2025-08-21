@@ -11,8 +11,8 @@
             box-sizing: border-box;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #fdfdf5; /* 밝고 따뜻한 배경색 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f0f2f5; /* 부드러운 회색 배경 */
             min-height: 100vh;
             padding: 20px;
             display: flex;
@@ -20,87 +20,87 @@
             justify-content: center;
         }
         .container {
-            max-width: 800px;
+            max-width: 600px;
             width: 100%;
             background: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06); /* 부드러운 그림자 */
             overflow: hidden;
             text-align: center;
         }
         .header {
-            background: #f1f3f5; /* 밝은 회색 헤더 배경 */
-            color: #495057;
             padding: 50px 20px;
-            border-bottom: 1px solid #e0e0e0;
+            background: #2c3e50; /* 짙은 남색 헤더 배경 */
+            color: #ecf0f1;
         }
         .header h1 {
-            font-size: 2.8rem;
-            font-weight: 600;
+            font-size: 2.5rem;
+            font-weight: 700;
             margin-bottom: 10px;
+            letter-spacing: -0.5px;
         }
         .header p {
             font-size: 1.1rem;
-            opacity: 0.8;
+            opacity: 0.9;
         }
         .content {
-            padding: 50px 40px;
+            padding: 40px 30px;
         }
         .welcome-message {
-            font-size: 1.1rem;
-            color: #6c757d;
-            margin-bottom: 40px;
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-bottom: 30px;
             line-height: 1.6;
         }
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
-        .menu-card {
-            background: #ffffff;
-            color: #495057;
-            padding: 25px;
-            border-radius: 15px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-decoration: none;
+        .menu-list li {
+            margin-bottom: 12px;
+        }
+        .menu-list li:last-child {
+            margin-bottom: 0;
+        }
+        .menu-link {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            text-align: center;
-            border: 1px solid #dee2e6;
+            justify-content: flex-start;
+            padding: 18px 25px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #34495e;
+            text-decoration: none;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e6ed;
+            transition: all 0.2s ease;
         }
-        .menu-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        .menu-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            background: #ffffff;
+            color: #2980b9;
         }
         .icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
+            font-size: 1.4rem;
+            margin-right: 20px;
         }
         .footer {
-            padding: 25px 40px;
-            background: #f1f3f5;
-            color: #868e96;
-            font-size: 0.9rem;
+            padding: 25px 30px;
+            background: #ecf0f1;
+            color: #bdc3c7;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
         }
         
         @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-            }
             .header h1 {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }
             .content {
-                padding: 40px 30px;
-            }
-            .menu-grid {
-                grid-template-columns: 1fr;
+                padding: 30px 20px;
             }
         }
     </style>
@@ -116,36 +116,15 @@
                 안녕하세요! 운영관리팀 통합 관리 시스템입니다.<br>
                 필요한 메뉴를 선택해주세요.
             </div>
-            <div class="menu-grid">
-                <a href="docs.html" class="menu-card">
-                    <span class="icon">📊</span>
-                    독스 계정 정보
-                </a>
-                <a href="company.html" class="menu-card">
-                    <span class="icon">🏢</span>
-                    업체 정보
-                </a>
-                <a href="cafe.html" class="menu-card">
-                    <span class="icon">💬</span>
-                    집중관리 카페
-                </a>
-                <a href="schedule.html" class="menu-card">
-                    <span class="icon">📋</span>
-                    연세사랑모아 순번
-                </a>
-                <a href="vacation.html" class="menu-card">
-                    <span class="icon">📅</span>
-                    연차 캘린더
-                </a>
-                <a href="handover.html" class="menu-card">
-                    <span class="icon">🤝</span>
-                    인수인계
-                </a>
-                <a href="monitoring.html" class="menu-card">
-                    <span class="icon">🔍</span>
-                    컨텐츠 모니터링
-                </a>
-            </div>
+            <ul class="menu-list">
+                <li><a href="docs.html" class="menu-link"><span class="icon">📊</span> 독스 계정 정보</a></li>
+                <li><a href="company.html" class="menu-link"><span class="icon">🏢</span> 업체 정보</a></li>
+                <li><a href="cafe.html" class="menu-link"><span class="icon">💬</span> 집중관리 카페</a></li>
+                <li><a href="schedule.html" class="menu-link"><span class="icon">📋</span> 연세사랑모아 순번</a></li>
+                <li><a href="vacation.html" class="menu-link"><span class="icon">📅</span> 연차 캘린더</a></li>
+                <li><a href="handover.html" class="menu-link"><span class="icon">🤝</span> 인수인계</a></li>
+                <li><a href="monitoring.html" class="menu-link"><span class="icon">🔍</span> 컨텐츠 모니터링</a></li>
+            </ul>
         </div>
         <div class="footer">
             © 2025 운영관리팀. 모든 권리 보유.
