@@ -17,11 +17,12 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            color: white; /* 텍스트 색상을 흰색으로 변경하여 배경 영상 위에서 잘 보이게 함 */
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* 텍스트 가독성을 높이기 위한 그림자 효과 */
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            overflow: hidden; /* 배경 영상이 화면 밖으로 넘치지 않게 숨김 */
         }
         
-        /* YouTube 영상 배경 스타일 */
+        /* 로컬 영상 파일 배경 스타일 */
         #video-background {
             position: fixed;
             top: 50%;
@@ -39,7 +40,7 @@
             max-width: 800px;
             width: 100%;
             padding: 20px;
-            background: rgba(0, 0, 0, 0.4); /* 콘텐츠 영역의 반투명 배경 */
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             text-align: center;
@@ -118,13 +119,10 @@
     </style>
 </head>
 <body>
-    <iframe
-        id="video-background"
-        src="https://www.youtube.com/embed/LIU7JfhIsi0?controls=0&autoplay=1&mute=1&loop=1&playlist=LIU7JfhIsi0&showinfo=0&rel=0&iv_load_policy=3"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen>
-    </iframe>
+    <video autoplay muted loop playsinline id="video-background">
+        <source src="SSYouTube.online_메이플 루디브리엄 시계탑최하층 실사화_1080p.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
     <div class="container">
         <div class="header">
