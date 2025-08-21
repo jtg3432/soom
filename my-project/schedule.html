@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연세사랑모아 순번 - 운영관리팀</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-header h2 {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .notice-below {
+            margin: 20px auto 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border-radius: 8px;
+            padding: 12px 16px;
+            max-width: 800px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            text-align: center;
+            border-left: 4px solid #ffc107;
+            white-space: nowrap;
+        }
+
+        .progress-section {
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .progress-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .progress-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .progress-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .table-container {
+            padding: 40px;
+            overflow-x: auto;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .schedule-table th {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            position: relative;
+        }
+
+        .schedule-table td {
+            padding: 20px 10px;
+            border-bottom: 1px solid #f1f3f4;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        .schedule-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .schedule-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .person-column {
+            width: 25%;
+            position: relative;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            background: #f8f9fa;
+        }
+
+        .checkbox-item:hover {
+            background: #e9ecef;
+            transform: scale(1.02);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            transform: scale(1.3);
+            accent-color: #4facfe;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked {
+            transform: scale(1.4);
+        }
+
+        .mini-memo {
+            width: 100%;
+            max-width: 150px;
+            padding: 8px 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            background: white;
+        }
+
+        .mini-memo:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+            transform: scale(1.05);
+        }
+
+        .mini-memo::placeholder {
+            color: #adb5bd;
+            font-size: 0.8rem;
+        }
+
+        .checkbox-item.completed {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid #28a745;
+        }
+
+        .checkbox-item.completed .mini-memo {
+            background: #f8fff9;
+            border-color: #28a745;
+        }
+
+        .controls-section {
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .control-btn.save {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .control-btn.reset {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .save-feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .save-feedback.show {
+            transform: translateX(0);
+        }
+
+        .item-number {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: #4facfe;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .checkbox-item.completed .item-number {
+            background: #28a745;
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                margin: 20px;
+            }
+            
+            .table-container {
+                padding: 20px;
+            }
+
+            .schedule-table th,
+            .schedule-table td {
+                padding: 15px 8px;
+                font-size: 0.9rem;
+            }
+
+            .checkbox-group {
+                gap: 10px;
+            }
+
+            .mini-memo {
+                max-width: 120px;
+                font-size: 0.8rem;
+                padding: 6px 8px;
+            }
+
+            .progress-section {
+                padding: 20px;
+            }
+
+            .controls-section {
+                padding: 20px;
+            }
+
+            .control-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                margin: 5px;
+            }
+
+            .notice-below {
+                white-space: normal;
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <a href="index.html" class="back-btn">← 메인으로</a>
+            <h1>운영관리팀</h1>
+            <h2>연세사랑모아 순번</h2>
+            
+            <div class="notice-below">
+                위드맘케어, 연세사랑(맘스홀릭 등)만 기재 및 체크하며, '근종힐링'카페에 업로드한 것은 별도 기재 및 체크하지 않음
+            </div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-grid">
+                <div class="progress-card">
+                    <div class="progress-name">정현</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-정현"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text-정현">0 / 20 완료</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-name">태균</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-태균"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text-태균">0 / 20 완료</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-name">유빈</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-유빈"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text-유빈">0 / 20 완료</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-name">unknown</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-unknown"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text-unknown">0 / 20 완료</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>정현</th>
+                        <th>태균</th>
+                        <th>유빈</th>
+                        <th>unknown</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="person-column">
+                            <div class="checkbox-group" id="group-정현">
+                                <!-- 동적으로 생성됩니다 -->
+                            </div>
+                        </td>
+                        <td class="person-column">
+                            <div class="checkbox-group" id="group-태균">
+                                <!-- 동적으로 생성됩니다 -->
+                            </div>
+                        </td>
+                        <td class="person-column">
+                            <div class="checkbox-group" id="group-유빈">
+                                <!-- 동적으로 생성됩니다 -->
+                            </div>
+                        </td>
+                        <td class="person-column">
+                            <div class="checkbox-group" id="group-unknown">
+                                <!-- 동적으로 생성됩니다 -->
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="controls-section">
+            <button class="control-btn save" onclick="saveAllData()">💾 저장하기</button>
+            <button class="control-btn reset" onclick="resetAllData()">🔄 초기화</button>
+        </div>
+    </div>
+
+    <div class="save-feedback" id="saveFeedback">
+        💾 저장되었습니다!
+    </div>
+
+    <script>
+        const people = ['정현', '태균', '유빈', 'unknown'];
+        const totalItems = 20;
+        let scheduleData = {};
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            initFirebaseConnection();
+            initializeSchedule();
+            updateAllProgress();
+        });
+
+        // Firebase 연결 초기화
+        async function initFirebaseConnection() {
+            if (window.firebaseInitialized && window.db) {
+                const { getDocs, collection, setDoc, doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                window.getDocs = getDocs;
+                window.collection = collection;
+                window.setDoc = setDoc;
+                window.doc = doc;
+                window.onSnapshot = onSnapshot;
+                
+                await loadScheduleFromFirebase();
+                setupRealtimeSync();
+                showSaveFeedback('🔥 Firebase 연결 완료!');
+            } else {
+                loadSavedData();
+                showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드');
+            }
+        }
+
+        // Firebase에서 데이터 불러오기
+        async function loadScheduleFromFirebase() {
+            if (!window.db) return false;
+            
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, 'schedules'));
+                scheduleData = {};
+                
+                querySnapshot.forEach((doc) => {
+                    scheduleData[doc.id] = doc.data();
+                });
+                
+                renderScheduleData();
+                updateAllProgress();
+                return true;
+            } catch (error) {
+                console.error('Firebase 로드 실패:', error);
+                loadSavedData();
+                return false;
+            }
+        }
+
+        // Firebase에 저장
+        async function saveScheduleToFirebase() {
+            if (!window.db) return false;
+            
+            try {
+                for (const person of people) {
+                    const personData = {};
+                    for (let i = 1; i <= totalItems; i++) {
+                        const checkbox = document.getElementById(`${person}_${i}`);
+                        const memo = document.getElementById(`memo_${person}_${i}`);
+                        
+                        personData[i] = {
+                            checked: checkbox.checked,
+                            memo: memo.value
+                        };
+                    }
+                    
+                    await window.setDoc(window.doc(window.db, 'schedules', person), personData);
+                }
+                return true;
+            } catch (error) {
+                console.error('Firebase 저장 실패:', error);
+                return false;
+            }
+        }
+
+        // 실시간 동기화
+        function setupRealtimeSync() {
+            if (!window.db) return;
+            
+            window.onSnapshot(window.collection(window.db, 'schedules'), (snapshot) => {
+                scheduleData = {};
+                snapshot.forEach((doc) => {
+                    scheduleData[doc.id] = doc.data();
+                });
+                renderScheduleData();
+                updateAllProgress();
+                showSaveFeedback('🔄 실시간 동기화됨!');
+            });
+        }
+
+        // 스케줄 데이터 렌더링
+        function renderScheduleData() {
+            people.forEach(person => {
+                if (scheduleData[person]) {
+                    for (let i = 1; i <= totalItems; i++) {
+                        if (scheduleData[person][i]) {
+                            const checkbox = document.getElementById(`${person}_${i}`);
+                            const memo = document.getElementById(`memo_${person}_${i}`);
+                            const item = checkbox.closest('.checkbox-item');
+                            
+                            checkbox.checked = scheduleData[person][i].checked;
+                            memo.value = scheduleData[person][i].memo || '';
+                            
+                            if (checkbox.checked) {
+                                item.classList.add('completed');
+                            } else {
+                                item.classList.remove('completed');
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initializeSchedule() {
+            people.forEach(person => {
+                const group = document.getElementById(`group-${person}`);
+                
+                for (let i = 1; i <= totalItems; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'checkbox-item';
+                    
+                    item.innerHTML = `
+                        <div class="item-number">${i}</div>
+                        <input type="checkbox" id="${person}_${i}" onchange="toggleItem('${person}', ${i})">
+                        <input type="text" class="mini-memo" id="memo_${person}_${i}" placeholder="메모" oninput="saveMemo('${person}', ${i})">
+                    `;
+                    
+                    group.appendChild(item);
+                }
+            });
+        }
+
+        async function toggleItem(person, itemNumber) {
+            const checkbox = document.getElementById(`${person}_${itemNumber}`);
+            const item = checkbox.closest('.checkbox-item');
+            
+            if (checkbox.checked) {
+                item.classList.add('completed');
+            } else {
+                item.classList.remove('completed');
+            }
+            
+            updateProgress(person);
+            await autoSave();
+        }
+
+        async function saveMemo(person, itemNumber) {
+            await autoSave();
+        }
+
+        function updateProgress(person) {
+            const checkedBoxes = document.querySelectorAll(`#group-${person} input[type="checkbox"]:checked`);
+            const completed = checkedBoxes.length;
+            const percentage = (completed / totalItems) * 100;
+            
+            const progressFill = document.getElementById(`progress-${person}`);
+            const progressText = document.getElementById(`progress-text-${person}`);
+            
+            progressFill.style.width = percentage + '%';
+            progressText.textContent = `${completed} / ${totalItems} 완료`;
+        }
+
+        function updateAllProgress() {
+            people.forEach(person => {
+                updateProgress(person);
+            });
+        }
+
+        async function autoSave() {
+            const success = await saveScheduleToFirebase();
+            
+            if (!success) {
+                // Firebase 실패 시 로컬 저장
+                const data = {};
+                people.forEach(person => {
+                    data[person] = {};
+                    for (let i = 1; i <= totalItems; i++) {
+                        const checkbox = document.getElementById(`${person}_${i}`);
+                        const memo = document.getElementById(`memo_${person}_${i}`);
+                        
+                        data[person][i] = {
+                            checked: checkbox.checked,
+                            memo: memo.value
+                        };
+                    }
+                });
+                localStorage.setItem('scheduleData', JSON.stringify(data));
+            }
+        }
+
+        function loadSavedData() {
+            const savedData = localStorage.getItem('scheduleData');
+            
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                people.forEach(person => {
+                    if (data[person]) {
+                        for (let i = 1; i <= totalItems; i++) {
+                            if (data[person][i]) {
+                                const checkbox = document.getElementById(`${person}_${i}`);
+                                const memo = document.getElementById(`memo_${person}_${i}`);
+                                const item = checkbox.closest('.checkbox-item');
+                                
+                                checkbox.checked = data[person][i].checked;
+                                memo.value = data[person][i].memo || '';
+                                
+                                if (checkbox.checked) {
+                                    item.classList.add('completed');
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        async function saveAllData() {
+            const success = await saveScheduleToFirebase();
+            
+            if (success) {
+                showSaveFeedback('💾 모든 데이터가 저장되어 팀원들과 공유되었습니다!');
+            } else {
+                localStorage.setItem('scheduleData', JSON.stringify(scheduleData));
+                showSaveFeedback('⚠️ 오프라인 모드로 저장되었습니다!');
+            }
+        }
+
+        async function resetAllData() {
+            if (confirm('모든 데이터를 초기화하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+                people.forEach(person => {
+                    for (let i = 1; i <= totalItems; i++) {
+                        const checkbox = document.getElementById(`${person}_${i}`);
+                        const memo = document.getElementById(`memo_${person}_${i}`);
+                        const item = checkbox.closest('.checkbox-item');
+                        
+                        checkbox.checked = false;
+                        memo.value = '';
+                        item.classList.remove('completed');
+                    }
+                });
+                
+                await autoSave();
+                updateAllProgress();
+                showSaveFeedback('🔄 모든 데이터가 초기화되었습니다!');
+            }
+        }
+
+        function showSaveFeedback(message) {
+            const feedback = document.getElementById('saveFeedback');
+            feedback.textContent = message;
+            feedback.classList.add('show');
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        // 키보드 단축키
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveAllData();
+            }
+        });
+    </script>
+
+    <!-- Firebase SDK 추가 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, setDoc, doc, getDocs, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
+            authDomain: "soom-brand.firebaseapp.com",
+            projectId: "soom-brand",
+            storageBucket: "soom-brand.firebasestorage.app",
+            messagingSenderId: "765427036681",
+            appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 전역 변수로 설정
+        window.db = db;
+        window.firebaseInitialized = true;
+
+        console.log('🔥 Firebase 연결 완료!');
+    </script>
+</body>
+</html>
