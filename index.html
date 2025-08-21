@@ -33,7 +33,8 @@
             height: auto;
             transform: translate(-50%, -50%);
             z-index: -1;
-            filter: blur(3px) brightness(70%); /* 블러 및 밝기 조절 효과 */
+            /* 블러 효과를 1px로 줄이고 밝기 조절은 그대로 둡니다. */
+            filter: blur(1px) brightness(70%);
         }
         
         .container {
@@ -171,5 +172,3 @@
     </div>
 </body>
 </html>
-
-
