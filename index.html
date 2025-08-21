@@ -11,105 +11,92 @@
             box-sizing: border-box;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #4481eb, #04befe); /* 시원한 그라데이션 배경 */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .container {
-            max-width: 650px;
+            max-width: 800px;
             width: 100%;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.2); /* 반투명한 배경 */
+            background: white;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px); /* 핵심 효과: 블러 처리 */
-            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
             text-align: center;
         }
         .header {
-            padding-bottom: 30px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-            margin-bottom: 30px;
-            color: #ffffff;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 60px 20px;
         }
         .header h1 {
-            font-size: 2.8rem;
+            font-size: 3rem;
             font-weight: 700;
-            margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        .welcome-message {
-            font-size: 1rem;
-            color: #ffffff;
-            margin-bottom: 30px;
-            line-height: 1.6;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        .menu-list {
-            list-style: none;
-            padding: 0;
-        }
-        .menu-list li {
             margin-bottom: 15px;
         }
-        .menu-list li:last-child {
-            margin-bottom: 0;
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
         }
-        .menu-link {
+        .content {
+            padding: 60px 40px;
+        }
+        .welcome-message {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+        .menu-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .menu-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            padding: 18px 25px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #ffffff;
-            text-decoration: none;
-            background: rgba(255, 255, 255, 0.15); /* 반투명한 카드 배경 */
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            justify-content: center;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .menu-link:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        .menu-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
         .icon {
             font-size: 1.5rem;
-            margin-right: 20px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            margin-right: 10px;
         }
         .footer {
-            padding-top: 30px;
-            margin-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            font-size: 0.8rem;
-            opacity: 0.7;
+            padding: 30px 40px;
+            background: #f8f9fa;
+            color: #6c757d;
         }
         
         @media (max-width: 768px) {
+            .menu-buttons {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
             .container {
-                padding: 20px;
-                border-radius: 10px;
+                margin: 10px;
             }
             .header h1 {
                 font-size: 2.2rem;
             }
             .content {
-                padding: 20px;
-            }
-            .menu-link {
-                padding: 15px 20px;
+                padding: 40px 30px;
             }
         }
     </style>
@@ -125,15 +112,36 @@
                 안녕하세요! 운영관리팀 통합 관리 시스템입니다.<br>
                 필요한 메뉴를 선택해주세요.
             </div>
-            <ul class="menu-list">
-                <li><a href="docs.html" class="menu-link"><span class="icon">📊</span> 독스 계정 정보</a></li>
-                <li><a href="company.html" class="menu-link"><span class="icon">🏢</span> 업체 정보</a></li>
-                <li><a href="cafe.html" class="menu-link"><span class="icon">💬</span> 집중관리 카페</a></li>
-                <li><a href="schedule.html" class="menu-link"><span class="icon">📋</span> 연세사랑모아 순번</a></li>
-                <li><a href="vacation.html" class="menu-link"><span class="icon">📅</span> 연차 캘린더</a></li>
-                <li><a href="handover.html" class="menu-link"><span class="icon">🤝</span> 인수인계</a></li>
-                <li><a href="monitoring.html" class="menu-link"><span class="icon">🔍</span> 컨텐츠 모니터링</a></li>
-            </ul>
+            <div class="menu-buttons">
+                <a href="docs.html" class="menu-btn">
+                    <span class="icon">📊</span>
+                    독스 계정 정보
+                </a>
+                <a href="company.html" class="menu-btn">
+                    <span class="icon">🏢</span>
+                    업체 정보
+                </a>
+                <a href="cafe.html" class="menu-btn">
+                    <span class="icon">💬</span>
+                    집중관리 카페
+                </a>
+                <a href="schedule.html" class="menu-btn">
+                    <span class="icon">📋</span>
+                    연세사랑모아 순번
+                </a>
+                <a href="vacation.html" class="menu-btn">
+                    <span class="icon">📅</span>
+                    연차 캘린더
+                </a>
+                <a href="handover.html" class="menu-btn">
+                    <span class="icon">🤝</span>
+                    인수인계
+                </a>
+                <a href="monitoring.html" class="menu-btn">
+                    <span class="icon">🔍</span>
+                    컨텐츠 모니터링
+                </a>
+            </div>
         </div>
         <div class="footer">
             © 2025 운영관리팀. 모든 권리 보유.
