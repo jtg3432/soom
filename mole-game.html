@@ -65,7 +65,7 @@
             border-radius: 50%;
             overflow: hidden;
             border: 5px solid #5a4b41;
-            box-shadow: inset 0 3px 5px rgba(0,0,0,0.2);
+            box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2);
             cursor: pointer;
         }
 
@@ -75,13 +75,21 @@
             height: 100%;
             top: 100%;
             left: 0;
-            background: url('https://i.imgur.com/r62B8uP.png') no-repeat center;
-            background-size: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
             transition: top 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            user-select: none;
         }
 
         .hole.up .mole {
             top: 0;
+        }
+
+        .mole.bomb {
+            font-size: 5em;
+            color: red;
         }
 
         .game-buttons {
@@ -98,7 +106,7 @@
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         #startBtn {
@@ -131,7 +139,7 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0, 0, 0, 0.4);
             justify-content: center;
             align-items: center;
         }
@@ -144,7 +152,7 @@
             width: 90%;
             text-align: center;
             position: relative;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             animation: slideIn 0.5s forwards;
         }
 
@@ -247,7 +255,7 @@
             점수: <span class="score">0</span> | 시간: <span class="timer">30</span>
         </div>
         <div class="game-board holes">
-            </div>
+        </div>
         <div class="game-buttons">
             <button id="startBtn" class="btn">시작</button>
             <button id="rankingBtn" class="btn">랭킹 보기</button>
@@ -259,7 +267,7 @@
             <span class="close">&times;</span>
             <h2>랭킹</h2>
             <ul id="rankingList" class="ranking-list">
-                </ul>
+            </ul>
             <div class="input-group">
                 <input type="text" id="nameInput" placeholder="이름을 입력하세요">
                 <button id="saveScoreBtn" class="btn">점수 저장</button>
@@ -288,7 +296,7 @@
         let lastHole;
         let countdownTimerId;
         
-        // Firebase 설정 (기존 코드)
+        // Firebase 설정
         const firebaseConfig = {
             apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
             authDomain: "soom-brand.firebaseapp.com",
@@ -362,8 +370,8 @@
             lastHole = hole;
             return hole;
         }
-
-        // 두더지 올라오기
+        
+        // 두더지/폭탄 올라오기
         function up(hole) {
             hole.classList.add('up');
             setTimeout(() => {
@@ -378,6 +386,15 @@
                 hole.className = 'hole';
                 const mole = document.createElement('div');
                 mole.className = 'mole';
+                // 30% 확률로 폭탄 생성
+                if (Math.random() < 0.3) {
+                    mole.textContent = '💣';
+                    mole.classList.add('bomb');
+                    hole.dataset.isBomb = true;
+                } else {
+                    mole.textContent = '🦔';
+                    hole.dataset.isBomb = false;
+                }
                 hole.appendChild(mole);
                 holes.appendChild(hole);
             }
@@ -386,9 +403,16 @@
         // 두더지 잡기
         function whack(e) {
             if (!isPlaying || !e.target.classList.contains('mole')) return;
-            score++;
-            scoreElement.textContent = score;
-            e.target.parentNode.classList.remove('up');
+            
+            const hole = e.target.parentNode;
+            if (hole.dataset.isBomb === 'true') {
+                alert('💣 앗! 폭탄을 잡았어요! 게임 오버!');
+                endGame();
+            } else {
+                score++;
+                scoreElement.textContent = score;
+                hole.classList.remove('up');
+            }
         }
         
         // 랭킹 관련 함수
