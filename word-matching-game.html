@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>단어 맞추기 게임</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fce4ec 0%, #f48fb1 100%);
+            color: #333;
+            flex-direction: column;
+        }
+        .game-container {
+            text-align: center;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 90%;
+            margin-top: 20px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #E91E63;
+            margin-bottom: 10px;
+        }
+        .info-board {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background-color: #f8bbd0;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .word-display {
+            font-size: 2rem;
+            letter-spacing: 5px;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            min-height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            word-break: break-all;
+        }
+        .user-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+            outline: none;
+            transition: all 0.3s;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .user-input:focus {
+            border-color: #E91E63;
+            box-shadow: 0 0 8px rgba(233, 30, 99, 0.2);
+        }
+        .initial-buttons {
+            margin-top: 20px;
+        }
+        .start-btn, .ranking-btn, .back-btn {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 0 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .start-btn { background-color: #E91E63; }
+        .ranking-btn { background-color: #2196F3; }
+        .back-btn { background-color: #6c757d; }
+        .start-btn:hover { background-color: #ad1457; transform: translateY(-2px); }
+        .ranking-btn:hover { background-color: #0b7dda; transform: translateY(-2px); }
+        .back-btn:hover { background-color: #5a6268; transform: translateY(-2px); }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none; position: fixed; z-index: 10; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: 80%; max-width: 400px; text-align: center;
+        }
+        .modal-close {
+            color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.3s;
+        }
+        .modal-close:hover { color: #000; }
+        .modal h2 { margin-bottom: 20px; color: #333; }
+        .ranking-list { list-style: none; padding: 0; }
+        .ranking-list li {
+            padding: 10px; border-bottom: 1px solid #eee; font-size: 1.1rem; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .ranking-list li:last-child { border-bottom: none; }
+        .ranking-list li .name { font-weight: bold; }
+        .ranking-list li .score { color: #E91E63; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>단어 맞추기 게임!</h1>
+        <div class="info-board">
+            <span>남은 시간: <span id="timeLeft">60</span>초</span>
+            <span>맞힌 단어: <span id="score">0</span></span>
+        </div>
+        <div class="word-display" id="wordDisplay">
+            단어 맞추기 게임!
+        </div>
+        <input type="text" class="user-input" id="userInput" placeholder="정답을 입력하세요" disabled>
+        <div class="initial-buttons">
+            <button class="start-btn" id="startBtn">게임 시작</button>
+            <button class="ranking-btn" id="rankingBtn">랭킹 보기</button>
+            <a href="minigame-menu.html" class="back-btn">뒤로 가기</a>
+        </div>
+    </div>
+
+    <div id="rankingModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2>단어 맞추기 랭킹</h2>
+            <ul id="rankingList" class="ranking-list"></ul>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
+            authDomain: "soom-brand.firebaseapp.com",
+            projectId: "soom-brand",
+            storageBucket: "soom-brand.firebasestorage.app",
+            messagingSenderId: "765427036681",
+            appId: "1:765427036681:web:37add5f9e4fdb07d64388e"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const scoresCollection = collection(db, "word_matching_scores");
+
+        const words = ["사과", "바나나", "오렌지", "딸기", "포도", "복숭아", "수박", "참외", "멜론"];
+        let currentWord;
+        let score;
+        let timerId;
+        let timeLeft;
+
+        const wordDisplay = document.getElementById('wordDisplay');
+        const userInput = document.getElementById('userInput');
+        const scoreEl = document.getElementById('score');
+        const timeLeftEl = document.getElementById('timeLeft');
+        const startBtn = document.getElementById('startBtn');
+        const rankingBtn = document.getElementById('rankingBtn');
+        const rankingModal = document.getElementById('rankingModal');
+        const rankingList = document.getElementById('rankingList');
+
+        function shuffleWord(word) {
+            return word.split('').sort(() => 0.5 - Math.random()).join('');
+        }
+
+        function startGame() {
+            score = 0;
+            timeLeft = 60;
+            userInput.value = '';
+            userInput.disabled = false;
+            userInput.focus();
+            scoreEl.textContent = score;
+            timeLeftEl.textContent = timeLeft;
+            startBtn.disabled = true;
+            rankingBtn.disabled = true;
+            nextWord();
+            timerId = setInterval(() => {
+                timeLeft--;
+                timeLeftEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function nextWord() {
+            const randomIndex = Math.floor(Math.random() * words.length);
+            currentWord = words[randomIndex];
+            wordDisplay.textContent = shuffleWord(currentWord);
+        }
+
+        async function endGame() {
+            clearInterval(timerId);
+            userInput.disabled = true;
+            startBtn.disabled = false;
+            rankingBtn.disabled = false;
+            
+            alert(`게임 끝! 당신의 점수는 ${score}점 입니다.`);
+            
+            const playerName = prompt("랭킹에 이름을 남겨주세요 (최대 10자):", "익명");
+            if (playerName) {
+                const trimmedName = playerName.substring(0, 10);
+                await addDoc(scoresCollection, {
+                    name: trimmedName,
+                    score: score,
+                    timestamp: new Date()
+                });
+            }
+        }
+
+        function checkAnswer() {
+            if (userInput.value.trim() === currentWord) {
+                score++;
+                scoreEl.textContent = score;
+                userInput.value = '';
+                nextWord();
+            }
+        }
+        
+        function showRanking() {
+            rankingModal.style.display = 'flex';
+            getRealtimeRanking();
+        }
+
+        function closeModal() {
+            rankingModal.style.display = 'none';
+        }
+
+        function getRealtimeRanking() {
+            const q = query(scoresCollection, orderBy("score", "desc"), limit(10));
+            onSnapshot(q, (snapshot) => {
+                rankingList.innerHTML = '';
+                let rank = 1;
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span>#${rank}</span> <span class="name">${data.name}</span> <span class="score">${data.score}점</span>`;
+                    rankingList.appendChild(li);
+                    rank++;
+                });
+            });
+        }
+        
+        startBtn.addEventListener('click', startGame);
+        rankingBtn.addEventListener('click', showRanking);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') checkAnswer();
+        });
+    </script>
+</body>
+</html>

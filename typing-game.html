@@ -1,0 +1,377 @@
+!DOCTYPE html
+html lang=ko
+head
+    meta charset=UTF-8
+    meta name=viewport content=width=device-width, initial-scale=1.0
+    title타자 속도 게임title
+    style
+         {
+            margin 0;
+            padding 0;
+            box-sizing border-box;
+        }
+
+        body {
+            font-family 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display flex;
+            justify-content center;
+            align-items center;
+            min-height 100vh;
+            background linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            color #333;
+            flex-direction column;
+        }
+
+        .game-container {
+            text-align center;
+            padding 40px;
+            background-color #fff;
+            border-radius 20px;
+            box-shadow 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width 800px;
+            width 90%;
+            margin-top 20px;
+        }
+
+        h1 {
+            font-size 2.5rem;
+            color #00796B;
+            margin-bottom 10px;
+        }
+
+        .info-board {
+            display flex;
+            justify-content space-between;
+            align-items center;
+            font-size 1.2rem;
+            font-weight bold;
+            margin-bottom 20px;
+            background-color #e0f7fa;
+            padding 15px 25px;
+            border-radius 15px;
+            box-shadow inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .text-to-type {
+            font-size 1.5rem;
+            line-height 1.6;
+            margin 30px 0;
+            padding 20px;
+            border 2px solid #bdbdbd;
+            border-radius 10px;
+            background-color #f5f5f5;
+            min-height 150px;
+            display flex;
+            align-items center;
+            text-align left;
+            word-break break-word;
+        }
+        .correct { color #4CAF50; }
+        .incorrect { color #f44336; }
+        .current { background-color #ffff8d; border-radius 3px; padding 0 2px; }
+
+        .user-input {
+            width 100%;
+            padding 15px;
+            font-size 1.2rem;
+            border-radius 10px;
+            border 2px solid #ccc;
+            outline none;
+            transition all 0.3s;
+        }
+        .user-inputfocus {
+            border-color #00796B;
+            box-shadow 0 0 8px rgba(0, 121, 107, 0.2);
+        }
+
+        .initial-buttons {
+            margin-top 20px;
+        }
+
+        .start-btn, .ranking-btn, .back-btn {
+            padding 12px 25px;
+            font-size 1rem;
+            font-weight bold;
+            color #fff;
+            border none;
+            border-radius 25px;
+            cursor pointer;
+            transition background-color 0.3s, transform 0.2s;
+            box-shadow 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin 0 5px;
+            text-decoration none;
+            display inline-block;
+        }
+
+        .start-btn { background-color #00796B; }
+        .ranking-btn { background-color #2196F3; }
+        .back-btn { background-color #6c757d; }
+        .start-btnhover { background-color #004d40; transform translateY(-2px); }
+        .ranking-btnhover { background-color #0b7dda; transform translateY(-2px); }
+        .back-btnhover { background-color #5a6268; transform translateY(-2px); }
+
+         모달 스타일 (두더지 게임과 동일) 
+        .modal {
+            display none;
+            position fixed;
+            z-index 10;
+            left 0;
+            top 0;
+            width 100%;
+            height 100%;
+            background-color rgba(0, 0, 0, 0.6);
+            justify-content center;
+            align-items center;
+        }
+        .modal-content {
+            background-color #fefefe;
+            padding 30px;
+            border-radius 10px;
+            box-shadow 0 5px 15px rgba(0,0,0,0.3);
+            width 80%;
+            max-width 400px;
+            text-align center;
+        }
+        .modal-close {
+            color #aaa;
+            float right;
+            font-size 28px;
+            font-weight bold;
+            cursor pointer;
+            transition color 0.3s;
+        }
+        .modal-closehover {
+            color #000;
+        }
+        .modal h2 {
+            margin-bottom 20px;
+            color #333;
+        }
+        .ranking-list {
+            list-style none;
+            padding 0;
+        }
+        .ranking-list li {
+            padding 10px;
+            border-bottom 1px solid #eee;
+            font-size 1.1rem;
+            display flex;
+            justify-content space-between;
+            align-items center;
+        }
+        .ranking-list lilast-child {
+            border-bottom none;
+        }
+        .ranking-list li .name {
+            font-weight bold;
+        }
+        .ranking-list li .score {
+            color #00796B;
+            font-weight bold;
+        }
+    style
+head
+body
+
+    div class=game-container
+        h1타자 속도 게임!h1
+        div class=info-board
+            span남은 시간 span id=timeLeft60span초span
+            span정확도 span id=accuracy0span%span
+            span타수(WPM) span id=wpm0spanspan
+        div
+        div class=text-to-type id=textToType
+            div
+        input type=text class=user-input id=userInput placeholder=여기에 입력하세요... disabled
+        div class=initial-buttons
+            button class=start-btn id=startBtn게임 시작button
+            button class=ranking-btn id=rankingBtn랭킹 보기button
+            a href=minigame-menu.html class=back-btn뒤로 가기a
+        div
+    div
+
+    div id=rankingModal class=modal
+        div class=modal-content
+            span class=modal-close onclick=closeModal()&times;span
+            h2랭킹h2
+            ul id=rankingList class=ranking-list
+                ul
+        div
+    div
+
+    script type=module
+        import { initializeApp } from 'httpswww.gstatic.comfirebasejs10.7.1firebase-app.js';
+        import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot } from 'httpswww.gstatic.comfirebasejs10.7.1firebase-firestore.js';
+
+         Firebase 설정 (기존 파일에서 가져옴)
+        const firebaseConfig = {
+            apiKey AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g,
+            authDomain soom-brand.firebaseapp.com,
+            projectId soom-brand,
+            storageBucket soom-brand.firebasestorage.app,
+            messagingSenderId 765427036681,
+            appId 1765427036681web37add5f9e4fdb07d64388e
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const scoresCollection = collection(db, typing_game_scores);
+
+        const sentences = [
+            삶이 있는 한 희망은 있다.,
+            오늘 할 일을 내일로 미루지 마라.,
+            신은 용기 있는 자를 결코 버리지 않는다.,
+            모든 것은 생각하기 나름이다.,
+            뜻이 있는 곳에 길이 있다.,
+            시작이 반이다.
+        ];
+
+        const textToTypeEl = document.getElementById('textToType');
+        const userInputEl = document.getElementById('userInput');
+        const timeLeftEl = document.getElementById('timeLeft');
+        const accuracyEl = document.getElementById('accuracy');
+        const wpmEl = document.getElementById('wpm');
+        const startBtn = document.getElementById('startBtn');
+        const rankingBtn = document.getElementById('rankingBtn');
+        const rankingModal = document.getElementById('rankingModal');
+        const rankingList = document.getElementById('rankingList');
+
+        let currentSentence = '';
+        let timerId;
+        let timeLeft = 60;
+        let typedCharacters = 0;
+        let correctCharacters = 0;
+
+        function renderSentence() {
+            const randomIndex = Math.floor(Math.random()  sentences.length);
+            currentSentence = sentences[randomIndex];
+            textToTypeEl.innerHTML = '';
+            currentSentence.split('').forEach(char = {
+                const span = document.createElement('span');
+                span.textContent = char;
+                textToTypeEl.appendChild(span);
+            });
+            textToTypeEl.querySelector('span').classList.add('current');
+        }
+
+        function startGame() {
+            timeLeft = 60;
+            typedCharacters = 0;
+            correctCharacters = 0;
+            userInputEl.value = '';
+            userInputEl.disabled = false;
+            userInputEl.focus();
+            startBtn.disabled = true;
+            rankingBtn.disabled = true;
+
+            timeLeftEl.textContent = timeLeft;
+            accuracyEl.textContent = 0;
+            wpmEl.textContent = 0;
+
+            renderSentence();
+
+            timerId = setInterval(() = {
+                timeLeft--;
+                timeLeftEl.textContent = timeLeft;
+                if (timeLeft = 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        async function endGame() {
+            clearInterval(timerId);
+            userInputEl.disabled = true;
+            startBtn.disabled = false;
+            rankingBtn.disabled = false;
+            
+            const wpm = calculateWPM();
+            const accuracy = calculateAccuracy();
+
+            alert(`게임 끝!nn최종 타수(WPM) ${wpm}n정확도 ${accuracy}%`);
+            
+            const playerName = prompt(랭킹에 이름을 남겨주세요 (최대 10자), 익명);
+            if (playerName) {
+                const trimmedName = playerName.substring(0, 10);
+                await addDoc(scoresCollection, {
+                    name trimmedName,
+                    score wpm,
+                    accuracy accuracy,
+                    timestamp new Date()
+                });
+            }
+        }
+
+        function calculateWPM() {
+            return Math.round((typedCharacters  5)  (60  60));  60초 기준, 5글자당 1단어
+        }
+
+        function calculateAccuracy() {
+            if (typedCharacters === 0) return 0;
+            return ((correctCharacters  typedCharacters)  100).toFixed(2);
+        }
+
+        function handleInput() {
+            const typedText = userInputEl.value;
+            const textSpans = textToTypeEl.querySelectorAll('span');
+            let isCorrect = true;
+
+            typedCharacters = typedText.length;
+            correctCharacters = 0;
+            
+            textSpans.forEach((span, index) = {
+                const char = typedText[index];
+                if (char == null) {
+                    span.className = '';
+                    if (isCorrect) span.classList.add('current');
+                    isCorrect = false;
+                } else if (char === span.textContent) {
+                    span.className = 'correct';
+                    correctCharacters++;
+                } else {
+                    span.className = 'incorrect';
+                    isCorrect = false;
+                }
+            });
+
+            accuracyEl.textContent = calculateAccuracy();
+            wpmEl.textContent = calculateWPM();
+
+            if (typedText === currentSentence) {
+                renderSentence();
+                userInputEl.value = '';
+            }
+        }
+
+         랭킹 관련 함수 (두더지 게임과 동일)
+        function showRanking() {
+            rankingModal.style.display = 'flex';
+            getRealtimeRanking();
+        }
+
+        function closeModal() {
+            rankingModal.style.display = 'none';
+        }
+
+        function getRealtimeRanking() {
+            const q = query(scoresCollection, orderBy(score, desc), limit(10));
+            onSnapshot(q, (snapshot) = {
+                rankingList.innerHTML = '';
+                let rank = 1;
+                snapshot.forEach((doc) = {
+                    const data = doc.data();
+                    const li = document.createElement('li');
+                    li.innerHTML = `span#${rank}span span class=name${data.name}span span class=score${data.score}WPMspan`;
+                    rankingList.appendChild(li);
+                    rank++;
+                });
+            });
+        }
+
+         초기화
+        userInputEl.addEventListener('input', handleInput);
+        startBtn.addEventListener('click', startGame);
+        rankingBtn.addEventListener('click', showRanking);
+    script
+body
+html
