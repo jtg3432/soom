@@ -39,323 +39,359 @@
             margin-bottom: 10px;
         }
 
-        .score-board {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .game-info {
             font-size: 1.2rem;
-            font-weight: bold;
             margin-bottom: 20px;
-            background-color: #e8f5e9;
-            padding: 15px 25px;
-            border-radius: 15px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            color: #555;
+            font-weight: bold;
         }
 
-        .hole-container {
+        .game-info span {
+            font-weight: normal;
+        }
+
+        .game-board {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 20px 0;
+            grid-gap: 15px;
+            margin-bottom: 20px;
         }
 
         .hole {
-            width: 100%;
-            padding-bottom: 100%;
             position: relative;
-            background-color: #6d4c41;
+            width: 150px;
+            height: 150px;
+            background: #a58e7f;
             border-radius: 50%;
-            box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            border: 5px solid #5a4b41;
+            box-shadow: inset 0 3px 5px rgba(0,0,0,0.2);
             cursor: pointer;
-            transition: transform 0.2s ease-in-out;
-        }
-
-        .hole:active {
-            transform: scale(0.95);
-        }
-
-        .mole, .bomb {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            width: 80%;
-            height: 80%;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1;
         }
 
         .mole {
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path fill="%23a0522d" d="M25 50c-13.8 0-25-11.2-25-25s11.2-25 25-25 25 11.2 25 25-11.2 25-25 25z"/><path fill="%23d2691e" d="M25 48c-12.7 0-23-10.3-23-23s10.3-23 23-23 23 10.3 23 23-10.3 23-23 23z"/><path fill="%234b3621" d="M25 2c-12.7 0-23 10.3-23 23s10.3 23 23 23 23-10.3 23-23-10.3-23-23-23zm0 43c-11.6 0-21-9.4-21-21s9.4-21 21-21 21 9.4 21 21-9.4 21-21 21z"/><circle cx="18" cy="20" r="3" fill="%234b3621"/><circle cx="32" cy="20" r="3" fill="%234b3621"/><path fill="%23e74c3c" d="M25 35c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm-4-4c0 2.2-1.8 4-4 4s-4-1.8-4-4 1.8-4 4-4 4 1.8 4 4z"/><path fill="%23c0392b" d="M25 35c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm0-14c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4z"/><path fill="%238e44ad" d="M25 40c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4zm-4-4c0 2.2-1.8 4-4 4s-4-1.8-4-4 1.8-4 4-4 4 1.8 4 4z"/><path fill="%235d6d7e" d="M25 45c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4zm-4-4c0 2.2-1.8 4-4 4s-4-1.8-4-4 1.8-4 4-4 4 1.8 4 4z"/></svg>');
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 100%;
+            left: 0;
+            background: url('https://i.imgur.com/r62B8uP.png') no-repeat center;
+            background-size: 90%;
+            transition: top 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .bomb {
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="%23212121"/><path fill="%23424242" d="M25 5A20 20 0 0 0 5 25h5c0-8.3 6.7-15 15-15V5z"/><path d="M30 10l-4 4 4 4-4 4 4 4-4 4 4 4" stroke="%23f44336" stroke-width="2" fill="none"/><path d="M20 10l4 4-4 4 4 4-4 4 4 4-4 4" stroke="%23f44336" stroke-width="2" fill="none"/></svg>');
+        .hole.up .mole {
+            top: 0;
         }
 
-        .mole.up, .bomb.up {
-            transform: translateX(-50%) translateY(0);
+        .game-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .button-group {
-            margin-top: 20px;
-        }
-
-        .start-btn, .ranking-btn, .back-btn {
+        .btn {
             padding: 12px 25px;
             font-size: 1rem;
             font-weight: bold;
-            color: #fff;
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 0 5px;
-            text-decoration: none;
-            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
-        .start-btn {
+        
+        #startBtn {
             background-color: #4CAF50;
+            color: white;
         }
-        .ranking-btn {
-            background-color: #2196F3;
-        }
-        .back-btn {
-            background-color: #6c757d;
+        
+        #startBtn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
         }
 
-        .start-btn:hover { background-color: #45a049; transform: translateY(-2px); }
-        .ranking-btn:hover { background-color: #0b7dda; transform: translateY(-2px); }
-        .back-btn:hover { background-color: #5a6268; transform: translateY(-2px); }
+        #rankingBtn {
+            background-color: #008CBA;
+            color: white;
+        }
+
+        #rankingBtn:hover {
+            background-color: #0076a3;
+            transform: translateY(-2px);
+        }
 
         /* 모달 스타일 */
         .modal {
             display: none;
             position: fixed;
-            z-index: 10;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
             justify-content: center;
             align-items: center;
         }
+
         .modal-content {
-            background-color: #fefefe;
+            background-color: #fff;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            width: 80%;
-            max-width: 400px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
             text-align: center;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s forwards;
         }
-        .modal-close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 2rem;
             font-weight: bold;
+            color: #aaa;
             cursor: pointer;
             transition: color 0.3s;
         }
-        .modal-close:hover {
-            color: #000;
-        }
-        .modal h2 {
-            margin-bottom: 20px;
+
+        .close:hover,
+        .close:focus {
             color: #333;
+            text-decoration: none;
         }
+
         .ranking-list {
             list-style: none;
             padding: 0;
+            margin-bottom: 20px;
         }
+
         .ranking-list li {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
             font-size: 1.1rem;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        
         .ranking-list li:last-child {
             border-bottom: none;
         }
+
         .ranking-list li .name {
             font-weight: bold;
-        }
-        .ranking-list li .score {
             color: #4CAF50;
-            font-weight: bold;
         }
+        
+        .ranking-list li .score {
+            font-weight: bold;
+            color: #008CBA;
+        }
+        
+        .ranking-list li span:first-child {
+            width: 30px;
+            text-align: left;
+        }
+
+        .input-group {
+            margin-top: 15px;
+        }
+        
+        .input-group input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+        
+        #saveScoreBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        #saveScoreBtn:hover {
+            background-color: #45a049;
+        }
+
     </style>
 </head>
 <body>
-
     <div class="game-container">
-        <h1>두더지 잡기 게임!</h1>
-        <div class="score-board">
-            <span>점수: <span id="score">0</span></span>
-            <span>시간: <span id="timeLeft">20</span>초</span>
+        <a href="minigame-menu.html" class="btn back-btn" style="position: absolute; top: 20px; left: 20px; background-color: #f44336; color: white;">← 뒤로가기</a>
+        <h1>두더지 잡기 게임</h1>
+        <div class="game-info">
+            점수: <span class="score">0</span> | 시간: <span class="timer">30</span>
         </div>
-        <div class="hole-container" id="holeContainer">
-        </div>
-        <div class="initial-buttons">
-            <button class="start-btn" id="startBtn">게임 시작</button>
-            <button class="ranking-btn" id="rankingBtn">랭킹 보기</button>
-            <a href="minigame-menu.html" class="back-btn">뒤로 가기</a>
+        <div class="game-board holes">
+            </div>
+        <div class="game-buttons">
+            <button id="startBtn" class="btn">시작</button>
+            <button id="rankingBtn" class="btn">랭킹 보기</button>
         </div>
     </div>
-
+    
     <div id="rankingModal" class="modal">
         <div class="modal-content">
-            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <span class="close">&times;</span>
             <h2>랭킹</h2>
             <ul id="rankingList" class="ranking-list">
-            </ul>
+                </ul>
+            <div class="input-group">
+                <input type="text" id="nameInput" placeholder="이름을 입력하세요">
+                <button id="saveScoreBtn" class="btn">점수 저장</button>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, onSnapshot, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
+        const holes = document.querySelector('.holes');
+        const scoreElement = document.querySelector('.score');
+        const timerElement = document.querySelector('.timer');
+        const startBtn = document.getElementById('startBtn');
+        const rankingBtn = document.getElementById('rankingBtn');
+        const rankingModal = document.getElementById('rankingModal');
+        const rankingList = document.getElementById('rankingList');
+        const nameInput = document.getElementById('nameInput');
+        const saveScoreBtn = document.getElementById('saveScoreBtn');
+        const closeModalBtn = document.querySelector('.modal .close');
+
+        let score = 0;
+        let timer = 30;
+        let isPlaying = false;
+        let lastHole;
+        let countdownTimerId;
+        
+        // Firebase 설정 (기존 코드)
         const firebaseConfig = {
             apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
             authDomain: "soom-brand.firebaseapp.com",
             projectId: "soom-brand",
             storageBucket: "soom-brand.firebasestorage.app",
             messagingSenderId: "765427036681",
-            appId: "1:765427036681:web:37add5f9e4fdb07d64388e"
+            appId: "1:765427036681:web:37add5f9e4fdb50269f8c6"
         };
-        
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const scoresCollection = collection(db, "mole_game_scores");
+        const scoresCollection = collection(db, "mole_scores");
 
-        const holes = document.getElementById('holeContainer');
-        const scoreElement = document.getElementById('score');
-        const timeLeftElement = document.getElementById('timeLeft');
-        const startBtn = document.getElementById('startBtn');
-        const rankingBtn = document.getElementById('rankingBtn');
-        const rankingModal = document.getElementById('rankingModal');
-        const rankingList = document.getElementById('rankingList');
+        // 랭킹 저장 함수
+        async function saveScore() {
+            if (nameInput.value.trim() === '') {
+                alert('이름을 입력해주세요!');
+                return;
+            }
+            await addDoc(scoresCollection, {
+                name: nameInput.value,
+                score: score,
+                timestamp: new Date()
+            });
+            closeModal();
+            score = 0;
+            scoreElement.textContent = 0;
+            nameInput.value = '';
+        }
 
-        let score = 0;
-        let lastHole;
-        let timeUp = false;
-        let timeLeft = 20;
-        let timerId;
+        // 게임 시작 함수
+        function startGame() {
+            if (isPlaying) return;
+            isPlaying = true;
+            score = 0;
+            scoreElement.textContent = 0;
+            timer = 30;
+            timerElement.textContent = timer;
+            
+            // 두더지 출현 타이머
+            const moleTimerId = setInterval(() => {
+                const randomHole = getRandomHole();
+                up(randomHole);
+            }, 800);
 
+            // 게임 시간 타이머
+            countdownTimerId = setInterval(() => {
+                timer--;
+                timerElement.textContent = timer;
+                if (timer <= 0) {
+                    clearInterval(moleTimerId);
+                    clearInterval(countdownTimerId);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // 게임 종료 함수
+        function endGame() {
+            isPlaying = false;
+            rankingModal.style.display = 'flex';
+            getRealtimeRanking();
+        }
+
+        // 랜덤 두더지
+        function getRandomHole() {
+            const index = Math.floor(Math.random() * holes.children.length);
+            const hole = holes.children[index];
+            if (hole === lastHole) {
+                return getRandomHole();
+            }
+            lastHole = hole;
+            return hole;
+        }
+
+        // 두더지 올라오기
+        function up(hole) {
+            hole.classList.add('up');
+            setTimeout(() => {
+                hole.classList.remove('up');
+            }, 500);
+        }
+
+        // 구멍 생성
         function createHoles() {
-            const numHoles = 9;
-            holes.innerHTML = '';
-            for (let i = 0; i < numHoles; i++) {
+            for (let i = 0; i < 9; i++) {
                 const hole = document.createElement('div');
                 hole.className = 'hole';
                 const mole = document.createElement('div');
                 mole.className = 'mole';
-                const bomb = document.createElement('div');
-                bomb.className = 'bomb';
                 hole.appendChild(mole);
-                hole.appendChild(bomb);
                 holes.appendChild(hole);
             }
         }
 
-        function randomTime(min, max) { return Math.round(Math.random() * (max - min) + min); }
-
-        function randomHole(holes) {
-            const index = Math.floor(Math.random() * holes.children.length);
-            return holes.children[index];
-        }
-
-        function peep() {
-            if (timeUp) return;
-
-            const numPeeps = Math.floor(Math.random() * 3) + 1;
-            const holesToPeep = new Set();
-
-            while(holesToPeep.size < numPeeps) {
-                const hole = randomHole(holes);
-                if (hole !== lastHole) {
-                    holesToPeep.add(hole);
-                }
-            }
-            
-            holesToPeep.forEach(hole => {
-                const time = randomTime(200, 800);
-                const shouldSpawnBomb = Math.random() < 0.3;
-                const itemToPeep = shouldSpawnBomb ? hole.querySelector('.bomb') : hole.querySelector('.mole');
-
-                itemToPeep.classList.add('up');
-                setTimeout(() => {
-                    itemToPeep.classList.remove('up');
-                }, time + randomTime(200, 500));
-            });
-            
-            lastHole = [...holesToPeep].pop();
-            setTimeout(peep, randomTime(500, 1200));
-        }
-
-        function startGame() {
-            timeUp = false;
-            score = 0;
-            timeLeft = 20;
-            scoreElement.textContent = score;
-            timeLeftElement.textContent = timeLeft;
-            startBtn.disabled = true;
-            rankingBtn.disabled = true;
-
-            timerId = setInterval(() => {
-                timeLeft--;
-                timeLeftElement.textContent = timeLeft;
-                if (timeLeft <= 0) {
-                    endGame();
-                }
-            }, 1000);
-
-            peep();
-        }
-
-        async function endGame() {
-            timeUp = true;
-            clearInterval(timerId);
-            startBtn.disabled = false;
-            rankingBtn.disabled = false;
-            
-            alert(`게임 끝! 당신의 점수는 ${score}점 입니다.`);
-            
-            const playerName = prompt("랭킹에 이름을 남겨주세요 (최대 10자):", "익명");
-            if (playerName && score > 0) {
-                const trimmedName = playerName.substring(0, 10);
-                await addDoc(scoresCollection, {
-                    name: trimmedName,
-                    score: score,
-                    timestamp: new Date()
-                });
-            }
-        }
-
+        // 두더지 잡기
         function whack(e) {
-            if (!e.isTrusted) return;
-            const target = e.target;
-            if (target.classList.contains('mole') && target.classList.contains('up')) {
-                score++;
-                scoreElement.textContent = score;
-                target.classList.remove('up');
-            } else if (target.classList.contains('bomb') && target.classList.contains('up')) {
-                score -= 5;
-                scoreElement.textContent = Math.max(0, score);
-                target.classList.remove('up');
-            }
+            if (!isPlaying || !e.target.classList.contains('mole')) return;
+            score++;
+            scoreElement.textContent = score;
+            e.target.parentNode.classList.remove('up');
         }
-
+        
+        // 랭킹 관련 함수
         function showRanking() {
             rankingModal.style.display = 'flex';
             getRealtimeRanking();
@@ -373,17 +409,29 @@
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     const li = document.createElement('li');
-                    li.innerHTML = `<span>#${rank}</span> <span class="name">${data.name}</span> <span class="score">${data.score}점</span>`;
+                    li.innerHTML = `<span>#${rank}</span> <span class=\"name\">${data.name}</span> <span class=\"score\">${data.score}점</span>`;
                     rankingList.appendChild(li);
                     rank++;
                 });
             });
         }
         
-        createHoles();
-        holes.addEventListener('click', whack);
-        startBtn.addEventListener('click', startGame);
-        rankingBtn.addEventListener('click', showRanking);
+        // 이벤트 리스너 추가
+        window.onload = function() {
+            createHoles();
+            holes.addEventListener('click', whack);
+            startBtn.addEventListener('click', startGame);
+            rankingBtn.addEventListener('click', showRanking);
+            saveScoreBtn.addEventListener('click', saveScore);
+            closeModalBtn.addEventListener('click', closeModal);
+        
+            // 모달 외부 클릭 시 닫기
+            window.onclick = (event) => {
+                if (event.target === rankingModal) {
+                    closeModal();
+                }
+            };
+        };
     </script>
 </body>
 </html>
