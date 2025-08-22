@@ -11,7 +11,6 @@
              box-sizing: border-box;
          }
  
-
          body {
              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
              min-height: 100vh;
@@ -19,10 +18,9 @@
              align-items: center;
              justify-content: center;
              position: relative;
-             overflow: hidden; /* 배경 영상이 화면 밖으로 넘치지 않게 숨김 */
+             overflow: hidden;
          }
  
-
          /* 배경 영상 스타일 */
          #background-video {
              position: fixed;
@@ -34,133 +32,115 @@
              height: auto;
              transform: translate(-50%, -50%);
              z-index: -1;
-             filter: brightness(50%); /* 영상 밝기 조절 */
+             filter: brightness(50%);
          }
  
-
          .page-container {
-             z-index: 1; /* 컨텐츠가 영상 위에 보이도록 설정 */
-             max-width: 1000px;
-             margin: 0 auto;
-             background: rgba(255, 255, 255, 0.6); /* 투명한 하얀색 배경 */
-             border: 1px solid rgba(255, 255, 255, 0.3); /* **테두리 추가** */
+             z-index: 1;
+             max-width: 1200px;
+             width: 90%;
+             margin: 20px auto;
+             background: rgba(255, 255, 255, 0.95);
              border-radius: 20px;
-             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
              overflow: hidden;
+             animation: fadeIn 1s ease-in-out;
          }
  
-
+         @keyframes fadeIn {
+             from { opacity: 0; transform: translateY(20px); }
+             to { opacity: 1; transform: translateY(0); }
+         }
+ 
          .page-header {
-             background: linear-gradient(135deg, rgba(79, 172, 254, 0.6) 0%, rgba(0, 242, 254, 0.6) 100%); /* **투명하게 변경** */
+             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
              color: white;
              text-align: center;
              padding: 40px 20px;
              position: relative;
-             border-bottom: none; /* 컨테이너 테두리와 겹치지 않도록 */
          }
  
-
-         .page-title {
-             font-size: 2.5rem;
+         .page-header h1 {
+             font-size: 2.8rem;
              margin-bottom: 5px;
-             font-weight: 700;
+             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
          }
  
-
-         .page-subtitle {
-             font-size: 1rem;
-             color: #e0e0e0;
+         .page-header p {
+             font-size: 1.1rem;
+             opacity: 0.8;
          }
  
-
          .content {
-             padding: 40px;
-             display: flex;
-             flex-direction: column;
-             align-items: center;
-         }
- 
-
-         .welcome-message {
-             font-size: 1.2rem;
-             line-height: 1.6;
+             padding: 50px 30px;
              text-align: center;
-             margin-bottom: 30px;
+         }
+ 
+         .welcome-message {
+             font-size: 1.3rem;
              color: #555;
+             margin-bottom: 40px;
+             line-height: 1.8;
          }
  
-
          .menu-buttons {
-             display: flex;
-             flex-wrap: wrap;
-             justify-content: center;
-             gap: 20px;
+             display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+             gap: 25px;
          }
  
-
          .menu-btn {
-             width: 160px;
-             padding: 20px;
-             background-color: #f8f9fa; /* 버튼 배경은 가시성을 위해 불투명하게 유지 */
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             padding: 25px 30px;
+             background-color: #fff;
+             border: 2px solid #e9ecef;
              border-radius: 15px;
              text-decoration: none;
-             color: #333;
-             font-size: 1rem;
-             font-weight: 600;
-             text-align: center;
-             transition: transform 0.2s, box-shadow 0.2s;
-             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-             display: flex;
-             flex-direction: column;
-             align-items: center;
-             gap: 10px;
+             color: #495057;
+             font-size: 1.2rem;
+             font-weight: bold;
+             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+             transition: all 0.3s ease;
          }
  
-
          .menu-btn:hover {
              transform: translateY(-5px);
-             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+             border-color: #4facfe;
+             color: #4facfe;
          }
  
-
-         .icon {
-             font-size: 2rem;
-             margin-bottom: 5px;
+         .menu-btn .icon {
+             font-size: 1.8rem;
+             margin-right: 15px;
          }
  
-
          .footer {
              padding: 20px;
-             background: rgba(241, 243, 245, 0.6); /* **투명하게 변경** */
+             background: #f8f9fa;
+             color: #6c757d;
              text-align: center;
-             color: #888;
-             font-size: 0.8rem;
-             border-top: none; /* 컨테이너 테두리와 겹치지 않도록 */
          }
  
-
          @media (max-width: 768px) {
              .menu-buttons {
-                 flex-direction: column;
-                 align-items: stretch;
-             }
-             .menu-btn {
-                 width: auto;
+                 grid-template-columns: 1fr;
              }
          }
      </style>
  </head>
  <body>
-     <video id="background-video" autoplay muted loop playsinline>
-         <source src="SSYouTube.online_메이플 루디브리엄 시계탑최하층 실사화_1080p.mp4" type="video/mp4">
+     <video autoplay muted loop id="background-video">
+         <source src="background-video.mp4" type="video/mp4">
          Your browser does not support the video tag.
      </video>
  
-
      <div class="page-container">
          <div class="page-header">
-             <h1 class="page-title">운영관리팀</h1>
-             <p class="page-subtitle">통합 관리 시스템</p>
+             <h1>운영관리팀 통합 관리 시스템</h1>
+             <p>효율적인 업무 관리를 위한 도구</p>
          </div>
          <div class="content">
              <div class="welcome-message">
@@ -195,6 +175,10 @@
                  <a href="monitoring.html" class="menu-btn">
                      <span class="icon">🔍</span>
                      컨텐츠 모니터링
+                 </a>
+                 <a href="minigame-menu.html" class="menu-btn">
+                     <span class="icon">🎮</span>
+                     미니게임
                  </a>
              </div>
          </div>
