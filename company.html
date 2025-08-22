@@ -218,7 +218,7 @@
         .modal-content button:hover {
             background-color: #5a6fe5;
         }
-
+        
         /* 피드백 메시지 */
         .save-feedback {
             position: fixed;
@@ -344,6 +344,11 @@
                 const item = document.createElement('div');
                 item.className = 'company-item';
 
+                // 업체 항목 클릭 시 상세 페이지로 이동
+                item.onclick = () => {
+                    window.location.href = `company-detail.html?id=${doc.id}`;
+                };
+
                 item.innerHTML = `
                     <div class="company-info">
                         <div class="name">${company.name}</div>
@@ -352,8 +357,8 @@
                         ${company.note ? `<div class="note" style="margin-top:10px; font-size:0.9rem; color:#888;">${company.note}</div>` : ''}
                     </div>
                     <div class="company-actions">
-                        <button class="action-btn" onclick="editCompany('${doc.id}', ${JSON.stringify(company).replace(/"/g, "'")})">수정</button>
-                        <button class="delete-btn" onclick="deleteCompany('${doc.id}')">삭제</button>
+                        <button class="action-btn" onclick="event.stopPropagation(); editCompany('${doc.id}', ${JSON.stringify(company).replace(/"/g, "'")})">수정</button>
+                        <button class="delete-btn" onclick="event.stopPropagation(); deleteCompany('${doc.id}')">삭제</button>
                     </div>
                 `;
                 companyList.appendChild(item);
