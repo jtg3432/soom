@@ -67,7 +67,6 @@
 
         .content {
             padding: 30px;
-            position: relative;
         }
 
         .search-bar {
@@ -236,27 +235,20 @@
         .feedback.show {
             opacity: 1;
         }
-
-        /* 체크박스와 뱃지 스타일 */
-        .status-cell {
-            display: flex;
-            align-items: center;
-            margin-left: 20px;
-        }
-
+        
+        /* 진행 중 뱃지 스타일 */
         .in-progress-badge {
             position: absolute;
             top: 10px;
             right: 10px;
-            width: 12px;
-            height: 12px;
-            background-color: #e74c3c;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
-            display: none; /* 기본적으로 숨김 */
-        }
-        
-        .in-progress-badge.visible {
             display: block;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71p-GAAAAzUlEQVR42mNkIAIYRj3hM/mBw+Y//xGGFjA0g2RgwGqJ8/Pz+x52d3/B9PT1/R/39L/kGRnZwGkHGBjZgAEYxMTE9x3d3P8Hk1NTX/H/f0vw/z8vPyCgoKAwAgwMYGBgYM/j5+f2H4CgoGD4Dw+P/wVlZGWA3gYGhgYGBgaGhkb+h4cHYCxgYmFgYGH4+fkFGBgYGD5gYGDgx+fH/48/Py8ggwMMjIwMxkYGBmZGBiQ4uJpBwYGBhBgbGAAARiJ4wO4oA3eAAAAAElFTkSuQmCC');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
         }
     </style>
 </head>
@@ -288,10 +280,6 @@
                 <input type="email" id="emailInput" placeholder="이메일">
                 <input type="tel" id="telInput" placeholder="전화번호 (예: 010-1234-5678)">
                 <textarea id="memoInput" placeholder="메모" rows="4"></textarea>
-                <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                    <input type="checkbox" id="inProgressCheckbox" style="width: auto; margin-right: 10px;">
-                    <label for="inProgressCheckbox" style="margin: 0; font-size: 1rem;">진행 중인 업체입니다.</label>
-                </div>
                 <button type="submit" id="saveBtn">저장</button>
             </form>
         </div>
@@ -370,13 +358,6 @@
                 row.className = 'company-row';
                 row.dataset.id = doc.id;
 
-                const statusCell = document.createElement('div');
-                statusCell.className = 'status-cell';
-                const statusCheckbox = document.createElement('input');
-                statusCheckbox.type = 'checkbox';
-                statusCheckbox.checked = company.inProgress || false;
-                statusCheckbox.onchange = () => toggleInProgress(doc.id, statusCheckbox.checked);
-
                 const infoContainer = document.createElement('div');
                 infoContainer.className = 'info-container';
 
@@ -384,14 +365,10 @@
                 nameElement.className = 'company-name';
                 nameElement.textContent = company.name;
                 
-                const badge = document.createElement('span');
-                badge.className = 'in-progress-badge';
-                if (company.inProgress) {
-                    badge.classList.add('visible');
-                }
+                // 진행 중 뱃지 추가
+                const inProgressBadge = document.createElement('span');
+                inProgressBadge.className = 'in-progress-badge';
                 
-                nameElement.appendChild(badge);
-
                 const categoryElement = document.createElement('div');
                 categoryElement.className = 'company-category';
                 categoryElement.textContent = company.category;
@@ -427,7 +404,7 @@
                 actionButtons.appendChild(editBtn);
                 actionButtons.appendChild(deleteBtn);
 
-                row.appendChild(statusCheckbox);
+                row.appendChild(inProgressBadge); // 뱃지를 행에 추가
                 row.appendChild(infoContainer);
                 row.appendChild(actionButtons);
 
@@ -435,15 +412,6 @@
             });
         }
         
-        // 새로 추가된 함수: 진행 중 상태 토글
-        async function toggleInProgress(docId, isChecked) {
-            const companyDocRef = doc(db, 'companies', docId);
-            await updateDoc(companyDocRef, {
-                inProgress: isChecked
-            });
-            showSaveFeedback('상태가 업데이트되었습니다.');
-        }
-
         onSnapshot(companiesCol, (querySnapshot) => {
             displayCompanies(querySnapshot);
         });
@@ -456,17 +424,16 @@
             const email = document.getElementById('emailInput').value;
             const tel = document.getElementById('telInput').value;
             const memo = document.getElementById('memoInput').value;
-            const inProgress = document.getElementById('inProgressCheckbox').checked;
 
             if (id) {
                 const companyDocRef = doc(db, 'companies', id);
                 await updateDoc(companyDocRef, {
-                    name, category, email, tel, memo, inProgress
+                    name, category, email, tel, memo
                 });
                 showSaveFeedback('업체 정보가 수정되었습니다!');
             } else {
                 await addDoc(companiesCol, {
-                    name, category, email, tel, memo, inProgress
+                    name, category, email, tel, memo
                 });
                 showSaveFeedback('업체 정보가 추가되었습니다!');
             }
@@ -480,7 +447,6 @@
             document.getElementById('emailInput').value = company.email;
             document.getElementById('telInput').value = company.tel;
             document.getElementById('memoInput').value = company.memo;
-            document.getElementById('inProgressCheckbox').checked = company.inProgress || false;
 
             document.getElementById('modalTitle').textContent = '업체 정보 수정';
             document.getElementById('companyModal').style.display = 'flex';
