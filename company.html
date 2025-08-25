@@ -37,816 +37,271 @@
 
         .page-header h1 {
             font-size: 2.5rem;
+            margin-bottom: 5px;
             font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .page-header h2 {
-            font-size: 1.3rem;
-            font-weight: 300;
-            opacity: 0.9;
-        }
-
-        .back-btn {
+        .header-buttons {
             position: absolute;
             top: 20px;
-            left: 20px;
-            background: rgba(255,255,255,0.2);
+            right: 20px;
+        }
+
+        .add-btn, .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
-            border: none;
             padding: 10px 20px;
-            border-radius: 25px;
+            border-radius: 50px;
             text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
-
-        .search-section {
-            padding: 30px 40px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .search-controls {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 300px;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 15px 20px;
-            padding-left: 50px;
-            border: 2px solid #dee2e6;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            outline: none;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .search-input:focus {
-            border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-            font-size: 1.2rem;
-        }
-
-        .filter-option {
-            flex-shrink: 0;
-            background: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 2px solid #dee2e6;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .filter-checkbox {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
             font-size: 0.9rem;
-            color: #495057;
-            font-weight: 500;
-            gap: 10px;
-            margin: 0;
-        }
-
-        .filter-checkbox input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: #4facfe;
-            transform: scale(1.2);
-        }
-
-        .filter-checkbox span {
-            white-space: nowrap;
-            user-select: none;
-        }
-
-        .search-notice {
-            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
-            color: #2d3436;
-            text-align: center;
-            padding: 15px 20px;
-            margin: 20px 40px 0 40px;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-
-        .admin-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .admin-btn {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
             transition: all 0.3s ease;
+            cursor: pointer;
+            margin-left: 10px;
         }
 
-        .admin-btn:hover {
+        .add-btn:hover, .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .admin-btn.edit {
-            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        .content {
+            padding: 30px;
+            position: relative;
         }
-.companies-grid {
-            padding: 40px;
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .company-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
 
-        .company-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        .company-row {
+            background: #f9f9f9;
             border-radius: 15px;
-            padding: 25px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
             position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            text-align: left;
         }
 
-        .company-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .company-card:hover {
+        .company-row:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            border-color: #4facfe;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
 
-        .company-card:hover::before {
-            left: 100%;
+        .info-container {
+            flex-grow: 1;
         }
 
         .company-name {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 600;
-            color: #2c3e50;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.2s ease;
-            margin-bottom: 10px;
-        }
-
-        .company-name::before {
-            content: '🏢';
-            font-size: 1.2rem;
-        }
-
-        .company-card:hover .company-name {
-            color: white;
-        }
-
-        .company-info {
-            font-size: 0.9rem;
-            color: #6c757d;
-            transition: all 0.2s ease;
-            margin-bottom: 10px;
-        }
-        
-        .company-info ul {
-            list-style-type: '• ';
-            margin-left: 15px;
-            padding: 0;
-        }
-
-        .company-info li {
+            color: #333;
             margin-bottom: 5px;
         }
 
-        .company-card:hover .company-info {
-            color: rgba(255,255,255,0.9);
+        .company-category, .company-contact {
+            font-size: 0.9rem;
+            color: #777;
         }
 
-        .company-actions {
+        .company-contact {
+            margin-top: 5px;
+        }
+
+        .company-contact a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .action-buttons {
             display: flex;
-            gap: 8px;
-            margin-top: 15px;
+            gap: 10px;
+            margin-left: 20px;
         }
 
-        .action-btn {
-            padding: 6px 12px;
+        .edit-btn, .delete-btn {
+            background: none;
             border: none;
-            border-radius: 6px;
-            font-size: 0.8rem;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 600;
+            font-size: 1.5rem;
+            opacity: 0.6;
+            transition: opacity 0.3s;
         }
 
-        .edit-btn {
-            background: #ffc107;
-            color: #000;
+        .edit-btn:hover, .delete-btn:hover {
+            opacity: 1;
         }
 
-        .delete-btn {
-            background: #dc3545;
-            color: white;
-        }
-
-        .toggle-special-btn {
-            background: #6c757d;
-            color: white;
-        }
-
-        .action-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .special-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #ff6b6b;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .company-card:hover .special-badge {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #6c757d;
-            font-size: 1.1rem;
-            display: none;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
+        .edit-btn { color: #5cb85c; }
+        .delete-btn { color: #d9534f; }
+        
+        /* 모달 스타일 */
         .modal {
             display: none;
             position: fixed;
-            z-index: 2000;
+            z-index: 1;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
         }
 
         .modal-content {
-            background-color: white;
-            margin: 15% auto;
+            background-color: #fff;
             padding: 30px;
-            border-radius: 15px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             width: 90%;
             max-width: 500px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #2c3e50;
         }
 
         .close {
-            color: #adb5bd;
+            color: #aaa;
+            float: right;
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
-            transition: color 0.2s ease;
         }
 
-        .close:hover {
-            color: #495057;
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
 
-        .form-group {
+        .modal-content h2 {
             margin-bottom: 20px;
+            text-align: center;
         }
 
-        .form-label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .form-input, .form-select {
+        .modal-content input, .modal-content textarea {
             width: 100%;
             padding: 10px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s ease;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
         }
 
-        .form-input:focus, .form-select:focus {
-            border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-        }
-
-        .form-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        .save-feedback {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #28a745;
+        .modal-content button {
+            background: #667eea;
             color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            font-weight: 600;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .modal-content button:hover {
+            background: #5a6cdb;
+        }
+
+        .feedback {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
             z-index: 1000;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
-        .save-feedback.show {
-            transform: translateX(0);
+        .feedback.show {
+            opacity: 1;
         }
 
-        @media (max-width: 768px) {
-            .page-container {
-                margin: 20px;
-            }
-            
-            .search-controls {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 15px;
-            }
-            
-            .search-box {
-                min-width: unset;
-            }
-            
-            .filter-option {
-                align-self: center;
-            }
-            
-            .search-section {
-                padding: 20px;
-            }
+        /* 체크박스와 뱃지 스타일 */
+        .status-cell {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+        }
 
-            .companies-grid {
-                padding: 20px;
-                grid-template-columns: 1fr;
-            }
-
-            .search-notice {
-                margin: 20px 20px 0 20px;
-            }
+        .in-progress-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            display: none; /* 기본적으로 숨김 */
+        }
+        
+        .in-progress-badge.visible {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="page-container">
         <div class="page-header">
-            <a href="index.html" class="back-btn">← 메인으로</a>
-            <h1>운영관리팀</h1>
-            <h2>업체 정보</h2>
+            <div class="header-buttons">
+                <a href="index.html" class="back-btn">← 메인으로</a>
+                <button id="addBtn" class="add-btn">+ 업체 추가</button>
+            </div>
+            <h1>업체 정보</h1>
+            <p>운영관리팀에서 관리하는 모든 업체의 정보입니다.</p>
         </div>
-
-        <div class="search-section">
-            <div class="search-controls">
-                <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" class="search-input" id="companySearchInput" placeholder="업체명을 검색하세요 (초성 검색 가능)" oninput="searchCompanies()">
+        <div class="content">
+            <input type="text" id="searchInput" class="search-bar" placeholder="업체 이름으로 검색...">
+            <div id="companyList" class="company-list">
                 </div>
-                <div class="filter-option">
-                    <label class="filter-checkbox">
-                        <input type="checkbox" id="specialActionsFilter" onchange="toggleSpecialActions()">
-                        <span>업로드 후 특정 행동을 해야하는 업체</span>
-                    </label>
-                </div>
-            </div>
-            <div class="search-notice">
-                💡 모든 업체 업로드 / 3자 모니터링 진행 전 정보란 및 필수작성지 확인 필수
-            </div>
-            <div class="admin-controls">
-                <button class="admin-btn" onclick="openAddModal()">➕ 업체 추가</button>
-                <button class="admin-btn edit" onclick="toggleEditMode()">✏️ 편집 모드</button>
-            </div>
-        </div>
-
-        <div class="companies-grid" id="companiesGrid">
-            </div>
-
-        <div class="no-results" id="noResults">
-            <p>🔍 검색 결과가 없습니다.</p>
-            <p style="font-size: 0.9rem; margin-top: 10px; color: #adb5bd;">다른 검색어를 입력해보세요.</p>
         </div>
     </div>
-
+    
     <div id="companyModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <span class="modal-title" id="modalTitle">업체 추가</span>
-                <span class="close" onclick="closeModal()">&times;</span>
-            </div>
-            <div class="form-group">
-                <label class="form-label">업체명</label>
-                <input type="text" class="form-input" id="companyName" placeholder="업체명을 입력하세요">
-            </div>
-            <div class="form-group">
-                <label class="form-label">업체 정보</label>
-                <input type="text" class="form-input" id="companyInfo" placeholder="업체 설명을 입력하세요">
-            </div>
-            <div class="form-group">
-                <label class="form-label">초성</label>
-                <input type="text" class="form-input" id="companyInitial" placeholder="검색용 초성 (예: ㅇㅅㅅㄴㅅ)">
-            </div>
-            <div class="form-group">
-                <label class="form-label">특별 관리</label>
-                <select class="form-select" id="companySpecial">
-                    <option value="false">일반 관리</option>
-                    <option value="true">특별 관리</option>
-                </select>
-            </div>
-            <div class="form-buttons">
-                <button class="action-btn delete-btn" onclick="closeModal()">취소</button>
-                <button class="action-btn edit-btn" onclick="saveCompany()">저장</button>
-            </div>
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">업체 정보 추가</h2>
+            <form id="companyForm">
+                <input type="hidden" id="companyId">
+                <input type="text" id="nameInput" placeholder="업체명" required>
+                <input type="text" id="categoryInput" placeholder="카테고리 (예: 영상, 마케팅, 디자인 등)" required>
+                <input type="email" id="emailInput" placeholder="이메일">
+                <input type="tel" id="telInput" placeholder="전화번호 (예: 010-1234-5678)">
+                <textarea id="memoInput" placeholder="메모" rows="4"></textarea>
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <input type="checkbox" id="inProgressCheckbox" style="width: auto; margin-right: 10px;">
+                    <label for="inProgressCheckbox" style="margin: 0; font-size: 1rem;">진행 중인 업체입니다.</label>
+                </div>
+                <button type="submit" id="saveBtn">저장</button>
+            </form>
         </div>
     </div>
 
-    <div class="save-feedback" id="saveFeedback">
-        💾 저장되었습니다!
-    </div>
+    <div id="saveFeedback" class="feedback"></div>
+
     <script>
-        let companies = [];
-        let editMode = false;
-        let editingId = null;
-
-        // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            initFirebaseConnection();
-        });
-
-        // Firebase 연결 초기화
-        async function initFirebaseConnection() {
-            if (window.firebaseInitialized && window.db) {
-                const { getDocs, collection, addDoc, deleteDoc, doc, onSnapshot, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-                window.getDocs = getDocs;
-                window.collection = collection;
-                window.addDoc = addDoc;
-                window.deleteDoc = deleteDoc;
-                window.doc = doc;
-                window.onSnapshot = onSnapshot;
-                window.updateDoc = updateDoc;
-                
-                await loadCompaniesFromFirebase();
-                setupRealtimeSync();
-                showSaveFeedback('🔥 Firebase 연결 완료!');
-            } else {
-                loadDefaultData();
-                showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드');
-            }
-        }
-
-        // Firebase에서 데이터 불러오기
-        async function loadCompaniesFromFirebase() {
-            if (!window.db) return false;
-            
-            try {
-                const querySnapshot = await window.getDocs(window.collection(window.db, 'companies'));
-                companies = [];
-                
-                querySnapshot.forEach((doc) => {
-                    companies.push({ id: doc.id, ...doc.data() });
-                });
-                
-                // 기본 데이터가 없으면 추가
-                if (companies.length === 0) {
-                    await addDefaultCompanies();
-                }
-                
-                renderCompanies();
-                return true;
-            } catch (error) {
-                console.error('Firebase 로드 실패:', error);
-                loadDefaultData();
-                return false;
-            }
-        }
-
-        // 기본 데이터 추가
-        async function addDefaultCompanies() {
-            const defaultCompanies = [
-                { name: "다정흉부외과(애드비)", info: "흉부외과 전문 병원 / 일반 관리", initial: "ㄷㅈㅎㅂㅇㄱ", special: false },
-                { name: "더미즈병원", info: "종합병원 / 일반 관리", initial: "ㄷㅁㅈㅂㅇ", special: false },
-                { name: "로긴", info: "의료기기 업체 / 일반 관리", initial: "ㄹㄱ", special: false },
-                { name: "릴리브", info: "헬스케어 서비스 / 일반 관리", initial: "ㄹㄹㅂ", special: false },
-                { name: "서울미즈병원", info: "산부인과 전문병원 / 특별 주의사항 있음", initial: "ㅅㅇㅁㅈㅂㅇ", special: true },
-                { name: "스팟", info: "의료 플랫폼 / 특별 주의사항 있음", initial: "ㅅㅍ", special: true },
-                { name: "연세사랑모아", info: "산부인과 전문병원 / 특별 주의사항 있음", initial: "ㅇㅅㅅㄹㅁ", special: true },
-                { name: "에스바른치과", info: "치과 전문병원 / 특별 주의사항 있음", initial: "ㅇㅅㅂㄹㅊㄱ", special: true },
-                { name: "엘레드클리닉", info: "피부과 전문 클리닉 / 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
-                { name: "위드맘", info: "산후조리원 / 특별 주의사항 있음", initial: "ㅇㄷㅁ", special: true },
-                { name: "이학수성형외과", info: "성형외과 전문병원 / 일반 관리", initial: "ㅇㅎㅅㅅㅎㅇㄱ", special: false }
-            ];
-
-            for (const company of defaultCompanies) {
-                await window.addDoc(window.collection(window.db, 'companies'), company);
-            }
-            
-            // 추가 후 다시 로드
-            await loadCompaniesFromFirebase();
-        }
-
-        // 기본 데이터 로드 (Firebase 실패 시)
-        function loadDefaultData() {
-            companies = [
-                { id: "1", name: "다정흉부외과(애드비)", info: "흉부외과 전문 병원 / 일반 관리", initial: "ㄷㅈㅎㅂㅇㄱ", special: false },
-                { id: "2", name: "더미즈병원", info: "종합병원 / 일반 관리", initial: "ㄷㅁㅈㅂㅇ", special: false },
-                { id: "3", name: "로긴", info: "의료기기 업체 / 일반 관리", initial: "ㄹㄱ", special: false },
-                { id: "4", name: "릴리브", info: "헬스케어 서비스 / 일반 관리", initial: "ㄹㄹㅂ", special: false },
-                { id: "5", name: "서울미즈병원", info: "산부인과 전문병원 / 특별 주의사항 있음", initial: "ㅅㅇㅁㅈㅂㅇ", special: true },
-                { id: "6", name: "스팟", info: "의료 플랫폼 / 특별 주의사항 있음", initial: "ㅅㅍ", special: true },
-                { id: "7", name: "연세사랑모아", info: "산부인과 전문병원 / 특별 주의사항 있음", initial: "ㅇㅅㅅㄹㅁ", special: true },
-                { id: "8", name: "에스바른치과", info: "치과 전문병원 / 특별 주의사항 있음", initial: "ㅇㅅㅂㄹㅊㄱ", special: true },
-                { id: "9", name: "엘레드클리닉", info: "피부과 전문 클리닉 / 일반 관리", initial: "ㅇㄹㄷㅋㄹㄴ", special: false },
-                { id: "10", name: "위드맘", info: "산후조리원 / 특별 주의사항 있음", initial: "ㅇㄷㅁ", special: true },
-                { id: "11", name: "이학수성형외과", info: "성형외과 전문병원 / 일반 관리", initial: "ㅇㅎㅅㅅㅎㅇㄱ", special: false }
-            ];
-            renderCompanies();
-        }
-
-        // 실시간 동기화
-        function setupRealtimeSync() {
-            if (!window.db) return;
-            
-            window.onSnapshot(window.collection(window.db, 'companies'), (snapshot) => {
-                companies = [];
-                snapshot.forEach((doc) => {
-                    companies.push({ id: doc.id, ...doc.data() });
-                });
-                renderCompanies();
-                showSaveFeedback('🔄 실시간 동기화됨!');
-            });
-        }
-
-        function renderCompanies() {
-            const grid = document.getElementById('companiesGrid');
-            grid.innerHTML = '';
-
-            companies
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .forEach(company => {
-                    const infoItems = company.info.split(' / ').map(item => `<li>${item.trim()}</li>`).join('');
-                    const infoList = `<ul>${infoItems}</ul>`;
-                    
-                    const card = document.createElement('div');
-                    card.className = 'company-card';
-                    card.setAttribute('data-company', company.name.toLowerCase());
-                    card.setAttribute('data-initial', company.initial || '');
-                    card.setAttribute('data-special', company.special.toString());
-
-                    card.innerHTML = `
-                        ${company.special ? '<div class="special-badge">특별관리</div>' : ''}
-                        <div class="company-name">${company.name}</div>
-                        <div class="company-info">${infoList}</div>
-                        ${editMode ? `
-                            <div class="company-actions">
-                                <button class="action-btn edit-btn" onclick="editCompany('${company.id}')">편집</button>
-                                <button class="action-btn toggle-special-btn" onclick="toggleSpecial('${company.id}')">${company.special ? '일반화' : '특별화'}</button>
-                                <button class="action-btn delete-btn" onclick="deleteCompany('${company.id}')">삭제</button>
-                            </div>
-                        ` : ''}
-                    `;
-
-                    if (!editMode) {
-                        card.addEventListener('click', function() {
-                            const isSpecial = company.special;
-                            alert(`${company.name}\n\n${isSpecial ? '⚠️ 특별 관리 대상 업체입니다.' : '✅ 일반 관리 업체입니다.'}\n\n상세 정보 페이지는 추후 추가 예정입니다.`);
-                        });
-                    }
-
-                    grid.appendChild(card);
-                });
-        }
-
-        function searchCompanies() {
-            const searchTerm = document.getElementById('companySearchInput').value.toLowerCase().trim();
-            const companyCards = document.querySelectorAll('.company-card');
-            const noResults = document.getElementById('noResults');
-            const isSpecialFilter = document.getElementById('specialActionsFilter').checked;
-            let hasResults = false;
-
-            companyCards.forEach(card => {
-                const companyName = card.getAttribute('data-company');
-                const companyInitial = card.getAttribute('data-initial');
-                const isSpecial = card.getAttribute('data-special') === 'true';
-                
-                const matchesName = companyName.includes(searchTerm);
-                const matchesInitial = companyInitial.includes(searchTerm);
-                const matchesSearch = searchTerm === '' || matchesName || matchesInitial;
-                const matchesFilter = !isSpecialFilter || isSpecial;
-                
-                if (matchesSearch && matchesFilter) {
-                    card.classList.remove('hidden');
-                    hasResults = true;
-                } else {
-                    card.classList.add('hidden');
-                }
-            });
-
-            if (hasResults) {
-                noResults.style.display = 'none';
-            } else {
-                noResults.style.display = 'block';
-            }
-        }
-
-        function toggleSpecialActions() {
-            searchCompanies();
-        }
-
-        function toggleEditMode() {
-            editMode = !editMode;
-            const btn = event.target;
-            btn.textContent = editMode ? '👁️ 보기 모드' : '✏️ 편집 모드';
-            renderCompanies();
-        }
-
-        function openAddModal() {
-            editingId = null;
-            document.getElementById('modalTitle').textContent = '업체 추가';
-            document.getElementById('companyName').value = '';
-            document.getElementById('companyInfo').value = '';
-            document.getElementById('companyInitial').value = '';
-            document.getElementById('companySpecial').value = 'false';
-            document.getElementById('companyModal').style.display = 'block';
-        }
-
-        function editCompany(id) {
-            const company = companies.find(c => c.id === id);
-            if (company) {
-                editingId = id;
-                document.getElementById('modalTitle').textContent = '업체 편집';
-                document.getElementById('companyName').value = company.name;
-                document.getElementById('companyInfo').value = company.info;
-                document.getElementById('companyInitial').value = company.initial || '';
-                document.getElementById('companySpecial').value = company.special.toString();
-                document.getElementById('companyModal').style.display = 'block';
-            }
-        }
-        async function saveCompany() {
-            const name = document.getElementById('companyName').value.trim();
-            const info = document.getElementById('companyInfo').value.trim();
-            const initial = document.getElementById('companyInitial').value.trim();
-            const special = document.getElementById('companySpecial').value === 'true';
-
-            if (!name || !info) {
-                alert('업체명과 업체 정보는 필수 입력 항목입니다.');
-                return;
-            }
-
-            const companyData = { name, info, initial, special };
-
-            try {
-                if (editingId) {
-                    // 편집
-                    await window.updateDoc(window.doc(window.db, 'companies', editingId), companyData);
-                    showSaveFeedback('✏️ 업체 정보가 수정되었습니다!');
-                } else {
-                    // 추가
-                    await window.addDoc(window.collection(window.db, 'companies'), companyData);
-                    showSaveFeedback('➕ 새 업체가 추가되었습니다!');
-                }
-                closeModal();
-            } catch (error) {
-                console.error('Firebase 저장 실패:', error);
-                
-                // Firebase 실패 시 로컬 저장
-                if (editingId) {
-                    const company = companies.find(c => c.id === editingId);
-                    if (company) {
-                        Object.assign(company, companyData);
-                    }
-                } else {
-                    companyData.id = Date.now().toString();
-                    companies.push(companyData);
-                }
-                
-                renderCompanies();
-                localStorage.setItem('companies', JSON.stringify(companies));
-                closeModal();
-                showSaveFeedback('⚠️ 오프라인 모드로 저장됨');
-            }
-        }
-
-        async function toggleSpecial(id) {
-            const company = companies.find(c => c.id === id);
-            if (company) {
-                const newSpecial = !company.special;
-                
-                try {
-                    await window.updateDoc(window.doc(window.db, 'companies', id), { special: newSpecial });
-                    showSaveFeedback(`${newSpecial ? '🔴 특별관리로' : '🟢 일반관리로'} 변경되었습니다!`);
-                } catch (error) {
-                    console.error('Firebase 업데이트 실패:', error);
-                    
-                    // Firebase 실패 시 로컬 업데이트
-                    company.special = newSpecial;
-                    renderCompanies();
-                    localStorage.setItem('companies', JSON.stringify(companies));
-                    showSaveFeedback('⚠️ 오프라인 모드로 변경됨');
-                }
-            }
-        }
-
-        async function deleteCompany(id) {
-            const company = companies.find(c => c.id === id);
-            const companyName = company ? company.name : '업체';
-            
-            if (confirm(`"${companyName}"를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
-                try {
-                    await window.deleteDoc(window.doc(window.db, 'companies', id));
-                    showSaveFeedback('🗑️ 업체가 삭제되었습니다!');
-                } catch (error) {
-                    console.error('Firebase 삭제 실패:', error);
-                    
-                    // Firebase 실패 시 로컬 삭제
-                    const index = companies.findIndex(c => c.id === id);
-                    if (index > -1) {
-                        companies.splice(index, 1);
-                        renderCompanies();
-                        localStorage.setItem('companies', JSON.stringify(companies));
-                        showSaveFeedback('⚠️ 오프라인 모드로 삭제됨');
-                    }
-                }
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('companyModal').style.display = 'none';
-        }
+        const searchInput = document.getElementById('searchInput');
+        const companyList = document.getElementById('companyList');
 
         function showSaveFeedback(message) {
             const feedback = document.getElementById('saveFeedback');
@@ -858,7 +313,17 @@
             }, 2000);
         }
 
-        // 모달 외부 클릭 시 닫기
+        function openAddModal() {
+            document.getElementById('companyForm').reset();
+            document.getElementById('companyId').value = '';
+            document.getElementById('modalTitle').textContent = '업체 정보 추가';
+            document.getElementById('companyModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('companyModal').style.display = 'none';
+        }
+
         window.onclick = function(event) {
             const modal = document.getElementById('companyModal');
             if (event.target === modal) {
@@ -866,7 +331,6 @@
             }
         }
 
-        // 키보드 단축키
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 'n') {
                 e.preventDefault();
@@ -889,18 +353,145 @@
             projectId: "soom-brand",
             storageBucket: "soom-brand.firebasestorage.app",
             messagingSenderId: "765427036681",
-            appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
+            appId: "1:765427036681:web:37add5f9e4fdb03565f6f3"
         };
-
-        // Firebase 초기화
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const companiesCol = collection(db, 'companies');
+        
+        const companyForm = document.getElementById('companyForm');
 
-        // 전역 변수로 설정
-        window.db = db;
-        window.firebaseInitialized = true;
+        function displayCompanies(querySnapshot) {
+            const companyList = document.getElementById('companyList');
+            companyList.innerHTML = '';
+            querySnapshot.forEach(doc => {
+                const company = doc.data();
+                const row = document.createElement('div');
+                row.className = 'company-row';
+                row.dataset.id = doc.id;
 
-        console.log('🔥 Firebase 연결 완료!');
+                const statusCell = document.createElement('div');
+                statusCell.className = 'status-cell';
+                const statusCheckbox = document.createElement('input');
+                statusCheckbox.type = 'checkbox';
+                statusCheckbox.checked = company.inProgress || false;
+                statusCheckbox.onchange = () => toggleInProgress(doc.id, statusCheckbox.checked);
+
+                const infoContainer = document.createElement('div');
+                infoContainer.className = 'info-container';
+
+                const nameElement = document.createElement('div');
+                nameElement.className = 'company-name';
+                nameElement.textContent = company.name;
+                
+                const badge = document.createElement('span');
+                badge.className = 'in-progress-badge';
+                if (company.inProgress) {
+                    badge.classList.add('visible');
+                }
+                
+                nameElement.appendChild(badge);
+
+                const categoryElement = document.createElement('div');
+                categoryElement.className = 'company-category';
+                categoryElement.textContent = company.category;
+
+                const contactElement = document.createElement('div');
+                contactElement.className = 'company-contact';
+                contactElement.innerHTML = 
+                    (company.email ? `이메일: <a href="mailto:${company.email}">${company.email}</a><br>` : '') +
+                    (company.tel ? `전화번호: <a href="tel:${company.tel}">${company.tel}</a>` : '');
+
+                const memoElement = document.createElement('div');
+                memoElement.className = 'company-memo';
+                memoElement.textContent = company.memo;
+                
+                const actionButtons = document.createElement('div');
+                actionButtons.className = 'action-buttons';
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'edit-btn';
+                editBtn.innerHTML = '&#9998;';
+                editBtn.onclick = () => openEditModal(doc.id, company);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.innerHTML = '&#10006;';
+                deleteBtn.onclick = () => deleteCompany(doc.id);
+
+                infoContainer.appendChild(nameElement);
+                infoContainer.appendChild(categoryElement);
+                infoContainer.appendChild(contactElement);
+                infoContainer.appendChild(memoElement);
+                
+                actionButtons.appendChild(editBtn);
+                actionButtons.appendChild(deleteBtn);
+
+                row.appendChild(statusCheckbox);
+                row.appendChild(infoContainer);
+                row.appendChild(actionButtons);
+
+                companyList.appendChild(row);
+            });
+        }
+        
+        // 새로 추가된 함수: 진행 중 상태 토글
+        async function toggleInProgress(docId, isChecked) {
+            const companyDocRef = doc(db, 'companies', docId);
+            await updateDoc(companyDocRef, {
+                inProgress: isChecked
+            });
+            showSaveFeedback('상태가 업데이트되었습니다.');
+        }
+
+        onSnapshot(companiesCol, (querySnapshot) => {
+            displayCompanies(querySnapshot);
+        });
+
+        companyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('companyId').value;
+            const name = document.getElementById('nameInput').value;
+            const category = document.getElementById('categoryInput').value;
+            const email = document.getElementById('emailInput').value;
+            const tel = document.getElementById('telInput').value;
+            const memo = document.getElementById('memoInput').value;
+            const inProgress = document.getElementById('inProgressCheckbox').checked;
+
+            if (id) {
+                const companyDocRef = doc(db, 'companies', id);
+                await updateDoc(companyDocRef, {
+                    name, category, email, tel, memo, inProgress
+                });
+                showSaveFeedback('업체 정보가 수정되었습니다!');
+            } else {
+                await addDoc(companiesCol, {
+                    name, category, email, tel, memo, inProgress
+                });
+                showSaveFeedback('업체 정보가 추가되었습니다!');
+            }
+            closeModal();
+        });
+
+        async function openEditModal(docId, company) {
+            document.getElementById('companyId').value = docId;
+            document.getElementById('nameInput').value = company.name;
+            document.getElementById('categoryInput').value = company.category;
+            document.getElementById('emailInput').value = company.email;
+            document.getElementById('telInput').value = company.tel;
+            document.getElementById('memoInput').value = company.memo;
+            document.getElementById('inProgressCheckbox').checked = company.inProgress || false;
+
+            document.getElementById('modalTitle').textContent = '업체 정보 수정';
+            document.getElementById('companyModal').style.display = 'flex';
+        }
+
+        async function deleteCompany(docId) {
+            if (confirm('정말 삭제하시겠습니까?')) {
+                await deleteDoc(doc(db, 'companies', docId));
+                showSaveFeedback('업체 정보가 삭제되었습니다!');
+            }
+        }
     </script>
 </body>
 </html>
