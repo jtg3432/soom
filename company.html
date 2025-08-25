@@ -243,12 +243,13 @@
             right: 10px;
             width: 15px;
             height: 15px;
+            background-color: #28a745; /* 초록색 */
             border-radius: 50%;
+            display: none; /* 기본적으로 숨김 */
+        }
+        
+        .in-progress-badge.visible {
             display: block;
-            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71p-GAAAAzUlEQVR42mNkIAIYRj3hM/mBw+Y//xGGFjA0g2RgwGqJ8/Pz+x52d3/B9PT1/R/39L/kGRnZwGkHGBjZgAEYxMTE9x3d3P8Hk1NTX/H/f0vw/z8vPyCgoKAwAgwMYGBgYM/j5+f2H4CgoGD4Dw+P/wVlZGWA3gYGhgYGBgaGhkb+h4cHYCxgYmFgYGH4+fkFGBgYGD5gYGDgx+fH/48/Py8ggwMMjIwMxkYGBmZGBiQ4uJpBwYGBhBgbGAAARiJ4wO4oA3eAAAAAElFTkSuQmCC');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
         }
     </style>
 </head>
@@ -280,6 +281,10 @@
                 <input type="email" id="emailInput" placeholder="이메일">
                 <input type="tel" id="telInput" placeholder="전화번호 (예: 010-1234-5678)">
                 <textarea id="memoInput" placeholder="메모" rows="4"></textarea>
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <input type="checkbox" id="inProgressCheckbox" style="width: auto; margin-right: 10px;">
+                    <label for="inProgressCheckbox" style="margin: 0; font-size: 1rem;">진행 중인 업체입니다.</label>
+                </div>
                 <button type="submit" id="saveBtn">저장</button>
             </form>
         </div>
@@ -364,11 +369,7 @@
                 const nameElement = document.createElement('div');
                 nameElement.className = 'company-name';
                 nameElement.textContent = company.name;
-                
-                // 진행 중 뱃지 추가
-                const inProgressBadge = document.createElement('span');
-                inProgressBadge.className = 'in-progress-badge';
-                
+
                 const categoryElement = document.createElement('div');
                 categoryElement.className = 'company-category';
                 categoryElement.textContent = company.category;
@@ -403,15 +404,22 @@
                 
                 actionButtons.appendChild(editBtn);
                 actionButtons.appendChild(deleteBtn);
-
-                row.appendChild(inProgressBadge); // 뱃지를 행에 추가
+                
+                // '진행 중' 뱃지 추가
+                const inProgressBadge = document.createElement('div');
+                inProgressBadge.className = 'in-progress-badge';
+                if (company.inProgress) {
+                    inProgressBadge.classList.add('visible');
+                }
+                
+                row.appendChild(inProgressBadge);
                 row.appendChild(infoContainer);
                 row.appendChild(actionButtons);
 
                 companyList.appendChild(row);
             });
         }
-        
+
         onSnapshot(companiesCol, (querySnapshot) => {
             displayCompanies(querySnapshot);
         });
@@ -424,16 +432,17 @@
             const email = document.getElementById('emailInput').value;
             const tel = document.getElementById('telInput').value;
             const memo = document.getElementById('memoInput').value;
+            const inProgress = document.getElementById('inProgressCheckbox').checked;
 
             if (id) {
                 const companyDocRef = doc(db, 'companies', id);
                 await updateDoc(companyDocRef, {
-                    name, category, email, tel, memo
+                    name, category, email, tel, memo, inProgress
                 });
                 showSaveFeedback('업체 정보가 수정되었습니다!');
             } else {
                 await addDoc(companiesCol, {
-                    name, category, email, tel, memo
+                    name, category, email, tel, memo, inProgress
                 });
                 showSaveFeedback('업체 정보가 추가되었습니다!');
             }
@@ -447,6 +456,7 @@
             document.getElementById('emailInput').value = company.email;
             document.getElementById('telInput').value = company.tel;
             document.getElementById('memoInput').value = company.memo;
+            document.getElementById('inProgressCheckbox').checked = company.inProgress || false;
 
             document.getElementById('modalTitle').textContent = '업체 정보 수정';
             document.getElementById('companyModal').style.display = 'flex';
