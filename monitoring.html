@@ -27,6 +27,34 @@
             overflow: hidden;
         }
 
+        /* 수정된 네비게이션 탭 스타일 */
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            background: #f1f3f4;
+            padding: 0 20px;
+            border-bottom: 3px solid #dee2e6;
+            flex-wrap: wrap;
+        }
+        .nav-tabs li a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #495057;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .nav-tabs li a:hover {
+            color: #007bff;
+            border-bottom-color: #007bff;
+        }
+        .nav-tabs li.active a {
+            color: #4facfe;
+            border-bottom-color: #4facfe;
+        }
+
         .page-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -100,40 +128,13 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .add-row-btn {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-            color: white;
-        }
-
-        .add-col-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
-
-        .remove-row-btn {
-            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-            color: white;
-        }
-
-        .remove-col-btn {
-            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
-            color: white;
-        }
-
-        .control-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .save-controls {
-            display: flex;
-            gap: 15px;
-        }
-
-        .save-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
+        .add-row-btn { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; }
+        .add-col-btn { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .remove-row-btn { background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%); color: white; }
+        .remove-col-btn { background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: white; }
+        .control-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .save-controls { display: flex; gap: 15px; }
+        .save-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
 
         .table-container {
             background: white;
@@ -160,167 +161,70 @@
             position: relative;
         }
 
-        .monitoring-table td {
-            padding: 0;
-            border: 2px solid #e2e8f0;
-            position: relative;
-        }
-
+        .monitoring-table td { padding: 0; border: 2px solid #e2e8f0; position: relative; }
         .cell-input {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            outline: none;
-            font-size: 1rem;
-            font-family: inherit;
-            background: transparent;
-            transition: all 0.3s ease;
+            width: 100%; padding: 15px; border: none; outline: none;
+            font-size: 1rem; font-family: inherit; background: transparent; transition: all 0.3s ease;
         }
+        .cell-input:focus { background: #fafbff; box-shadow: inset 0 0 0 2px #667eea; }
 
-        .cell-input:focus {
-            background: #fafbff;
-            box-shadow: inset 0 0 0 2px #667eea;
-        }
+        .monitoring-table tr:hover { background: #f8fafc; }
 
-        .name-column {
-            width: 25%;
-        }
-
-        .company-column {
-            width: 50%;
-        }
-
-        .regular-column {
-            width: 25%;
-        }
-
-        .monitoring-table tr:hover {
-            background: #f8fafc;
-        }
-
-        .column-header {
-            position: relative;
-            padding-right: 40px;
-        }
-
+        .column-header { position: relative; padding-right: 40px; }
+        
         .remove-column-btn {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            background: rgba(229, 62, 62, 0.8);
-            color: white;
-            border: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            transition: all 0.2s ease;
-            display: none;
+            position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
+            background: rgba(229, 62, 62, 0.8); color: white; border: none;
+            width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+            font-size: 12px; font-weight: bold; transition: all 0.2s ease;
+            display: none; /* 평소엔 숨김 */
         }
-
-        .column-header:hover .remove-column-btn {
-            display: block;
-        }
-
-        .remove-column-btn:hover {
-            background: #c53030;
-            transform: translateY(-50%) scale(1.1);
-        }
+        .column-header:hover .remove-column-btn { display: block; } /* 호버 시 보임 */
+        .remove-column-btn:hover { background: #c53030; transform: translateY(-50%) scale(1.1); }
 
         .row-controls {
-            position: absolute;
-            left: -40px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: none;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            padding: 5px;
+            position: absolute; left: -40px; top: 50%; transform: translateY(-50%);
+            display: none; background: white; border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 5px;
         }
-
-        .monitoring-table tr:hover .row-controls {
-            display: block;
-        }
+        .monitoring-table tr:hover .row-controls { display: block; } /* 행 호버 시 보임 */
 
         .remove-row-cell-btn {
-            background: #e53e3e;
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.2s ease;
+            background: #e53e3e; color: white; border: none; width: 30px; height: 30px;
+            border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; transition: all 0.2s ease;
         }
+        .remove-row-cell-btn:hover { background: #c53030; transform: scale(1.1); }
 
-        .remove-row-cell-btn:hover {
-            background: #c53030;
-            transform: scale(1.1);
-        }
-
-        .table-wrapper {
-            position: relative;
-            margin-left: 50px;
-        }
+        .table-wrapper { position: relative; margin-left: 50px; }
 
         .save-feedback {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #48bb78;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            font-weight: 600;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: fixed; top: 20px; right: 20px; background: #48bb78; color: white; padding: 15px 25px;
+            border-radius: 50px; font-weight: 600; transform: translateX(400px); transition: transform 0.3s ease;
+            z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
-
-        .save-feedback.show {
-            transform: translateX(0);
-        }
+        .save-feedback.show { transform: translateX(0); }
 
         @media (max-width: 768px) {
-            .page-container {
-                margin: 10px;
-            }
-            
-            .main-content {
-                padding: 30px 20px;
-            }
-
-            .controls-section {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .table-controls, .save-controls {
-                justify-content: center;
-            }
-
-            .table-wrapper {
-                margin-left: 0;
-            }
-
-            .row-controls {
-                position: static;
-                display: block;
-                margin-bottom: 10px;
-                transform: none;
-            }
+            .page-container { margin: 10px; }
+            .main-content { padding: 30px 20px; }
+            .controls-section { flex-direction: column; align-items: stretch; }
+            .table-controls, .save-controls { justify-content: center; }
+            .table-wrapper { margin-left: 0; }
+            .row-controls { position: static; display: block; margin-bottom: 10px; transform: none; text-align: right; }
         }
     </style>
 </head>
 <body>
     <div class="page-container">
+        <ul class="nav-tabs">
+            <li><a href="docs.html">독스 계정 정보</a></li>
+            <li><a href="company.html">업체 정보</a></li>
+            <li><a href="cafe.html">집중관리 카페</a></li>
+            <li><a href="schedule.html">연세사랑모아 순번</a></li>
+            <li class="active"><a href="monitoring.html">컨텐츠 모니터링</a></li>
+            <li><a href="Main.html">업체별 정보</a></li>
+        </ul>
+
         <div class="page-header">
             <a href="index.html" class="back-btn">← 메인으로</a>
             <h1>운영관리팀</h1>
@@ -336,7 +240,7 @@
                     <button class="control-btn remove-col-btn" onclick="removeLastColumn()">- 열 삭제</button>
                 </div>
                 <div class="save-controls">
-                    <button class="control-btn save-btn" onclick="saveData()">저장</button>
+                    <button class="control-btn save-btn" onclick="saveData()">💾 저장</button>
                 </div>
             </div>
 
@@ -344,22 +248,9 @@
                 <div class="table-wrapper">
                     <table class="monitoring-table" id="monitoringTable">
                         <thead id="tableHead">
-                            <tr>
-                                <th class="name-column">
-                                    <div class="column-header">
-                                        이름
-                                    </div>
-                                </th>
-                                <th class="company-column">
-                                    <div class="column-header">
-                                        업체명
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
+                            </thead>
                         <tbody id="tableBody">
-                            <!-- 동적으로 생성됩니다 -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
@@ -370,358 +261,10 @@
         저장되었습니다!
     </div>
 
-    <script>
-        let tableData = [];
-        let columnCount = 2;
-        let rowCount = 5; // 초기 행 수
-
-        // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            initFirebaseConnection();
-            initializeTable();
-        });
-
-        // Firebase 연결 초기화
-        async function initFirebaseConnection() {
-            console.log('Firebase 초기화 시작');
-            console.log('window.firebaseInitialized:', window.firebaseInitialized);
-            console.log('window.db:', window.db);
-            
-            if (window.firebaseInitialized && window.db) {
-                try {
-                    const { getDocs, collection, setDoc, doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-                    window.getDocs = getDocs;
-                    window.collection = collection;
-                    window.setDoc = setDoc;
-                    window.doc = doc;
-                    window.onSnapshot = onSnapshot;
-                    
-                    console.log('Firebase 함수들 로드 완료');
-                    
-                    await loadMonitoringFromFirebase();
-                    setupRealtimeSync();
-                    showSaveFeedback('Firebase 연결 완료!');
-                } catch (error) {
-                    console.error('Firebase 함수 로드 오류:', error);
-                    loadSavedData();
-                    showSaveFeedback('Firebase 함수 로드 실패 - 로컬 모드');
-                }
-            } else {
-                console.log('Firebase 초기화되지 않음');
-                loadSavedData();
-                showSaveFeedback('Firebase 연결 실패 - 로컬 모드');
-            }
-        }
-
-        // Firebase에서 데이터 불러오기
-        async function loadMonitoringFromFirebase() {
-            if (!window.db) return false;
-            
-            try {
-                const querySnapshot = await window.getDocs(window.collection(window.db, 'monitoring'));
-                let savedData = null;
-                
-                querySnapshot.forEach((doc) => {
-                    if (doc.id === 'tableData') {
-                        savedData = doc.data();
-                    }
-                });
-                
-                if (savedData) {
-                    columnCount = savedData.columnCount || 2;
-                    rowCount = savedData.rowCount || 5;
-                    
-                    // 2차원 배열 초기화
-                    tableData = [];
-                    for (let i = 0; i < rowCount; i++) {
-                        const row = [];
-                        for (let j = 0; j < columnCount; j++) {
-                            row.push(savedData[`r${i}c${j}`] || '');
-                        }
-                        tableData.push(row);
-                    }
-                    
-                    renderTable();
-                } else {
-                    initializeTable();
-                }
-                return true;
-            } catch (error) {
-                console.error('Firebase 로드 실패:', error);
-                loadSavedData();
-                return false;
-            }
-        }
-
-        // Firebase에 저장
-        async function saveMonitoringToFirebase() {
-            if (!window.db) {
-                console.log('Firebase DB 연결 없음');
-                return false;
-            }
-            
-            try {
-                console.log('Firebase 저장 시도 중...');
-                
-                // 완전히 새로운 방식: 각 셀을 개별 필드로 저장
-                const saveData = {
-                    columnCount: columnCount,
-                    rowCount: rowCount,
-                    lastUpdated: new Date().toISOString()
-                };
-                
-                // 각 셀을 개별 필드로 추가
-                for (let i = 0; i < tableData.length; i++) {
-                    for (let j = 0; j < (tableData[i] ? tableData[i].length : 0); j++) {
-                        saveData[`r${i}c${j}`] = tableData[i][j] || '';
-                    }
-                }
-                
-                console.log('Firebase에 저장할 데이터:', saveData);
-                
-                await window.setDoc(window.doc(window.db, 'monitoring', 'tableData'), saveData);
-                
-                console.log('Firebase 저장 성공');
-                return true;
-            } catch (error) {
-                console.error('Firebase 저장 실패:', error);
-                return false;
-            }
-        }
-
-        // 실시간 동기화
-        function setupRealtimeSync() {
-            if (!window.db) return;
-            
-            window.onSnapshot(window.collection(window.db, 'monitoring'), (snapshot) => {
-                snapshot.forEach((doc) => {
-                    if (doc.id === 'tableData') {
-                        const data = doc.data();
-                        
-                        columnCount = data.columnCount || 2;
-                        rowCount = data.rowCount || 5;
-                        
-                        // 2차원 배열 초기화
-                        tableData = [];
-                        for (let i = 0; i < rowCount; i++) {
-                            const row = [];
-                            for (let j = 0; j < columnCount; j++) {
-                                row.push(data[`r${i}c${j}`] || '');
-                            }
-                            tableData.push(row);
-                        }
-                        
-                        renderTable();
-                        showSaveFeedback('실시간 동기화됨!');
-                    }
-                });
-            });
-        }
-
-        function initializeTable() {
-            // 초기 데이터 구조 생성
-            tableData = [];
-            for (let i = 0; i < rowCount; i++) {
-                const row = [];
-                for (let j = 0; j < columnCount; j++) {
-                    row.push('');
-                }
-                tableData.push(row);
-            }
-            renderTable();
-        }
-
-        function renderTable() {
-            const thead = document.getElementById('tableHead');
-            const tbody = document.getElementById('tableBody');
-            
-            // 헤더 렌더링
-            const headerRow = thead.querySelector('tr');
-            headerRow.innerHTML = '';
-            
-            // 기본 컬럼들
-            const nameHeader = document.createElement('th');
-            nameHeader.className = 'name-column';
-            nameHeader.innerHTML = '<div class="column-header">이름</div>';
-            headerRow.appendChild(nameHeader);
-            
-            const companyHeader = document.createElement('th');
-            companyHeader.className = 'company-column';
-            companyHeader.innerHTML = '<div class="column-header">업체명</div>';
-            headerRow.appendChild(companyHeader);
-            
-            // 추가 컬럼들
-            for (let i = 2; i < columnCount; i++) {
-                const th = document.createElement('th');
-                th.className = 'regular-column';
-                th.innerHTML = `
-                    <div class="column-header">
-                        항목 ${i - 1}
-                        <button class="remove-column-btn" onclick="removeColumn(${i})">×</button>
-                    </div>
-                `;
-                headerRow.appendChild(th);
-            }
-            
-            // 바디 렌더링
-            tbody.innerHTML = '';
-            
-            for (let i = 0; i < tableData.length; i++) {
-                const row = document.createElement('tr');
-                
-                for (let j = 0; j < columnCount; j++) {
-                    const cell = document.createElement('td');
-                    if (j === 0) {
-                        cell.className = 'name-column';
-                    } else if (j === 1) {
-                        cell.className = 'company-column';
-                    } else {
-                        cell.className = 'regular-column';
-                    }
-                    
-                    cell.innerHTML = `
-                        <input type="text" class="cell-input" 
-                               value="${tableData[i][j] || ''}" 
-                               onchange="updateCell(${i}, ${j}, this.value)"
-                               placeholder="${j === 0 ? '이름 입력' : j === 1 ? '업체명 입력' : '내용 입력'}">
-                    `;
-                    
-                    // 첫 번째 셀에 행 삭제 버튼 추가
-                    if (j === 0) {
-                        cell.innerHTML += `
-                            <div class="row-controls">
-                                <button class="remove-row-cell-btn" onclick="removeRow(${i})">×</button>
-                            </div>
-                        `;
-                    }
-                    
-                    row.appendChild(cell);
-                }
-                
-                tbody.appendChild(row);
-            }
-        }
-
-        function updateCell(rowIndex, colIndex, value) {
-            if (!tableData[rowIndex]) {
-                tableData[rowIndex] = [];
-            }
-            tableData[rowIndex][colIndex] = value;
-        }
-
-        function addRow() {
-            const newRow = [];
-            for (let i = 0; i < columnCount; i++) {
-                newRow.push('');
-            }
-            tableData.push(newRow);
-            rowCount++;
-            renderTable();
-        }
-
-        function addColumn() {
-            columnCount++;
-            // 기존 모든 행에 새 컬럼 추가
-            for (let i = 0; i < tableData.length; i++) {
-                tableData[i].push('');
-            }
-            renderTable();
-        }
-
-        function removeLastRow() {
-            if (tableData.length > 1) {
-                tableData.pop();
-                rowCount--;
-                renderTable();
-            }
-        }
-
-        function removeLastColumn() {
-            if (columnCount > 2) {
-                columnCount--;
-                // 모든 행에서 마지막 컬럼 제거
-                for (let i = 0; i < tableData.length; i++) {
-                    tableData[i].pop();
-                }
-                renderTable();
-            }
-        }
-
-        function removeRow(index) {
-            if (tableData.length > 1) {
-                tableData.splice(index, 1);
-                rowCount--;
-                renderTable();
-            }
-        }
-
-        function removeColumn(index) {
-            if (columnCount > 2) {
-                columnCount--;
-                // 모든 행에서 해당 컬럼 제거
-                for (let i = 0; i < tableData.length; i++) {
-                    tableData[i].splice(index, 1);
-                }
-                renderTable();
-            }
-        }
-
-        async function saveData() {
-            console.log('saveData 함수 시작');
-            console.log('현재 tableData:', tableData);
-            
-            const success = await saveMonitoringToFirebase();
-            
-            if (!success) {
-                localStorage.setItem('monitoringData', JSON.stringify({
-                    data: tableData,
-                    columnCount: columnCount,
-                    rowCount: rowCount
-                }));
-                showSaveFeedback('오프라인 모드로 저장됨');
-            } else {
-                showSaveFeedback('데이터가 저장되어 팀원들과 공유되었습니다!');
-            }
-        }
-
-        function loadSavedData() {
-            const saved = localStorage.getItem('monitoringData');
-            if (saved) {
-                const data = JSON.parse(saved);
-                tableData = data.data || [];
-                columnCount = data.columnCount || 2;
-                rowCount = data.rowCount || 5;
-                renderTable();
-            } else {
-                initializeTable();
-            }
-        }
-
-        function showSaveFeedback(message) {
-            const feedback = document.getElementById('saveFeedback');
-            feedback.textContent = message;
-            feedback.classList.add('show');
-            
-            setTimeout(() => {
-                feedback.classList.remove('show');
-            }, 2000);
-        }
-
-        // 키보드 단축키
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                saveData();
-            }
-        });
-    </script>
-
-    <!-- Firebase SDK 추가 -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, setDoc, doc, getDocs, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, doc, getDoc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Firebase 설정
         const firebaseConfig = {
             apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
             authDomain: "soom-brand.firebaseapp.com",
@@ -731,15 +274,211 @@
             appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
         };
 
-        // Firebase 초기화
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            window.db = db;
+            window.firebase = { collection, doc, getDoc, setDoc, onSnapshot };
+            window.firebaseInitialized = true;
+            console.log('🔥 Firebase 연결 완료!');
+        } catch (error) {
+            window.firebaseInitialized = false;
+            console.error('Firebase 초기화 실패:', error);
+        }
+    </script>
 
-        // 전역 변수로 설정
-        window.db = db;
-        window.firebaseInitialized = true;
+    <script>
+        let tableData = {
+            columns: ['이름', '업체명'], // 최소 2개 컬럼 고정
+            rows: [
+                ['', ''], ['', ''], ['', ''], ['', ''], ['', ''] // 기본 5행
+            ]
+        };
 
-        console.log('Firebase 연결 완료!');
+        document.addEventListener('DOMContentLoaded', init);
+
+        function init() {
+            if (typeof window.firebaseInitialized === 'undefined') {
+                setTimeout(init, 100);
+                return;
+            }
+
+            if (window.firebaseInitialized) {
+                setupRealtimeSync();
+                showSaveFeedback('🔥 실시간 동기화 시작');
+            } else {
+                loadLocalData();
+                renderTable();
+                showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드', true);
+            }
+        }
+
+        function setupRealtimeSync() {
+            const tableDocRef = window.firebase.doc(window.db, 'monitoring', 'mainTable');
+            window.firebase.onSnapshot(tableDocRef, (doc) => {
+                if (doc.exists()) {
+                    tableData = doc.data();
+                    // 데이터 구조 보정 (초기 상태이거나 잘못된 경우)
+                    if (!tableData.columns || tableData.columns.length < 2) {
+                        tableData.columns = ['이름', '업체명'];
+                    }
+                    if (!tableData.rows) tableData.rows = [['', '']];
+                } else {
+                    // 문서가 없으면 기본값으로 생성
+                    saveData(); 
+                }
+                renderTable();
+            });
+        }
+
+        function renderTable() {
+            const thead = document.getElementById('tableHead');
+            const tbody = document.getElementById('tableBody');
+            
+            // 헤더 렌더링
+            thead.innerHTML = '';
+            const headerRow = document.createElement('tr');
+            tableData.columns.forEach((colName, index) => {
+                const th = document.createElement('th');
+                th.innerHTML = `
+                    <div class="column-header">
+                        <input type="text" class="cell-input header-input" value="${colName}" onchange="updateColumnName(${index}, this.value)" ${index < 2 ? 'readonly' : ''}>
+                        ${index >= 2 ? `<button class="remove-column-btn" onclick="removeColumn(${index})">×</button>` : ''}
+                    </div>
+                `;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            
+            // 바디 렌더링
+            tbody.innerHTML = '';
+            tableData.rows.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                tableData.columns.forEach((_, colIndex) => {
+                    const cell = document.createElement('td');
+                    cell.innerHTML = `
+                        <input type="text" class="cell-input" 
+                               value="${row[colIndex] || ''}" 
+                               onchange="updateCell(${rowIndex}, ${colIndex}, this.value)"
+                               placeholder="${tableData.columns[colIndex]} 입력">
+                        ${colIndex === 0 ? `<div class="row-controls"><button class="remove-row-cell-btn" onclick="removeRow(${rowIndex})">×</button></div>` : ''}
+                    `;
+                    tr.appendChild(cell);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- 데이터 변경 함수 ---
+        
+        function updateCell(rowIndex, colIndex, value) {
+            tableData.rows[rowIndex][colIndex] = value;
+            autoSave();
+        }
+
+        function updateColumnName(colIndex, name) {
+            if (colIndex >= 2) { // 기본 2개 컬럼(이름, 업체명)은 수정 불가
+                tableData.columns[colIndex] = name;
+                autoSave();
+            }
+        }
+        
+        function addRow() {
+            tableData.rows.push(new Array(tableData.columns.length).fill(''));
+            renderTable();
+            autoSave();
+        }
+
+        function removeRow(index) {
+            if (tableData.rows.length > 1) {
+                tableData.rows.splice(index, 1);
+                renderTable();
+                autoSave();
+            } else {
+                alert('마지막 행은 삭제할 수 없습니다.');
+            }
+        }
+        
+        function removeLastRow() {
+            if (tableData.rows.length > 1) {
+                removeRow(tableData.rows.length - 1);
+            }
+        }
+
+        function addColumn() {
+            tableData.columns.push('새 항목');
+            tableData.rows.forEach(row => row.push(''));
+            renderTable();
+            autoSave();
+        }
+
+        function removeColumn(index) {
+            if (index >= 2) {
+                tableData.columns.splice(index, 1);
+                tableData.rows.forEach(row => row.splice(index, 1));
+                renderTable();
+                autoSave();
+            } else {
+                alert('기본 컬럼(이름, 업체명)은 삭제할 수 없습니다.');
+            }
+        }
+        
+        function removeLastColumn() {
+            if (tableData.columns.length > 2) {
+                removeColumn(tableData.columns.length - 1);
+            }
+        }
+
+        // --- 저장/로드 함수 ---
+
+        let saveTimer;
+        function autoSave() {
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => {
+                saveData(true); // true = 자동 저장
+            }, 1000); // 1초 디바운스
+        }
+
+        async function saveData(isAuto = false) {
+            if (!window.firebaseInitialized) {
+                localStorage.setItem('monitoringData', JSON.stringify(tableData));
+                if (!isAuto) showSaveFeedback('⚠️ 오프라인 모드로 저장됨', true);
+                return;
+            }
+            try {
+                const tableDocRef = window.firebase.doc(window.db, 'monitoring', 'mainTable');
+                await window.firebase.setDoc(tableDocRef, tableData);
+                if (!isAuto) showSaveFeedback('💾 저장되었습니다!');
+            } catch (error) {
+                console.error("저장 실패:", error);
+                if (!isAuto) showSaveFeedback('❌ 저장 실패', true);
+            }
+        }
+        
+        function loadLocalData() {
+            const saved = localStorage.getItem('monitoringData');
+            if (saved) {
+                tableData = JSON.parse(saved);
+            }
+        }
+
+        function showSaveFeedback(message, isError = false) {
+            const feedback = document.getElementById('saveFeedback');
+            feedback.textContent = message;
+            feedback.style.background = isError ? '#dc3545' : '#28a745';
+            feedback.classList.add('show');
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        // 키보드 단축키
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveData(false); // 수동 저장
+            }
+        });
     </script>
 </body>
 </html>
