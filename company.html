@@ -27,7 +27,7 @@
             overflow: hidden;
         }
 
-        /* 네비게이션 탭 스타일 */
+        /* 수정된 네비게이션 탭 스타일 */
         .nav-tabs {
             display: flex;
             list-style: none;
@@ -180,21 +180,19 @@
             color: #2d3436;
             text-align: center;
             padding: 15px 20px;
-            margin: 20px auto 0 auto;
+            margin: 20px 40px 0 40px;
             border-radius: 10px;
             font-size: 0.95rem;
             font-weight: 500;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            max-width: 800px;
         }
 
         .admin-controls {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin: 20px auto 0 auto;
+            margin-top: 20px;
             flex-wrap: wrap;
-            max-width: 800px;
         }
 
         .admin-btn {
@@ -302,24 +300,10 @@
             font-weight: 600;
         }
 
-        .edit-btn {
-            background: #ffc107;
-            color: #000;
-        }
-
-        .delete-btn {
-            background: #dc3545;
-            color: white;
-        }
-
-        .toggle-special-btn {
-            background: #6c757d;
-            color: white;
-        }
-
-        .action-btn:hover {
-            transform: scale(1.05);
-        }
+        .edit-btn { background: #ffc107; color: #000; }
+        .delete-btn { background: #dc3545; color: white; }
+        .toggle-special-btn { background: #6c757d; color: white; }
+        .action-btn:hover { transform: scale(1.05); }
 
         .special-badge {
             position: absolute;
@@ -331,10 +315,6 @@
             border-radius: 12px;
             font-size: 0.7rem;
             font-weight: 600;
-        }
-
-        .company-card:hover .special-badge {
-            background: rgba(255,255,255,0.2);
         }
         
         .in-progress-badge {
@@ -348,9 +328,7 @@
             display: none;
         }
         
-        .in-progress-badge.visible {
-            display: block;
-        }
+        .in-progress-badge.visible { display: block; }
 
         .no-results {
             text-align: center;
@@ -360,52 +338,37 @@
             display: none;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);
         }
 
         .modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 500px;
+            background-color: white; margin: 10% auto; padding: 30px;
+            border-radius: 15px; width: 90%; max-width: 500px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
-        
+
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { font-size: 1.3rem; font-weight: 700; color: #2c3e50; }
+        .close { color: #adb5bd; font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.2s ease; }
+        .close:hover { color: #495057; }
         .form-group { margin-bottom: 20px; }
         .form-label { display: block; margin-bottom: 5px; font-weight: 600; color: #495057; }
-        .form-input, .form-select { width: 100%; padding: 10px; border: 2px solid #dee2e6; border-radius: 8px; font-size: 1rem; outline: none; transition: border-color 0.3s ease; }
+        .form-input, .form-select {
+            width: 100%; padding: 10px; border: 2px solid #dee2e6; border-radius: 8px;
+            font-size: 1rem; outline: none; transition: border-color 0.3s ease;
+        }
         .form-input:focus, .form-select:focus { border-color: #4facfe; box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1); }
         .form-buttons { display: flex; gap: 10px; justify-content: flex-end; }
 
         .save-feedback {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #28a745;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            font-weight: 600;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: fixed; top: 20px; right: 20px; background: #28a745; color: white; padding: 15px 25px;
+            border-radius: 50px; font-weight: 600; transform: translateX(400px); transition: transform 0.3s ease;
+            z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
-
         .save-feedback.show { transform: translateX(0); }
 
         @media (max-width: 768px) {
@@ -424,12 +387,11 @@
         <ul class="nav-tabs">
             <li><a href="docs.html">독스 계정 정보</a></li>
             <li class="active"><a href="company.html">업체 정보</a></li>
-            <li><a href="vacation.html">연차 캘린더</a></li>
             <li><a href="cafe.html">집중관리 카페</a></li>
             <li><a href="schedule.html">연세사랑모아 순번</a></li>
             <li><a href="monitoring.html">컨텐츠 모니터링</a></li>
-            <li><a href="handover.html">인수인계</a></li>
-        </ul>
+            <li><a href="Main.html">업체별 정보</a></li>
+            </ul>
 
         <div class="page-header">
             <a href="index.html" class="back-btn">← 메인으로</a>
@@ -467,18 +429,21 @@
 
     <div id="companyModal" class="modal">
         <div class="modal-content">
-            <h2 id="modalTitle" style="text-align: center; margin-bottom: 20px;">업체 추가</h2>
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">업체 추가</span>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
             <div class="form-group">
                 <label class="form-label">업체명</label>
-                <input type="text" class="form-input" id="companyName">
+                <input type="text" class="form-input" id="companyName" placeholder="업체명을 입력하세요">
             </div>
             <div class="form-group">
                 <label class="form-label">업체 정보 (줄바꿈은 / 로)</label>
-                <input type="text" class="form-input" id="companyInfo">
+                <input type="text" class="form-input" id="companyInfo" placeholder="업체 설명을 입력하세요">
             </div>
             <div class="form-group">
                 <label class="form-label">초성</label>
-                <input type="text" class="form-input" id="companyInitial">
+                <input type="text" class="form-input" id="companyInitial" placeholder="검색용 초성 (예: ㅇㅅㅅㄴㅅ)">
             </div>
             <div class="form-group">
                 <label class="form-label">특별 관리</label>
@@ -486,6 +451,10 @@
                     <option value="false">아니오</option>
                     <option value="true">예</option>
                 </select>
+            </div>
+             <div class="form-group">
+                <label class="form-label">진행 중 (초록불)</label>
+                <input type="checkbox" id="inProgressCheckbox" style="transform: scale(1.5); margin-left: 5px;">
             </div>
             <div class="form-buttons">
                 <button class="action-btn delete-btn" onclick="closeModal()">취소</button>
@@ -521,6 +490,7 @@
             window.firebaseInitialized = false;
         }
     </script>
+    
     <script>
         let companies = [];
         let editMode = false;
@@ -528,6 +498,7 @@
 
         document.addEventListener('DOMContentLoaded', init);
 
+        // Firebase 연결 대기 및 초기화
         async function init() {
             if (typeof window.firebaseInitialized === 'undefined') {
                 setTimeout(init, 100);
@@ -535,47 +506,64 @@
             }
             if (window.firebaseInitialized) {
                 setupRealtimeSync();
+                showSaveFeedback('🔥 실시간 동기화 시작');
             } else {
-                loadLocalData();
-                showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드');
+                // 로컬 데이터 로드 (기존 기능)
+                companies = JSON.parse(localStorage.getItem('companies') || '[]');
+                searchCompanies();
+                showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드', true);
             }
         }
 
+        // 실시간 동기화 설정
         function setupRealtimeSync() {
             window.firebase.onSnapshot(window.firebase.collection(window.db, 'companies'), (snapshot) => {
                 companies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                searchCompanies();
+                searchCompanies(); // 데이터 변경 시마다 화면 다시 그리기
             });
         }
 
+        // 화면 그리기 (검색 포함)
         function renderCompanies(data) {
             const grid = document.getElementById('companiesGrid');
             grid.innerHTML = '';
-            data.sort((a, b) => a.name.localeCompare(b.name)).forEach(company => {
-                const infoList = `<ul>${company.info.split(' / ').map(item => `<li>${item.trim()}</li>`).join('')}</ul>`;
-                const card = document.createElement('div');
-                card.className = 'company-card';
-                card.innerHTML = `
-                    ${company.special ? '<div class="special-badge">특별관리</div>' : ''}
-                    <div class="company-name">${company.name}</div>
-                    <div class="company-info">${infoList}</div>
-                    <div class="company-actions ${editMode ? '' : 'hidden'}">
-                        <button class="action-btn edit-btn" onclick="event.stopPropagation(); openEditModal('${company.id}')">편집</button>
-                        <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteCompany('${company.id}')">삭제</button>
-                    </div>
-                `;
-                if (!editMode) card.onclick = () => alert(`${company.name}\n${company.special ? '⚠️ 특별 관리' : '✅ 일반 관리'}`);
-                grid.appendChild(card);
-            });
+            
+            data.sort((a, b) => a.name.localeCompare(b.name, 'ko-KR')) // ㄱㄴㄷ 순 정렬
+                .forEach(company => {
+                    const infoList = `<ul>${company.info.split(' / ').map(item => `<li>${item.trim()}</li>`).join('')}</ul>`;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'company-card';
+                    
+                    card.innerHTML = `
+                        ${company.special ? '<div class="special-badge">특별관리</div>' : ''}
+                        <div class="in-progress-badge ${company.inProgress ? 'visible' : ''}"></div>
+                        <div class="company-name">${company.name}</div>
+                        <div class="company-info">${infoList}</div>
+                        <div class="company-actions ${editMode ? '' : 'hidden'}">
+                            <button class="action-btn edit-btn" onclick="event.stopPropagation(); openEditModal('${company.id}')">편집</button>
+                            <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteCompany('${company.id}')">삭제</button>
+                        </div>
+                    `;
+                    
+                    if (!editMode) {
+                        card.onclick = () => alert(`${company.name}\n${company.special ? '⚠️ 특별 관리' : '✅ 일반 관리'}`);
+                    }
+                    
+                    grid.appendChild(card);
+                });
         }
 
+        // 검색 및 필터링
         function searchCompanies() {
             const searchTerm = document.getElementById('companySearchInput').value.toLowerCase().trim();
             const specialFilter = document.getElementById('specialActionsFilter').checked;
             const noResults = document.getElementById('noResults');
 
             const filtered = companies.filter(c => {
-                const matchesSearch = c.name.toLowerCase().includes(searchTerm) || (c.initial && c.initial.includes(searchTerm));
+                const nameMatch = c.name.toLowerCase().includes(searchTerm);
+                const initialMatch = c.initial && c.initial.toLowerCase().includes(searchTerm);
+                const matchesSearch = nameMatch || initialMatch;
                 const matchesFilter = !specialFilter || c.special;
                 return matchesSearch && matchesFilter;
             });
@@ -587,8 +575,10 @@
         function toggleEditMode(event) {
             editMode = !editMode;
             event.target.textContent = editMode ? '👁️ 보기 모드' : '✏️ 편집 모드';
-            searchCompanies();
+            searchCompanies(); // 편집 버튼 표시/숨기기를 위해 다시 그림
         }
+
+        // --- 모달 및 데이터 관리 ---
 
         function openAddModal() {
             editingId = null;
@@ -597,18 +587,21 @@
             document.getElementById('companyInfo').value = '';
             document.getElementById('companyInitial').value = '';
             document.getElementById('companySpecial').value = 'false';
+            document.getElementById('inProgressCheckbox').checked = false;
             document.getElementById('companyModal').style.display = 'block';
         }
 
         function openEditModal(id) {
             const company = companies.find(c => c.id === id);
             if (!company) return;
+            
             editingId = id;
             document.getElementById('modalTitle').textContent = '업체 편집';
             document.getElementById('companyName').value = company.name;
             document.getElementById('companyInfo').value = company.info;
             document.getElementById('companyInitial').value = company.initial || '';
             document.getElementById('companySpecial').value = company.special.toString();
+            document.getElementById('inProgressCheckbox').checked = company.inProgress || false;
             document.getElementById('companyModal').style.display = 'block';
         }
 
@@ -622,64 +615,62 @@
                 info: document.getElementById('companyInfo').value.trim(),
                 initial: document.getElementById('companyInitial').value.trim(),
                 special: document.getElementById('companySpecial').value === 'true',
+                inProgress: document.getElementById('inProgressCheckbox').checked
             };
 
-            if (!companyData.name || !companyData.info) return alert('업체명과 정보는 필수입니다.');
+            if (!companyData.name || !companyData.info) {
+                return alert('업체명과 정보는 필수입니다.');
+            }
 
-            if (window.firebaseInitialized) {
-                try {
-                    if (editingId) {
-                        await window.firebase.updateDoc(window.firebase.doc(window.db, 'companies', editingId), companyData);
-                        showSaveFeedback('✏️ 수정되었습니다!');
-                    } else {
-                        await window.firebase.addDoc(window.firebase.collection(window.db, 'companies'), companyData);
-                        showSaveFeedback('➕ 추가되었습니다!');
-                    }
-                } catch (e) { console.error(e); alert('저장 실패'); }
-            } else {
-                saveLocalData(companyData);
+            if (!window.firebaseInitialized) {
+                 alert('Firebase 연결 실패. 저장할 수 없습니다.');
+                 return;
+            }
+            
+            try {
+                if (editingId) {
+                    await window.firebase.updateDoc(window.firebase.doc(window.db, 'companies', editingId), companyData);
+                    showSaveFeedback('✏️ 수정되었습니다!');
+                } else {
+                    await window.firebase.addDoc(window.firebase.collection(window.db, 'companies'), companyData);
+                    showSaveFeedback('➕ 추가되었습니다!');
+                }
+            } catch (e) { 
+                console.error(e); 
+                showSaveFeedback('❌ 저장 실패', true);
             }
             closeModal();
         }
 
         async function deleteCompany(id) {
             if (!confirm('정말로 삭제하시겠습니까?')) return;
-            if (window.firebaseInitialized) {
-                try {
-                    await window.firebase.deleteDoc(window.firebase.doc(window.db, 'companies', id));
-                    showSaveFeedback('🗑️ 삭제되었습니다!');
-                } catch (e) { console.error(e); alert('삭제 실패'); }
-            } else {
-                companies = companies.filter(c => c.id !== id);
-                localStorage.setItem('companies', JSON.stringify(companies));
-                searchCompanies();
+            
+            if (!window.firebaseInitialized) {
+                 alert('Firebase 연결 실패. 삭제할 수 없습니다.');
+                 return;
+            }
+
+            try {
+                await window.firebase.deleteDoc(window.firebase.doc(window.db, 'companies', id));
+                showSaveFeedback('🗑️ 삭제되었습니다!');
+            } catch (e) { 
+                console.error(e); 
+                showSaveFeedback('❌ 삭제 실패', true);
             }
         }
 
-        function showSaveFeedback(message) {
+        function showSaveFeedback(message, isError = false) {
             const feedback = document.getElementById('saveFeedback');
             feedback.textContent = message;
+            feedback.style.background = isError ? '#dc3545' : '#28a745';
             feedback.classList.add('show');
             setTimeout(() => feedback.classList.remove('show'), 2000);
         }
 
-        function loadLocalData() {
-            companies = JSON.parse(localStorage.getItem('companies') || '[]');
-            searchCompanies();
-        }
-
-        function saveLocalData(newData) {
-            if (editingId) {
-                companies = companies.map(c => c.id === editingId ? { ...c, ...newData } : c);
-            } else {
-                companies.push({ id: Date.now().toString(), ...newData });
-            }
-            localStorage.setItem('companies', JSON.stringify(companies));
-            searchCompanies();
-        }
-
         window.onclick = (event) => {
-            if (event.target == document.getElementById('companyModal')) closeModal();
+            if (event.target == document.getElementById('companyModal')) {
+                closeModal();
+            }
         };
     </script>
 </body>
