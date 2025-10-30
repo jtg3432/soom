@@ -38,16 +38,16 @@
              z-index: 1;
              max-width: 900px;
              width: 90%;
-             background: rgba(255, 255, 255, 0.2); /* 배경 투명도 조절 */
-             backdrop-filter: blur(10px); /* 블러 효과 추가 */
+             background: rgba(255, 255, 255, 0.2);
+             backdrop-filter: blur(10px);
              border-radius: 20px;
              box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
              overflow: hidden;
-             border: 1px solid rgba(255, 255, 255, 0.3); /* 테두리 투명도 조절 */
+             border: 1px solid rgba(255, 255, 255, 0.3);
          }
  
          .page-header {
-             background: rgba(79, 172, 254, 0.5); /* 배경 투명도 조절 */
+             background: rgba(79, 172, 254, 0.5);
              color: white;
              text-align: center;
              padding: 40px 20px;
@@ -79,7 +79,7 @@
          }
  
          .menu-btn {
-             background: rgba(255, 255, 255, 0.8); /* 버튼 배경 투명도 조절 */
+             background: rgba(255, 255, 255, 0.8);
              color: #333;
              text-decoration: none;
              padding: 20px;
@@ -117,6 +117,14 @@
              }
  
              .menu-buttons {
+                 /* 2x3 그리드가 되도록 조정 */
+                 grid-template-columns: 1fr 1fr;
+             }
+         }
+         
+         @media (max-width: 480px) {
+             .menu-buttons {
+                 /* 모바일에서는 다시 1줄로 */
                  grid-template-columns: 1fr;
              }
          }
@@ -153,19 +161,15 @@
                      <span class="icon">📋</span>
                      연세사랑모아 순번
                  </a>
-                 <a href="vacation.html" class="menu-btn">
-                     <span class="icon">🏖️</span>
-                     연차 캘린더
-                 </a>
-                 <a href="handover.html" class="menu-btn">
-                     <span class="icon">📝</span>
-                     인수인계
-                 </a>
                  <a href="monitoring.html" class="menu-btn">
                      <span class="icon">🚨</span>
                      컨텐츠 모니터링
                  </a>
-             </div>
+                 <a href="Main.html" class="menu-btn">
+                     <span class="icon">ℹ️</span>
+                     업체별 정보
+                 </a>
+                 </div>
          </div>
          <div class="footer">
              © 2025 운영관리팀. All Rights Reserved.
