@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>업체별 정보 - 운영관리팀</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .page-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* 네비게이션 탭 스타일 */
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            background: #f1f3f4;
+            padding: 0 20px;
+            border-bottom: 3px solid #dee2e6;
+            flex-wrap: wrap;
+        }
+        .nav-tabs li a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #495057;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .nav-tabs li a:hover {
+            color: #007bff;
+            border-bottom-color: #007bff;
+        }
+        .nav-tabs li.active a {
+            color: #4facfe;
+            border-bottom-color: #4facfe;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+        .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+        .page-header h2 { font-size: 1.3rem; opacity: 0.9; }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white; border: none; padding: 10px 20px; border-radius: 25px;
+            text-decoration: none; font-weight: 600; transition: all 0.3s ease;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+
+        .controls-section {
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            text-align: right;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white; border: none; padding: 12px 25px; border-radius: 25px;
+            font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+        }
+        .control-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+        .accordion-container {
+            padding: 30px 40px;
+        }
+
+        .accordion-item {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            background: #fdfdfd;
+        }
+
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .accordion-header:hover { background: #e9ecef; }
+
+        .accordion-header-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .accordion-controls button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            margin-left: 5px;
+            transition: all 0.2s ease;
+        }
+        .edit-btn { background: #ffc107; color: #000; }
+        .delete-btn { background: #dc3545; color: white; }
+        .edit-btn:hover { background: #e0a800; }
+        .delete-btn:hover { background: #c82333; }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .accordion-body-content {
+            padding: 20px;
+            line-height: 1.6;
+            color: #495057;
+            white-space: pre-wrap; /* \n 줄바꿈을 인식하도록 */
+        }
+
+        .accordion-body.show {
+            max-height: 500px; /* 펼쳐질 최대 높이 (내용에 맞게 조절 가능) */
+            transition: max-height 0.4s ease-in;
+        }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white; margin: 10% auto; padding: 30px;
+            border-radius: 15px; width: 90%; max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .modal-title { font-size: 1.5rem; font-weight: 700; color: #2c3e50; margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 5px; font-weight: 600; color: #495057; }
+        .form-input, .form-textarea {
+            width: 100%; padding: 12px; border: 2px solid #dee2e6; border-radius: 8px;
+            font-size: 1rem; outline: none; transition: border-color 0.3s ease;
+        }
+        .form-textarea { min-height: 150px; resize: vertical; }
+        .form-input:focus, .form-textarea:focus { border-color: #4facfe; }
+        .form-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+        .form-btn {
+            border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .save-btn { background: #28a745; color: white; }
+        .cancel-btn { background: #6c757d; color: white; }
+        .save-btn:hover { background: #218838; }
+        .cancel-btn:hover { background: #5a6268; }
+
+        .save-feedback {
+            position: fixed; top: 20px; right: 20px; background: #28a745; color: white; padding: 15px 25px;
+            border-radius: 50px; font-weight: 600; transform: translateX(400px); transition: transform 0.3s ease;
+            z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .save-feedback.show { transform: translateX(0); }
+
+        @media (max-width: 768px) {
+            .page-container { margin: 10px; }
+            .controls-section { padding: 20px; }
+            .accordion-container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <ul class="nav-tabs">
+            <li><a href="docs.html">독스 계정 정보</a></li>
+            <li><a href="company.html">업체 정보</a></li>
+            <li><a href="vacation.html">연차 캘린더</a></li>
+            <li><a href="cafe.html">집중관리 카페</a></li>
+            <li><a href="schedule.html">연세사랑모아 순번</a></li>
+            <li><a href="monitoring.html">컨텐츠 모니터링</a></li>
+            <li><a href="handover.html">인수인계</a></li>
+            <li class="active"><a href="Main.html">업체별 정보</a></li> </ul>
+
+        <div class="page-header">
+            <a href="index.html" class="back-btn">← 메인으로</a>
+            <h1>운영관리팀</h1>
+            <h2>업체별 정보 (ㄱㄴㄷ 순)</h2>
+        </div>
+
+        <div class="controls-section">
+            <button class="control-btn" onclick="openAddModal()">➕ 업체 추가</button>
+        </div>
+
+        <div class="accordion-container" id="accordion-list">
+            </div>
+    </div>
+
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">업체 추가</h2>
+            <div class="form-group">
+                <label class="form-label" for="modal-company-name">업체명</label>
+                <input type="text" class="form-input" id="modal-company-name" placeholder="업체명을 입력하세요 (예: 연세사랑모아)">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="modal-company-desc">설명</label>
+                <textarea class="form-textarea" id="modal-company-desc" placeholder="업체에 대한 설명을 입력하세요."></textarea>
+            </div>
+            <div class="form-buttons">
+                <button class="form-btn cancel-btn" onclick="closeModal()">취소</button>
+                <button class="form-btn save-btn" onclick="saveItem()">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="save-feedback" id="saveFeedback"></div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
+            authDomain: "soom-brand.firebaseapp.com",
+            projectId: "soom-brand",
+            storageBucket: "soom-brand.firebasestorage.app",
+            messagingSenderId: "765427036681",
+            appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
+        };
+        
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            // 다른 스크립트에서 사용 가능하도록 전역 등록
+            window.db = db;
+            window.firebase = { collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc };
+            window.firebaseInitialized = true;
+            console.log('🔥 Firebase 연결 완료!');
+        } catch(e) {
+            console.error('Firebase 초기화 실패:', e);
+            window.firebaseInitialized = false;
+        }
+    </script>
+
+    <script>
+        let items = [];
+        let editingId = null;
+        const listEl = document.getElementById('accordion-list');
+        const modal = document.getElementById('itemModal');
+
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Firebase 연결 대기 및 초기화
+        async function init() {
+            if (typeof window.firebaseInitialized === 'undefined') {
+                setTimeout(init, 100); // 0.1초 후 다시 시도
+                return;
+            }
+            if (window.firebaseInitialized) {
+                setupRealtimeSync();
+                showSaveFeedback('🔥 실시간 동기화 시작');
+            } else {
+                showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드', true);
+            }
+        }
+
+        // 실시간 동기화 설정
+        function setupRealtimeSync() {
+            window.firebase.onSnapshot(window.firebase.collection(window.db, 'mainAccordionItems'), (snapshot) => {
+                items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderAccordion();
+            });
+        }
+
+        // 아코디언 목록 렌더링
+        function renderAccordion() {
+            listEl.innerHTML = ''; // 목록 비우기
+
+            // ㄱㄴㄷ 순 정렬 (한국어 기준)
+            items.sort((a, b) => a.name.localeCompare(b.name, 'ko-KR'));
+
+            items.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'accordion-item';
+
+                // \n (줄바꿈)을 <br> 태그로 변경
+                const descriptionHtml = item.desc.replace(/\n/g, '<br>');
+
+                itemEl.innerHTML = `
+                    <div class="accordion-header">
+                        <span class="accordion-header-title">${item.name}</span>
+                        <div class="accordion-controls">
+                            <button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${item.id}')">수정</button>
+                            <button class="delete-btn" onclick="event.stopPropagation(); deleteItem('${item.id}')">삭제</button>
+                        </div>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="accordion-body-content">${descriptionHtml}</div>
+                    </div>
+                `;
+
+                // 아코디언 토글 이벤트
+                const header = itemEl.querySelector('.accordion-header');
+                const body = itemEl.querySelector('.accordion-body');
+                header.addEventListener('click', () => {
+                    body.classList.toggle('show');
+                });
+
+                listEl.appendChild(itemEl);
+            });
+        }
+
+        // --- CRUD 함수 ---
+
+        function openAddModal() {
+            editingId = null;
+            document.getElementById('modalTitle').textContent = '업체 추가';
+            document.getElementById('modal-company-name').value = '';
+            document.getElementById('modal-company-desc').value = '';
+            modal.style.display = 'block';
+            document.getElementById('modal-company-name').focus();
+        }
+
+        function openEditModal(id) {
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+
+            editingId = id;
+            document.getElementById('modalTitle').textContent = '업체 수정';
+            document.getElementById('modal-company-name').value = item.name;
+            document.getElementById('modal-company-desc').value = item.desc;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        async function saveItem() {
+            const name = document.getElementById('modal-company-name').value.trim();
+            const desc = document.getElementById('modal-company-desc').value.trim();
+
+            if (!name || !desc) {
+                alert('업체명과 설명을 모두 입력해주세요.');
+                return;
+            }
+
+            const data = { name, desc };
+
+            if (!window.firebaseInitialized) {
+                alert('Firebase 연결 실패. 저장할 수 없습니다.');
+                return;
+            }
+
+            try {
+                if (editingId) {
+                    // 수정
+                    const docRef = window.firebase.doc(window.db, 'mainAccordionItems', editingId);
+                    await window.firebase.updateDoc(docRef, data);
+                    showSaveFeedback('✏️ 수정되었습니다!');
+                } else {
+                    // 추가
+                    await window.firebase.addDoc(window.firebase.collection(window.db, 'mainAccordionItems'), data);
+                    showSaveFeedback('➕ 추가되었습니다!');
+                }
+                closeModal();
+            } catch (error) {
+                console.error("저장 실패:", error);
+                showSaveFeedback('❌ 저장 실패', true);
+            }
+        }
+
+        async function deleteItem(id) {
+            if (!confirm('정말로 이 항목을 삭제하시겠습니까?')) return;
+
+            if (!window.firebaseInitialized) {
+                alert('Firebase 연결 실패. 삭제할 수 없습니다.');
+                return;
+            }
+
+            try {
+                const docRef = window.firebase.doc(window.db, 'mainAccordionItems', id);
+                await window.firebase.deleteDoc(docRef);
+                showSaveFeedback('🗑️ 삭제되었습니다!');
+            } catch (error) {
+                console.error("삭제 실패:", error);
+                showSaveFeedback('❌ 삭제 실패', true);
+            }
+        }
+
+        // --- 유틸리티 함수 ---
+
+        function showSaveFeedback(message, isError = false) {
+            const feedback = document.getElementById('saveFeedback');
+            feedback.textContent = message;
+            feedback.style.background = isError ? '#dc3545' : '#28a745';
+            feedback.classList.add('show');
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
