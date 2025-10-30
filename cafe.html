@@ -27,7 +27,7 @@
             overflow: hidden;
         }
 
-        /* 네비게이션 탭 스타일 */
+        /* 수정된 네비게이션 탭 스타일 */
         .nav-tabs {
             display: flex;
             list-style: none;
@@ -329,12 +329,11 @@
         <ul class="nav-tabs">
             <li><a href="docs.html">독스 계정 정보</a></li>
             <li><a href="company.html">업체 정보</a></li>
-            <li><a href="vacation.html">연차 캘린더</a></li>
             <li class="active"><a href="cafe.html">집중관리 카페</a></li>
             <li><a href="schedule.html">연세사랑모아 순번</a></li>
             <li><a href="monitoring.html">컨텐츠 모니터링</a></li>
-            <li><a href="handover.html">인수인계</a></li>
-            <li><a href="Main.html">업체별 정보</a></li> </ul>
+            <li><a href="Main.html">업체별 정보</a></li>
+        </ul>
 
         <div class="page-header">
             <a href="index.html" class="back-btn">← 메인으로</a>
@@ -396,7 +395,6 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Firebase 설정
         const firebaseConfig = {
             apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
             authDomain: "soom-brand.firebaseapp.com",
@@ -409,7 +407,6 @@
         try {
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
-            // 전역 변수로 설정
             window.db = db;
             window.firebase = { collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc };
             window.firebaseInitialized = true;
@@ -427,7 +424,7 @@
 
         function init() {
             if (typeof window.firebaseInitialized === 'undefined') {
-                setTimeout(init, 100); // Firebase SDK 로딩 대기
+                setTimeout(init, 100); 
                 return;
             }
 
@@ -435,13 +432,13 @@
                 setupRealtimeSync();
                 showSaveFeedback('🔥 실시간 동기화 시작');
             } else {
-                loadLocalData(); // Firebase 실패 시 로컬 데이터 로드
+                cafeData = [];
+                renderTable();
+                updateStats();
                 showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드', true);
             }
-            updateStats();
         }
 
-        // 실시간 동기화 설정
         function setupRealtimeSync() {
             window.firebase.onSnapshot(window.firebase.collection(window.db, 'cafes'), (snapshot) => {
                 cafeData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -456,7 +453,6 @@
             const table = document.getElementById('cafeTable');
             const searchVal = document.getElementById('searchInput').value;
             
-            // 검색어 기준으로 필터링
             const filteredData = cafeData.filter(cafe => {
                 const company = (cafe.company || '').toLowerCase();
                 const cafeName = (cafe.cafeName || '').toLowerCase();
@@ -465,18 +461,15 @@
             });
 
             if (filteredData.length === 0 && searchVal === '') {
-                // 데이터 자체가 없는 경우
                 table.style.display = 'none';
                 emptyState.style.display = 'block';
                 document.getElementById('noResults').style.display = 'none';
             } else {
-                // 데이터가 있거나, 검색 중인 경우
                 table.style.display = 'table';
                 emptyState.style.display = 'none';
                 
                 tbody.innerHTML = '';
                 
-                // ㄱㄴㄷ 순 정렬 (업체명 기준)
                 filteredData.sort((a, b) => (a.company || '').localeCompare(b.company || '', 'ko-KR'));
                 
                 filteredData.forEach((cafe, index) => {
@@ -506,7 +499,6 @@
                     tbody.appendChild(row);
                 });
 
-                // 검색 결과가 없는 경우
                 document.getElementById('noResults').style.display = (filteredData.length === 0 && searchVal !== '') ? 'block' : 'none';
             }
         }
@@ -560,7 +552,7 @@
         }
 
         function searchCafes() {
-            renderTable(); // 렌더링 함수가 검색을 처리
+            renderTable();
         }
 
         function updateStats() {
@@ -579,13 +571,6 @@
                 console.error('복사 실패:', err);
                 showSaveFeedback('❌ 복사 실패', true);
             });
-        }
-
-        function loadLocalData() {
-            // Firebase 실패 시 로컬스토리지를 사용하지 않고, 빈 상태로 둠 (데이터 유실 방지)
-            cafeData = [];
-            renderTable();
-            updateStats();
         }
 
         function showSaveFeedback(message, isError = false) {
