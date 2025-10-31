@@ -27,7 +27,7 @@
             overflow: hidden;
         }
 
-        /* 수정된 네비게이션 탭 스타일 */
+        /* 네비게이션 탭 스타일 */
         .nav-tabs {
             display: flex;
             list-style: none;
@@ -398,16 +398,6 @@
         <div class="progress-section">
             <div class="progress-grid">
                 <div class="progress-card">
-                    <div class="progress-name">정현</div>
-                    <div class="progress-bar"><div class="progress-fill" id="progress-정현"></div></div>
-                    <div class="progress-text" id="progress-text-정현">0 / 20 완료</div>
-                </div>
-                <div class="progress-card">
-                    <div class="progress-name">태균</div>
-                    <div class="progress-bar"><div class="progress-fill" id="progress-태균"></div></div>
-                    <div class="progress-text" id="progress-text-태균">0 / 20 완료</div>
-                </div>
-                <div class="progress-card">
                     <div class="progress-name">유빈</div>
                     <div class="progress-bar"><div class="progress-fill" id="progress-유빈"></div></div>
                     <div class="progress-text" id="progress-text-유빈">0 / 20 완료</div>
@@ -416,6 +406,16 @@
                     <div class="progress-name">수진</div>
                     <div class="progress-bar"><div class="progress-fill" id="progress-수진"></div></div>
                     <div class="progress-text" id="progress-text-수진">0 / 20 완료</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-name">태균</div>
+                    <div class="progress-bar"><div class="progress-fill" id="progress-태균"></div></div>
+                    <div class="progress-text" id="progress-text-태균">0 / 20 완료</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-name">정현</div>
+                    <div class="progress-bar"><div class="progress-fill" id="progress-정현"></div></div>
+                    <div class="progress-text" id="progress-text-정현">0 / 20 완료</div>
                 </div>
                 <div class="progress-card">
                     <div class="progress-name">수정</div>
@@ -429,19 +429,19 @@
             <table class="schedule-table">
                 <thead>
                     <tr>
-                        <th>정현</th>
-                        <th>태균</th>
                         <th>유빈</th>
                         <th>수진</th>
+                        <th>태균</th>
+                        <th>정현</th>
                         <th>수정</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="person-column"><div class="checkbox-group" id="group-정현"></div></td>
-                        <td class="person-column"><div class="checkbox-group" id="group-태균"></div></td>
                         <td class="person-column"><div class="checkbox-group" id="group-유빈"></div></td>
                         <td class="person-column"><div class="checkbox-group" id="group-수진"></div></td>
+                        <td class="person-column"><div class="checkbox-group" id="group-태균"></div></td>
+                        <td class="person-column"><div class="checkbox-group" id="group-정현"></div></td>
                         <td class="person-column"><div class="checkbox-group" id="group-수정"></div></td>
                     </tr>
                 </tbody>
@@ -460,7 +460,6 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getFirestore, collection, setDoc, doc, getDocs, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Firebase 설정
         const firebaseConfig = {
             apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
             authDomain: "soom-brand.firebaseapp.com",
@@ -473,7 +472,6 @@
         try {
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
-            // 전역 변수로 설정
             window.db = db;
             window.firebase = { collection, setDoc, doc, getDocs, onSnapshot };
             window.firebaseInitialized = true;
@@ -485,13 +483,14 @@
     </script>
 
     <script>
-        const people = ['정현', '태균', '유빈', '수진', '수정'];
+        // === JavaScript 순서 변경 ===
+        const people = ['유빈', '수진', '태균', '정현', '수정'];
         const totalItems = 20;
         let scheduleData = {};
 
         document.addEventListener('DOMContentLoaded', function() {
             initializeSchedule();
-            initFirebaseConnection(); // Firebase 연결 및 데이터 로드
+            initFirebaseConnection(); 
         });
 
         // HTML 구조 생성
@@ -522,11 +521,11 @@
             }
 
             if (window.firebaseInitialized && window.db) {
-                await loadScheduleFromFirebase(); // 최초 데이터 로드
-                setupRealtimeSync(); // 실시간 변경 감지
+                await loadScheduleFromFirebase(); 
+                setupRealtimeSync(); 
                 showSaveFeedback('🔥 Firebase 연결 완료!');
             } else {
-                loadSavedData(); // Firebase 실패 시 로컬 데이터 로드
+                loadSavedData(); 
                 showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드', true);
             }
         }
@@ -624,7 +623,7 @@
         }
 
         async function autoSave() {
-            if (!window.firebaseInitialized) return; // Firebase 연결 없으면 저장 시도 안함
+            if (!window.firebaseInitialized) return; 
             const success = await saveScheduleToFirebase();
             if (!success) {
                 showSaveFeedback('❌ 자동 저장 실패', true);
