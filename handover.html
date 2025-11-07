@@ -1,192 +1,481 @@
 <!DOCTYPE html>
- <html lang="ko">
- <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>운영관리팀 - 메인</title>
-     <style>
-        /* * --- 신규 흑백(모노크롬) 테마 ---
-         */
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인수인계 - 운영관리팀</title>
+    <style>
         :root {
-            --bg-dark: #212529;  /* 매우 진한 회색 (거의 검정) */
-            --bg-medium: #495057; /* 중간 회색 (버튼 등) */
-            --bg-light: #F8F9FA;  /* 매우 밝은 회색 (페이지 배경) */
-            --text-dark: #212529;  /* 기본 텍스트 */
-            --text-light: #F8F9FA; /* 어두운 배경 위의 텍스트 */
-            --text-muted: #6C757D;  /* 보조 텍스트 */
-            --border-color: #DEE2E6; /* 경계선 */
+            --bg-dark: #212529;
+            --bg-medium: #495057;
+            --bg-light: #F8F9FA;
+            --text-dark: #212529;
+            --text-light: #F8F9FA;
+            --text-muted: #6C757D;
+            --border-color: #DEE2E6;
             --font-main: 'Noto Sans KR', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-         * {
-             margin: 0;
-             padding: 0;
-             box-sizing: border-box;
-         }
- 
-         body {
-             font-family: var(--font-main);
-             min-height: 100vh;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             position: relative;
-             overflow: hidden;
-             background: #000; /* 비디오 로딩 전 배경 */
-         }
- 
-         #background-video {
-             position: fixed;
-             top: 50%;
-             left: 50%;
-             min-width: 100%;
-             min-height: 100%;
-             width: auto;
-             height: auto;
-             transform: translate(-50%, -50%);
-             z-index: -1;
-             filter: brightness(40%); /* 흑백 테마에 맞게 조금 더 어둡게 */
-         }
- 
-         .page-container {
-             z-index: 1;
-             max-width: 900px;
-             width: 90%;
-             background: rgba(255, 255, 255, 0.1); /* 유리알 효과 */
-             backdrop-filter: blur(10px);
-             border-radius: 20px;
-             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-             overflow: hidden;
-             border: 1px solid rgba(255, 255, 255, 0.2);
-         }
- 
-         .page-header {
-             background: rgba(33, 37, 41, 0.5); /* 어두운 반투명 배경 */
-             color: var(--text-light);
-             text-align: center;
-             padding: 40px 20px;
-             position: relative;
-         }
- 
-         .page-header h1 {
-             font-size: 2.5rem;
-             margin-bottom: 10px;
-             font-weight: 700;
-             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-         }
- 
-         .welcome-message {
-             font-size: 1.2rem;
-             color: var(--text-light);
-             opacity: 0.9;
-             text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-         }
- 
-         .content {
-             padding: 30px;
-         }
- 
-         .menu-buttons {
-             display: grid;
-             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-             gap: 15px;
-             justify-content: center;
-         }
- 
-         .menu-btn {
-             background: rgba(248, 249, 250, 0.9); /* 밝은 버튼 배경 */
-             color: var(--text-dark);
-             text-decoration: none;
-             padding: 20px;
-             border-radius: 15px;
-             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-             transition: all 0.3s ease;
-             text-align: center;
-             display: flex;
-             flex-direction: column;
-             align-items: center;
-             font-weight: 600;
-         }
- 
-         .menu-btn:hover {
-             transform: translateY(-5px);
-             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-             background: rgba(255, 255, 255, 1);
-         }
- 
-         .icon {
-             font-size: 2rem;
-             margin-bottom: 10px;
-         }
- 
-         .footer {
-             text-align: center;
-             padding: 20px;
-             color: rgba(255, 255, 255, 0.7);
-             font-size: 0.9rem;
-             background: rgba(0, 0, 0, 0.3);
-         }
- 
-         @media (max-width: 768px) {
-             .page-container {
-                 width: 95%;
-             }
-             .menu-buttons {
-                /* 5개이므로 2x3 레이아웃이 되도록 조정 */
-                 grid-template-columns: 1fr 1fr;
-             }
-         }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-         @media (max-width: 480px) {
-             .menu-buttons {
-                 grid-template-columns: 1fr; /* 모바일에서는 1줄로 */
-             }
-         }
-     </style>
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
- </head>
- <body>
-     <video autoplay muted loop id="background-video">
-         <source src="SSYouTube.online_메이플 루디브리엄 시계탑최하층 실사화_1080p.mp4" type="video/mp4">
-         Your browser does not support the video tag.
-     </video>
- 
-     <div class="page-container">
-         <div class="page-header">
-             <h1>운영관리팀 통합 관리 시스템</h1>
-             <p class="welcome-message">
-                 안녕하세요! 필요한 메뉴를 선택해주세요.
-             </p>
-         </div>
-         <div class="content">
-             <div class="menu-buttons">
-                <a href="handover.html" class="menu-btn">
-                    <span class="icon">📝</span>
-                    인수인계
-                </a>
-                 <a href="docs.html" class="menu-btn">
-                     <span class="icon">📊</span>
-                     독스 계정 정보
-                 </a>
-                 <a href="company.html" class="menu-btn">
-                     <span class="icon">🏢</span>
-                     업체 정보
-                 </a>
-                 <a href="schedule.html" class="menu-btn">
-                     <span class="icon">📋</span>
-                     연세사랑모아 순번
-                 </a>
-                 <a href="cafe.html" class="menu-btn">
-                     <span class="icon">💬</span>
-                     집중관리 카페
-                 </a>
-                 </div>
-         </div>
-         <div class="footer">
-             © 2025 운영관리팀. All Rights Reserved.
-         </div>
-     </div>
- </body>
- </html>
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .page-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 네비게이션 탭 스타일 */
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            background: #ffffff;
+            padding: 0 20px;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+        .nav-tabs li a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .nav-tabs li a:hover {
+            color: var(--text-dark);
+        }
+        .nav-tabs li.active a {
+            color: var(--bg-dark);
+            border-bottom-color: var(--bg-dark);
+        }
+
+        .page-header {
+            background: var(--bg-dark);
+            color: var(--text-light);
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+        .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+        .page-header h2 { font-size: 1.3rem; opacity: 0.9; font-weight: 400; }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.1);
+            color: white; border: none; padding: 10px 20px; border-radius: 25px;
+            text-decoration: none; font-weight: 600; transition: all 0.3s ease;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+
+        .controls-section {
+            padding: 20px 40px;
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border-color);
+            text-align: right;
+        }
+        
+        .control-btn {
+            background: var(--bg-dark);
+            color: var(--text-light);
+            border: none; padding: 12px 25px; border-radius: 8px;
+            font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+        }
+        .control-btn:hover { background: var(--bg-medium); transform: translateY(-2px); }
+
+        .manual-container {
+            padding: 30px 40px;
+        }
+
+        .manual-item {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .manual-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #ffffff;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .manual-header:hover { background: var(--bg-light); }
+
+        .manual-header-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .manual-header-title .order-number {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-right: 10px;
+        }
+
+        .manual-controls button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            margin-left: 5px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        .edit-btn { background: #e9ecef; color: var(--text-dark); }
+        .delete-btn { background: #dc3545; color: white; }
+        .edit-btn:hover { background: #ced4da; }
+        .delete-btn:hover { background: #c82333; }
+
+        .manual-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .manual-body-content {
+            padding: 20px;
+            line-height: 1.7;
+            color: var(--text-dark);
+            white-space: pre-wrap; /* \n 줄바꿈을 인식하도록 */
+        }
+        .manual-body-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .manual-body.show {
+            max-height: 2000px; /* 넉넉하게 */
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* 모달 스타일 */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: white; margin: 10% auto; padding: 30px;
+            border-radius: 15px; width: 90%; max-width: 700px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .modal-title { font-size: 1.5rem; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-muted); }
+        .form-input, .form-textarea {
+            width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;
+            font-size: 1rem; outline: none; transition: border-color 0.3s ease;
+            font-family: var(--font-main);
+        }
+        .form-textarea { min-height: 200px; resize: vertical; }
+        .form-input:focus, .form-textarea:focus { border-color: var(--bg-dark); }
+        .form-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+        .form-btn {
+            border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease; font-size: 1rem;
+        }
+        .save-btn { background: var(--bg-dark); color: var(--text-light); }
+        .cancel-btn { background: #e9ecef; color: var(--text-dark); }
+        .save-btn:hover { background: var(--bg-medium); }
+        .cancel-btn:hover { background: #ced4da; }
+
+        .save-feedback {
+            position: fixed; top: 20px; right: 20px; background: var(--bg-dark); color: var(--text-light); padding: 15px 25px;
+            border-radius: 8px; font-weight: 600; transform: translateX(400px); transition: transform 0.3s ease;
+            z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .save-feedback.show { transform: translateX(0); }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .page-container { margin: 0; }
+            .controls-section, .manual-container { padding: 20px; }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <ul class="nav-tabs">
+            <li class="active"><a href="handover.html">인수인계</a></li>
+            <li><a href="docs.html">독스 계정 정보</a></li>
+            <li><a href="company.html">업체 정보</a></li>
+            <li><a href="schedule.html">연세사랑모아 순번</a></li>
+            <li><a href="cafe.html">집중관리 카페</a></li>
+        </ul>
+
+        <div class="page-header">
+            <a href="index.html" class="back-btn">← 메인으로</a>
+            <h1>인수인계 매뉴얼</h1>
+            <h2>업무 적응을 위한 단계별 가이드입니다.</h2>
+        </div>
+
+        <div class="controls-section">
+            <button class="control-btn" onclick="openAddModal()">➕ 새 매뉴얼 추가</button>
+        </div>
+
+        <div class="manual-container" id="manual-list">
+            </div>
+    </div>
+
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">새 매뉴얼 추가</h2>
+            <div class="form-group">
+                <label class="form-label" for="modal-order">순서</label>
+                <input type="number" class="form-input" id="modal-order" placeholder="숫자가 낮을수록 위에 표시됩니다 (예: 1, 2, 3...)">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="modal-title">제목</label>
+                <input type="text" class="form-input" id="modal-title" placeholder="매뉴얼 제목 (예: 1일차: 계정 설정)">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="modal-content">내용</label>
+                <textarea class="form-textarea" id="modal-content" placeholder="매뉴얼 내용을 입력하세요. (줄바꿈 가능)"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="modal-image-url">이미지 URL (선택 사항)</label>
+                <input type="text" class="form-input" id="modal-image-url" placeholder="이미지 주소(URL)를 여기에 붙여넣으세요.">
+            </div>
+            <div class="form-buttons">
+                <button class="form-btn cancel-btn" onclick="closeModal()">취소</button>
+                <button class="form-btn save-btn" onclick="saveItem()">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="save-feedback" id="saveFeedback"></div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
+            authDomain: "soom-brand.firebaseapp.com",
+            projectId: "soom-brand",
+            storageBucket: "soom-brand.firebasestorage.app",
+            messagingSenderId: "765427036681",
+            appId: "1:765427036681:web:37add5f9e4fdbb8c30fed8"
+        };
+        
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            window.db = db;
+            window.firebase = { collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc, query, orderBy };
+            window.firebaseInitialized = true;
+            console.log('🔥 Firebase 연결 완료!');
+        } catch(e) {
+            console.error('Firebase 초기화 실패:', e);
+            window.firebaseInitialized = false;
+        }
+    </script>
+
+    <script>
+        let items = [];
+        let editingId = null;
+        const listEl = document.getElementById('manual-list');
+        const modal = document.getElementById('itemModal');
+
+        document.addEventListener('DOMContentLoaded', init);
+
+        async function init() {
+            if (typeof window.firebaseInitialized === 'undefined') {
+                setTimeout(init, 100);
+                return;
+            }
+            if (window.firebaseInitialized) {
+                setupRealtimeSync();
+                showSaveFeedback('🔥 실시간 동기화 시작');
+            } else {
+                showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드', true);
+            }
+        }
+
+        // 실시간 동기화 (순서대로 정렬)
+        function setupRealtimeSync() {
+            const q = window.firebase.query(
+                window.firebase.collection(window.db, 'handoverManual'), 
+                window.firebase.orderBy("order", "asc") // 'order' 필드 기준으로 오름차순 정렬
+            );
+            
+            window.firebase.onSnapshot(q, (snapshot) => {
+                items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderManual();
+            });
+        }
+
+        // 매뉴얼 목록 렌더링
+        function renderManual() {
+            listEl.innerHTML = ''; 
+
+            items.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'manual-item';
+
+                // \n (줄바꿈)을 <br> 태그로 변경
+                const contentHtml = item.content.replace(/\n/g, '<br>');
+                const imageHtml = item.imageUrl ? `<img src="${item.imageUrl}" alt="매뉴얼 이미지">` : '';
+
+                itemEl.innerHTML = `
+                    <div class="manual-header">
+                        <span class="manual-header-title">
+                            <span class="order-number">${item.order}.</span>
+                            ${item.title}
+                        </span>
+                        <div class="manual-controls">
+                            <button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${item.id}')">수정</button>
+                            <button class="delete-btn" onclick="event.stopPropagation(); deleteItem('${item.id}')">삭제</button>
+                        </div>
+                    </div>
+                    <div class="manual-body">
+                        <div class="manual-body-content">
+                            ${contentHtml}
+                            ${imageHtml}
+                        </div>
+                    </div>
+                `;
+
+                // 아코디언 토글 이벤트
+                const header = itemEl.querySelector('.manual-header');
+                const body = itemEl.querySelector('.manual-body');
+                header.addEventListener('click', () => {
+                    body.classList.toggle('show');
+                });
+
+                listEl.appendChild(itemEl);
+            });
+        }
+
+        // --- CRUD 함수 ---
+
+        function openAddModal() {
+            editingId = null;
+            document.getElementById('modalTitle').textContent = '새 매뉴얼 추가';
+            document.getElementById('modal-order').value = items.length + 1; // 자동 순서 추천
+            document.getElementById('modal-title').value = '';
+            document.getElementById('modal-content').value = '';
+            document.getElementById('modal-image-url').value = '';
+            modal.style.display = 'block';
+            document.getElementById('modal-title').focus();
+        }
+
+        function openEditModal(id) {
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+
+            editingId = id;
+            document.getElementById('modalTitle').textContent = '매뉴얼 수정';
+            document.getElementById('modal-order').value = item.order;
+            document.getElementById('modal-title').value = item.title;
+            document.getElementById('modal-content').value = item.content;
+            document.getElementById('modal-image-url').value = item.imageUrl || '';
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        async function saveItem() {
+            const order = parseInt(document.getElementById('modal-order').value) || 0;
+            const title = document.getElementById('modal-title').value.trim();
+            const content = document.getElementById('modal-content').value.trim();
+            const imageUrl = document.getElementById('modal-image-url').value.trim();
+
+            if (!title || !content) {
+                alert('순서, 제목, 내용은 필수 항목입니다.');
+                return;
+            }
+            if (!window.firebaseInitialized) {
+                alert('Firebase 연결 실패. 저장할 수 없습니다.');
+                return;
+            }
+
+            const data = { order, title, content, imageUrl };
+
+            try {
+                if (editingId) {
+                    // 수정
+                    const docRef = window.firebase.doc(window.db, 'handoverManual', editingId);
+                    await window.firebase.updateDoc(docRef, data);
+                    showSaveFeedback('✏️ 수정되었습니다!');
+                } else {
+                    // 추가
+                    await window.firebase.addDoc(window.firebase.collection(window.db, 'handoverManual'), data);
+                    showSaveFeedback('➕ 추가되었습니다!');
+                }
+                closeModal();
+            } catch (error) {
+                console.error("저장 실패:", error);
+                showSaveFeedback('❌ 저장 실패', true);
+            }
+        }
+
+        async function deleteItem(id) {
+            if (!confirm('정말로 이 항목을 삭제하시겠습니까?')) return;
+            if (!window.firebaseInitialized) {
+                alert('Firebase 연결 실패. 삭제할 수 없습니다.');
+                return;
+            }
+            try {
+                const docRef = window.firebase.doc(window.db, 'handoverManual', id);
+                await window.firebase.deleteDoc(docRef);
+                showSaveFeedback('🗑️ 삭제되었습니다!');
+            } catch (error) {
+                console.error("삭제 실패:", error);
+                showSaveFeedback('❌ 삭제 실패', true);
+            }
+        }
+
+        function showSaveFeedback(message, isError = false) {
+            const feedback = document.getElementById('saveFeedback');
+            feedback.textContent = message;
+            feedback.style.background = isError ? '#dc3545' : var(--bg-dark);
+            feedback.style.color = var(--text-light);
+            feedback.classList.add('show');
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
