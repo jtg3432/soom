@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+ <html lang="ko">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>운영관리팀 - 메인</title>
+     <style>
+        /* * --- 신규 흑백(모노크롬) 테마 ---
+         */
+        :root {
+            --bg-dark: #212529;  /* 매우 진한 회색 (거의 검정) */
+            --bg-medium: #495057; /* 중간 회색 (버튼 등) */
+            --bg-light: #F8F9FA;  /* 매우 밝은 회색 (페이지 배경) */
+            --text-dark: #212529;  /* 기본 텍스트 */
+            --text-light: #F8F9FA; /* 어두운 배경 위의 텍스트 */
+            --text-muted: #6C757D;  /* 보조 텍스트 */
+            --border-color: #DEE2E6; /* 경계선 */
+            --font-main: 'Noto Sans KR', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+         * {
+             margin: 0;
+             padding: 0;
+             box-sizing: border-box;
+         }
+ 
+         body {
+             font-family: var(--font-main);
+             min-height: 100vh;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             position: relative;
+             overflow: hidden;
+             background: #000; /* 비디오 로딩 전 배경 */
+         }
+ 
+         #background-video {
+             position: fixed;
+             top: 50%;
+             left: 50%;
+             min-width: 100%;
+             min-height: 100%;
+             width: auto;
+             height: auto;
+             transform: translate(-50%, -50%);
+             z-index: -1;
+             filter: brightness(40%); /* 흑백 테마에 맞게 조금 더 어둡게 */
+         }
+ 
+         .page-container {
+             z-index: 1;
+             max-width: 900px;
+             width: 90%;
+             background: rgba(255, 255, 255, 0.1); /* 유리알 효과 */
+             backdrop-filter: blur(10px);
+             border-radius: 20px;
+             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+             overflow: hidden;
+             border: 1px solid rgba(255, 255, 255, 0.2);
+         }
+ 
+         .page-header {
+             background: rgba(33, 37, 41, 0.5); /* 어두운 반투명 배경 */
+             color: var(--text-light);
+             text-align: center;
+             padding: 40px 20px;
+             position: relative;
+         }
+ 
+         .page-header h1 {
+             font-size: 2.5rem;
+             margin-bottom: 10px;
+             font-weight: 700;
+             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+         }
+ 
+         .welcome-message {
+             font-size: 1.2rem;
+             color: var(--text-light);
+             opacity: 0.9;
+             text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+         }
+ 
+         .content {
+             padding: 30px;
+         }
+ 
+         .menu-buttons {
+             display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+             gap: 15px;
+             justify-content: center;
+         }
+ 
+         .menu-btn {
+             background: rgba(248, 249, 250, 0.9); /* 밝은 버튼 배경 */
+             color: var(--text-dark);
+             text-decoration: none;
+             padding: 20px;
+             border-radius: 15px;
+             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+             transition: all 0.3s ease;
+             text-align: center;
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             font-weight: 600;
+         }
+ 
+         .menu-btn:hover {
+             transform: translateY(-5px);
+             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+             background: rgba(255, 255, 255, 1);
+         }
+ 
+         .icon {
+             font-size: 2rem;
+             margin-bottom: 10px;
+         }
+ 
+         .footer {
+             text-align: center;
+             padding: 20px;
+             color: rgba(255, 255, 255, 0.7);
+             font-size: 0.9rem;
+             background: rgba(0, 0, 0, 0.3);
+         }
+ 
+         @media (max-width: 768px) {
+             .page-container {
+                 width: 95%;
+             }
+             .menu-buttons {
+                /* 5개이므로 2x3 레이아웃이 되도록 조정 */
+                 grid-template-columns: 1fr 1fr;
+             }
+         }
+
+         @media (max-width: 480px) {
+             .menu-buttons {
+                 grid-template-columns: 1fr; /* 모바일에서는 1줄로 */
+             }
+         }
+     </style>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+ </head>
+ <body>
+     <video autoplay muted loop id="background-video">
+         <source src="SSYouTube.online_메이플 루디브리엄 시계탑최하층 실사화_1080p.mp4" type="video/mp4">
+         Your browser does not support the video tag.
+     </video>
+ 
+     <div class="page-container">
+         <div class="page-header">
+             <h1>운영관리팀 통합 관리 시스템</h1>
+             <p class="welcome-message">
+                 안녕하세요! 필요한 메뉴를 선택해주세요.
+             </p>
+         </div>
+         <div class="content">
+             <div class="menu-buttons">
+                <a href="handover.html" class="menu-btn">
+                    <span class="icon">📝</span>
+                    인수인계
+                </a>
+                 <a href="docs.html" class="menu-btn">
+                     <span class="icon">📊</span>
+                     독스 계정 정보
+                 </a>
+                 <a href="company.html" class="menu-btn">
+                     <span class="icon">🏢</span>
+                     업체 정보
+                 </a>
+                 <a href="schedule.html" class="menu-btn">
+                     <span class="icon">📋</span>
+                     연세사랑모아 순번
+                 </a>
+                 <a href="cafe.html" class="menu-btn">
+                     <span class="icon">💬</span>
+                     집중관리 카페
+                 </a>
+                 </div>
+         </div>
+         <div class="footer">
+             © 2025 운영관리팀. All Rights Reserved.
+         </div>
+     </div>
+ </body>
+ </html>
