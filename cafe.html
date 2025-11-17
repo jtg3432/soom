@@ -368,8 +368,14 @@
     <div class="save-feedback" id="saveFeedback"></div>
 
     <script type="module">
+        // 1. 앱 초기화 import
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        // 2. Firestore 기능 import (별도로!)
+        import { 
+            getFirestore, collection, addDoc, getDocs, 
+            deleteDoc, doc, onSnapshot, updateDoc, query, orderBy 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
@@ -384,7 +390,11 @@
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
             window.db = db;
-            window.firebase = { collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc, query, orderBy };
+            // 3. 모든 Firestore 기능을 window.firebase 객체에 할당
+            window.firebase = { 
+                collection, addDoc, getDocs, deleteDoc, 
+                doc, onSnapshot, updateDoc, query, orderBy 
+            };
             window.firebaseInitialized = true;
             console.log('🔥 Firebase 연결 완료!');
         } catch (error) {
@@ -396,13 +406,11 @@
     <script>
         let cafeData = [];
 
-        // DOM 요소를 변수로 선언
         let tbody, emptyState, tableEl, searchInput, noResultsEl;
 
         document.addEventListener('DOMContentLoaded', init);
 
         function init() {
-            // DOM 요소 할당
             tbody = document.getElementById('cafeTableBody');
             emptyState = document.getElementById('emptyState');
             tableEl = document.getElementById('cafeTable');
@@ -426,7 +434,6 @@
         }
 
         function setupRealtimeSync() {
-            // 카페는 'company' (업체명) 기준으로 정렬
             const q = window.firebase.query(
                 window.firebase.collection(window.db, 'cafes'),
                 window.firebase.orderBy("company", "asc")
@@ -443,7 +450,7 @@
         }
 
         function renderTable() {
-            if (!tbody) return; // DOM 로드 전이면 중단
+            if (!tbody) return; 
 
             const searchVal = searchInput.value;
             
@@ -455,7 +462,6 @@
             });
 
             if (cafeData.length === 0) { 
-                // 원본 데이터가 아예 없는 경우
                 tableEl.style.display = 'none';
                 emptyState.style.display = 'block';
                 noResultsEl.style.display = 'none';
@@ -464,9 +470,7 @@
                 emptyState.style.display = 'none';
                 
                 tbody.innerHTML = '';
-                
-                // 정렬은 이미 setupRealtimeSync의 쿼리에서 처리됨
-                
+                                
                 filteredData.forEach((cafe, index) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -494,7 +498,6 @@
                     tbody.appendChild(row);
                 });
 
-                // 검색 결과가 없는 경우
                 noResultsEl.style.display = (filteredData.length === 0 && searchVal !== '') ? 'block' : 'none';
             }
         }
@@ -512,8 +515,8 @@
             try {
                 await window.firebase.addDoc(window.firebase.collection(window.db, 'cafes'), newCafe);
                 showSaveFeedback('➕ 새 카페 행이 추가되었습니다!');
-                searchInput.value = ''; // 검색어 초기화
-                renderTable(); // 목록 새로고침
+                searchInput.value = ''; 
+                renderTable(); 
             } catch (error) {
                 console.error("추가 실패:", error);
                 showSaveFeedback('❌ 추가 실패', true);
@@ -575,8 +578,8 @@
             const feedback = document.getElementById('saveFeedback');
             if (!feedback) return;
             feedback.textContent = message;
-            feedback.style.background = isError ? '#dc3545' : var(--bg-dark);
-            feedback.style.color = var(--text-light);
+            feedback.style.background = isError ? '#dc3545' : 'var(--bg-dark)';
+            feedback.style.color = 'var(--text-light)';
             feedback.classList.add('show');
             setTimeout(() => {
                 feedback.classList.remove('show');
