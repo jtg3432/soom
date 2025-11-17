@@ -321,7 +321,7 @@
             <div class="controls-row">
                 <div class="search-box">
                     <span class="search-icon">🔍</span>
-                    <input type="text" class="search-input" id="searchInput" placeholder="업체명 또는 카페명으로 검색..." oninput="searchCafes()">
+                    <input type="text" class="search-input" id="searchInput" placeholder="업체명 또는 카페명으로 검색..." oninput="renderTable()">
                 </div>
                 <button class="add-btn" onclick="addNewRow()">➕ 카페 추가</button>
             </div>
@@ -369,7 +369,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
@@ -384,7 +384,7 @@
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
             window.db = db;
-            window.firebase = { collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc };
+            window.firebase = { collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc, query, orderBy };
             window.firebaseInitialized = true;
             console.log('🔥 Firebase 연결 완료!');
         } catch (error) {
@@ -396,9 +396,19 @@
     <script>
         let cafeData = [];
 
+        // DOM 요소를 변수로 선언
+        let tbody, emptyState, tableEl, searchInput, noResultsEl;
+
         document.addEventListener('DOMContentLoaded', init);
 
         function init() {
+            // DOM 요소 할당
+            tbody = document.getElementById('cafeTableBody');
+            emptyState = document.getElementById('emptyState');
+            tableEl = document.getElementById('cafeTable');
+            searchInput = document.getElementById('searchInput');
+            noResultsEl = document.getElementById('noResults');
+
             if (typeof window.firebaseInitialized === 'undefined') {
                 setTimeout(init, 100); 
                 return;
@@ -416,18 +426,26 @@
         }
 
         function setupRealtimeSync() {
-            window.firebase.onSnapshot(window.firebase.collection(window.db, 'cafes'), (snapshot) => {
+            // 카페는 'company' (업체명) 기준으로 정렬
+            const q = window.firebase.query(
+                window.firebase.collection(window.db, 'cafes'),
+                window.firebase.orderBy("company", "asc")
+            );
+            
+            window.firebase.onSnapshot(q, (snapshot) => {
                 cafeData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderTable();
                 updateStats();
+            }, (error) => {
+                console.error("실시간 동기화 실패:", error);
+                showSaveFeedback('⚠️ 실시간 연결 실패', true);
             });
         }
 
         function renderTable() {
-            const tbody = document.getElementById('cafeTableBody');
-            const emptyState = document.getElementById('emptyState');
-            const table = document.getElementById('cafeTable');
-            const searchVal = document.getElementById('searchInput').value;
+            if (!tbody) return; // DOM 로드 전이면 중단
+
+            const searchVal = searchInput.value;
             
             const filteredData = cafeData.filter(cafe => {
                 const company = (cafe.company || '').toLowerCase();
@@ -436,17 +454,18 @@
                 return term === '' || company.includes(term) || cafeName.includes(term);
             });
 
-            if (filteredData.length === 0 && searchVal === '') {
-                table.style.display = 'none';
+            if (cafeData.length === 0) { 
+                // 원본 데이터가 아예 없는 경우
+                tableEl.style.display = 'none';
                 emptyState.style.display = 'block';
-                document.getElementById('noResults').style.display = 'none';
+                noResultsEl.style.display = 'none';
             } else {
-                table.style.display = 'table';
+                tableEl.style.display = 'table';
                 emptyState.style.display = 'none';
                 
                 tbody.innerHTML = '';
                 
-                filteredData.sort((a, b) => (a.company || '').localeCompare(b.company || '', 'ko-KR'));
+                // 정렬은 이미 setupRealtimeSync의 쿼리에서 처리됨
                 
                 filteredData.forEach((cafe, index) => {
                     const row = document.createElement('tr');
@@ -475,7 +494,8 @@
                     tbody.appendChild(row);
                 });
 
-                document.getElementById('noResults').style.display = (filteredData.length === 0 && searchVal !== '') ? 'block' : 'none';
+                // 검색 결과가 없는 경우
+                noResultsEl.style.display = (filteredData.length === 0 && searchVal !== '') ? 'block' : 'none';
             }
         }
 
@@ -492,8 +512,8 @@
             try {
                 await window.firebase.addDoc(window.firebase.collection(window.db, 'cafes'), newCafe);
                 showSaveFeedback('➕ 새 카페 행이 추가되었습니다!');
-                document.getElementById('searchInput').value = ''; // 검색어 초기화
-                searchCafes(); // 목록 새로고침
+                searchInput.value = ''; // 검색어 초기화
+                renderTable(); // 목록 새로고침
             } catch (error) {
                 console.error("추가 실패:", error);
                 showSaveFeedback('❌ 추가 실패', true);
