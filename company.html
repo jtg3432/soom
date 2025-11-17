@@ -5,393 +5,295 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>업체 정보 - 운영관리팀</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg-dark: #212529;
+            --bg-medium: #495057;
+            --bg-light: #F8F9FA;
+            --text-dark: #212529;
+            --text-light: #F8F9FA;
+            --text-muted: #6C757D;
+            --border-color: #DEE2E6;
+            --font-main: 'Noto Sans KR', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: var(--font-main);
+            background: var(--bg-light);
             min-height: 100vh;
             padding: 20px;
         }
 
         .page-container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
 
-        /* 수정된 네비게이션 탭 스타일 */
+        /* 네비게이션 탭 */
         .nav-tabs {
-            display: flex;
-            list-style: none;
-            background: #f1f3f4;
-            padding: 0 20px;
-            border-bottom: 3px solid #dee2e6;
-            flex-wrap: wrap;
+            display: flex; list-style: none; background: #ffffff;
+            padding: 0 20px; border-bottom: 2px solid var(--border-color); flex-wrap: wrap;
         }
         .nav-tabs li a {
-            display: block;
-            padding: 15px 20px;
-            text-decoration: none;
-            color: #495057;
-            font-weight: 600;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-            white-space: nowrap;
+            display: block; padding: 15px 20px; text-decoration: none;
+            color: var(--text-muted); font-weight: 600; border-bottom: 3px solid transparent;
+            transition: all 0.3s ease; white-space: nowrap;
         }
-        .nav-tabs li a:hover {
-            color: #007bff;
-            border-bottom-color: #007bff;
-        }
-        .nav-tabs li.active a {
-            color: #4facfe;
-            border-bottom-color: #4facfe;
-        }
+        .nav-tabs li a:hover { color: var(--text-dark); }
+        .nav-tabs li.active a { color: var(--bg-dark); border-bottom-color: var(--bg-dark); }
 
         .page-header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
-            position: relative;
+            background: var(--bg-dark); color: var(--text-light); text-align: center;
+            padding: 40px 20px; position: relative;
         }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .page-header h2 {
-            font-size: 1.3rem;
-            font-weight: 300;
-            opacity: 0.9;
-        }
+        .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+        .page-header h2 { font-size: 1.3rem; opacity: 0.9; font-weight: 400; }
 
         .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.1);
+            color: white; border: none; padding: 10px 20px; border-radius: 25px;
+            text-decoration: none; font-weight: 600; transition: all 0.3s ease;
         }
+        .back-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
 
-        .back-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
-
-        .search-section {
+        /* --- 업체 목록 뷰 --- */
+        #list-view {
             padding: 30px 40px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
+            transition: filter 0.5s ease; /* 블러 효과 */
+        }
+        #list-view.blurred {
+            filter: blur(5px);
+            pointer-events: none; /* 블러 상태일 때 클릭 방지 */
         }
 
-        .search-controls {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 300px;
-            position: relative;
-        }
-
-        .search-input {
+        .search-bar {
             width: 100%;
-            padding: 15px 20px;
-            padding-left: 50px;
-            border: 2px solid #dee2e6;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            outline: none;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .search-input:focus {
-            border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-            font-size: 1.2rem;
-        }
-
-        .filter-option {
-            flex-shrink: 0;
-            background: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 2px solid #dee2e6;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .filter-checkbox {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #495057;
-            font-weight: 500;
-            gap: 10px;
-            margin: 0;
-        }
-
-        .filter-checkbox input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: #4facfe;
-            transform: scale(1.2);
-        }
-
-        .filter-checkbox span {
-            white-space: nowrap;
-            user-select: none;
-        }
-
-        .search-notice {
-            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
-            color: #2d3436;
-            text-align: center;
-            padding: 15px 20px;
-            margin: 20px 40px 0 40px;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-
-        .admin-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .admin-btn {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
+            padding: 12px 20px;
             font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-family: var(--font-main);
+        }
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--bg-dark);
+            box-shadow: 0 0 0 3px rgba(33,37,41, 0.1);
         }
 
-        .admin-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .admin-btn.edit {
-            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
-        }
-        
-        .companies-grid {
-            padding: 40px;
+        .company-list-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
 
-        .company-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 15px;
-            padding: 25px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            text-align: left;
-        }
-
-        .company-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            border-color: #4facfe;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
-
-        .company-name {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #2c3e50;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.2s ease;
-            margin-bottom: 10px;
-        }
-
-        .company-name::before {
-            content: '🏢';
-            font-size: 1.2rem;
-        }
-
-        .company-card:hover .company-name {
-            color: white;
-        }
-
-        .company-info {
-            font-size: 0.9rem;
-            color: #6c757d;
-            transition: all 0.2s ease;
-            margin-bottom: 10px;
-        }
-        
-        .company-info ul {
-            list-style-type: '• ';
-            margin-left: 15px;
-            padding: 0;
-        }
-
-        .company-info li {
-            margin-bottom: 5px;
-        }
-
-        .company-card:hover .company-info {
-            color: rgba(255,255,255,0.9);
-        }
-
-        .company-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .action-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 600;
-        }
-
-        .edit-btn { background: #ffc107; color: #000; }
-        .delete-btn { background: #dc3545; color: white; }
-        .toggle-special-btn { background: #6c757d; color: white; }
-        .action-btn:hover { transform: scale(1.05); }
-
-        .special-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #ff6b6b;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-        
-        .in-progress-badge {
-            position: absolute;
-            top: 40px;
-            right: 10px;
-            width: 15px;
-            height: 15px;
-            background-color: #28a745;
-            border-radius: 50%;
-            display: none;
-        }
-        
-        .in-progress-badge.visible { display: block; }
-
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #6c757d;
+        .company-item {
+            padding: 20px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             font-size: 1.1rem;
-            display: none;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .company-item:hover {
+            background: #e9ecef;
+            border-color: var(--bg-medium);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
         }
 
-        .hidden { display: none !important; }
+        .delete-icon {
+            position: absolute;
+            top: 5px; right: 5px;
+            width: 24px; height: 24px;
+            background: #dc3545; color: white;
+            border: none; border-radius: 50%;
+            font-weight: bold; font-size: 14px;
+            cursor: pointer;
+            display: none; /* 평소엔 숨김 */
+            align-items: center; justify-content: center;
+        }
+        .delete-icon:hover { background: #c82333; }
+        .deleting .delete-icon { display: flex; } /* 삭제 모드일 때 보임 */
+        .deleting .company-item:hover { transform: none; } /* 삭제 모드일 때 호버 효과 제거 */
 
+        .list-controls {
+            display: flex;
+            gap: 10px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 20px;
+        }
+        .list-control-btn {
+            padding: 12px 25px; border-radius: 8px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; border: none;
+        }
+        .add-btn { background: var(--bg-dark); color: var(--text-light); }
+        .add-btn:hover { background: var(--bg-medium); }
+        .delete-btn { background: #dc3545; color: white; }
+        .delete-btn.active { background: #6c757d; } /* 완료 버튼 */
+
+        /* --- 업체 상세 뷰 --- */
+        #detail-view {
+            display: none; /* 평소엔 숨김 */
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            backdrop-filter: blur(5px); /* 배경 블러 (위의 list-view 블러와 다름) */
+            overflow-y: auto;
+            padding: 50px 20px;
+        }
+        #detail-view.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .detail-content {
+            background: #ffffff;
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+        
+        .detail-header {
+            padding: 30px 40px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* 애니메이션 적용될 제목 */
+        .detail-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            /* 애니메이션은 JS로 동적 추가 */
+        }
+        .detail-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        .detail-controls button {
+            padding: 10px 20px; border-radius: 8px;
+            font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; border: none;
+            margin-left: 10px;
+        }
+        .edit-btn { background: #e9ecef; color: var(--text-dark); }
+        .edit-btn:hover { background: #ced4da; }
+        .save-btn { background: var(--bg-dark); color: var(--text-light); display: none; } /* 평소엔 숨김 */
+        .save-btn:hover { background: var(--bg-medium); }
+        .close-btn { background: var(--bg-dark); color: var(--text-light); }
+        .close-btn:hover { background: var(--bg-medium); }
+
+        .detail-tables {
+            padding: 10px 40px 40px 40px;
+        }
+        .table-section { margin-bottom: 20px; }
+        .table-title {
+            font-size: 1.3rem; font-weight: 600; color: var(--text-dark);
+            margin-bottom: 15px; padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        /* 수정 가능한 표 */
+        .editable-table {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid transparent; /* 평소엔 테두리 없음 */
+            border-radius: 8px;
+            font-family: var(--font-main);
+            font-size: 1rem;
+            line-height: 1.7;
+            white-space: pre-wrap; /* 줄바꿈 유지 */
+            color: var(--text-dark);
+        }
+        .editable-table[contenteditable="true"] {
+            background: var(--bg-light);
+            border-color: var(--border-color);
+            outline: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        /* 모달 (팝업) */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
-            width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);
+            width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            align-items: center; justify-content: center;
         }
-
         .modal-content {
-            background-color: white; margin: 10% auto; padding: 30px;
-            border-radius: 15px; width: 90%; max-width: 500px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            background: white; padding: 30px; border-radius: 15px;
+            width: 90%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
         }
-
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .modal-title { font-size: 1.3rem; font-weight: 700; color: #2c3e50; }
-        .close { color: #adb5bd; font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.2s ease; }
-        .close:hover { color: #495057; }
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; margin-bottom: 5px; font-weight: 600; color: #495057; }
-        .form-input, .form-select {
-            width: 100%; padding: 10px; border: 2px solid #dee2e6; border-radius: 8px;
-            font-size: 1rem; outline: none; transition: border-color 0.3s ease;
+        .modal-content h3 { font-size: 1.3rem; margin-bottom: 15px; }
+        .modal-content p { color: var(--text-muted); margin-bottom: 20px; }
+        .modal-input {
+            width: 100%; padding: 12px; font-size: 1rem;
+            border: 2px solid var(--border-color); border-radius: 8px;
+            margin-bottom: 20px;
         }
-        .form-input:focus, .form-select:focus { border-color: #4facfe; box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1); }
-        .form-buttons { display: flex; gap: 10px; justify-content: flex-end; }
-
+        .modal-buttons { display: flex; gap: 10px; }
+        .modal-btn {
+            flex: 1; padding: 10px 20px; border-radius: 8px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease; border: none; font-size: 1rem;
+        }
+        .confirm-btn { background: var(--bg-dark); color: var(--text-light); }
+        .confirm-btn.delete { background: #dc3545; }
+        .cancel-btn { background: #e9ecef; color: var(--text-dark); }
+        
         .save-feedback {
-            position: fixed; top: 20px; right: 20px; background: #28a745; color: white; padding: 15px 25px;
-            border-radius: 50px; font-weight: 600; transform: translateX(400px); transition: transform 0.3s ease;
+            position: fixed; top: 20px; right: 20px; background: var(--bg-dark); color: var(--text-light); padding: 15px 25px;
+            border-radius: 8px; font-weight: 600; transform: translateX(400px); transition: transform 0.3s ease;
             z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
         .save-feedback.show { transform: translateX(0); }
 
         @media (max-width: 768px) {
-            .page-container { margin: 10px; }
-            .search-controls { flex-direction: column; align-items: stretch; gap: 15px; }
-            .search-box { min-width: unset; }
-            .filter-option { align-self: center; }
-            .search-section { padding: 20px; }
-            .companies-grid { padding: 20px; grid-template-columns: 1fr; }
-            .search-notice { margin: 20px; }
+            body { padding: 10px; }
+            .page-container { margin: 0; }
+            #list-view { padding: 20px; }
+            .detail-content { margin: 10px auto; }
+            .detail-header { padding: 20px; }
+            .detail-tables { padding: 10px 20px 20px 20px; }
         }
+
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="page-container">
         <ul class="nav-tabs">
+            <li><a href="handover.html">인수인계</a></li>
             <li><a href="docs.html">독스 계정 정보</a></li>
             <li class="active"><a href="company.html">업체 정보</a></li>
-            <li><a href="cafe.html">집중관리 카페</a></li>
             <li><a href="schedule.html">연세사랑모아 순번</a></li>
-            <li><a href="monitoring.html">컨텐츠 모니터링</a></li>
-            <li><a href="Main.html">업체별 정보</a></li>
-            </ul>
+            <li><a href="cafe.html">집중관리 카페</a></li>
+        </ul>
 
         <div class="page-header">
             <a href="index.html" class="back-btn">← 메인으로</a>
@@ -399,76 +301,74 @@
             <h2>업체 정보</h2>
         </div>
 
-        <div class="search-section">
-            <div class="search-controls">
-                <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" class="search-input" id="companySearchInput" placeholder="업체명을 검색하세요 (초성 검색 가능)" oninput="searchCompanies()">
+        <div id="list-view">
+            <input type="text" class="search-bar" id="search-bar" placeholder="🔍 업체명 또는 초성으로 검색...">
+            <div class="company-list-container" id="company-list">
                 </div>
-                <div class="filter-option">
-                    <label class="filter-checkbox">
-                        <input type="checkbox" id="specialActionsFilter" onchange="searchCompanies()">
-                        <span>특별 관리 업체만 보기</span>
-                    </label>
-                </div>
+            <div class="list-controls">
+                <button class="list-control-btn add-btn" onclick="openAddModal()">➕ 업체 추가</button>
+                <button class="list-control-btn delete-btn" id="delete-mode-btn" onclick="toggleDeleteMode(this)">🗑️ 업체 삭제</button>
             </div>
-            <div class="search-notice">
-                💡 모든 업체 업로드 / 3자 모니터링 진행 전 정보란 및 필수작성지 확인 필수
-            </div>
-            <div class="admin-controls">
-                <button class="admin-btn" onclick="openAddModal()">➕ 업체 추가</button>
-                <button class="admin-btn edit" onclick="toggleEditMode(event)">✏️ 편집 모드</button>
-            </div>
-        </div>
-
-        <div class="companies-grid" id="companiesGrid"></div>
-        <div class="no-results" id="noResults">
-            <p>🔍 검색 결과가 없습니다.</p>
         </div>
     </div>
 
-    <div id="companyModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="modal-title" id="modalTitle">업체 추가</span>
-                <span class="close" onclick="closeModal()">&times;</span>
+    <div id="detail-view">
+        <div class="detail-content">
+            <div class="detail-header">
+                <div>
+                    <h2 class="detail-title" id="detail-title">업체명</h2>
+                    <p class="detail-subtitle">컨트롤+F를 누르고 찾는 정보를 검색해 보세요</p>
+                </div>
+                <div class="detail-controls">
+                    <button class="edit-btn" id="edit-detail-btn" onclick="toggleDetailEdit(this)">수정</button>
+                    <button class="save-btn" id="save-detail-btn" onclick="saveDetailData()">저장</button>
+                    <button class="close-btn" onclick="hideDetailView()">닫기</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label class="form-label">업체명</label>
-                <input type="text" class="form-input" id="companyName" placeholder="업체명을 입력하세요">
-            </div>
-            <div class="form-group">
-                <label class="form-label">업체 정보 (줄바꿈은 / 로)</label>
-                <input type="text" class="form-input" id="companyInfo" placeholder="업체 설명을 입력하세요">
-            </div>
-            <div class="form-group">
-                <label class="form-label">초성</label>
-                <input type="text" class="form-input" id="companyInitial" placeholder="검색용 초성 (예: ㅇㅅㅅㄴㅅ)">
-            </div>
-            <div class="form-group">
-                <label class="form-label">특별 관리</label>
-                <select class="form-select" id="companySpecial">
-                    <option value="false">아니오</option>
-                    <option value="true">예</option>
-                </select>
-            </div>
-             <div class="form-group">
-                <label class="form-label">진행 중 (초록불)</label>
-                <input type="checkbox" id="inProgressCheckbox" style="transform: scale(1.5); margin-left: 5px;">
-            </div>
-            <div class="form-buttons">
-                <button class="action-btn delete-btn" onclick="closeModal()">취소</button>
-                <button class="action-btn edit-btn" onclick="saveCompany()">저장</button>
+            <div class="detail-tables">
+                <div class="table-section">
+                    <h3 class="table-title">자주 찾는 정보</h3>
+                    <div class="editable-table" id="table-info" contenteditable="false"></div>
+                </div>
+                <div class="table-section">
+                    <h3 class="table-title">업로드 주의사항</h3>
+                    <div class="editable-table" id="table-upload" contenteditable="false"></div>
+                </div>
+                <div class="table-section">
+                    <h3 class="table-title">3자 모니터링 주의사항</h3>
+                    <div class="editable-table" id="table-monitoring" contenteditable="false"></div>
+                </div>
             </div>
         </div>
     </div>
+
+    <div id="company-modal" class="modal">
+        <div class="modal-content" id="add-modal-content">
+            <h3>업체 추가</h3>
+            <p>추가할 업체의 이름을 입력하세요.</p>
+            <input type="text" class="modal-input" id="new-company-name" placeholder="업체명">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" onclick="closeModal('company-modal')">취소</button>
+                <button class="modal-btn confirm-btn" onclick="saveNewCompany()">추가</button>
+            </div>
+        </div>
+        <div class="modal-content" id="delete-modal-content" style="display: none;">
+            <h3>업체 삭제</h3>
+            <p id="delete-confirm-text"></p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" onclick="closeModal('company-modal')">취소</button>
+                <button class="modal-btn confirm-btn delete" id="delete-confirm-btn">삭제</button>
+            </div>
+        </div>
+    </div>
+
 
     <div class="save-feedback" id="saveFeedback"></div>
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
+        import { getFirestore, collection, addDoc, getDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc, setDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
         const firebaseConfig = {
             apiKey: "AIzaSyA6VSdpxQ2PDkCrezW5n_Y69BVuvA3ig9g",
             authDomain: "soom-brand.firebaseapp.com",
@@ -482,7 +382,7 @@
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
             window.db = db;
-            window.firebase = { collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc };
+            window.firebase = { collection, addDoc, getDoc, getDocs, deleteDoc, doc, onSnapshot, updateDoc, setDoc, query, orderBy };
             window.firebaseInitialized = true;
             console.log('🔥 Firebase 연결 완료!');
         } catch(e) {
@@ -490,15 +390,33 @@
             window.firebaseInitialized = false;
         }
     </script>
-    
+
     <script>
-        let companies = [];
-        let editMode = false;
-        let editingId = null;
+        let allCompanies = [];
+        let currentDetailId = null;
+
+        const listView = document.getElementById('list-view');
+        const detailView = document.getElementById('detail-view');
+        const companyListEl = document.getElementById('company-list');
+        const searchBar = document.getElementById('search-bar');
+        
+        // 초성 매핑
+        const CHO = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+        const ga = 44032;
+        const hih = 55203;
+        function getCho(str) {
+            let result = "";
+            for (let i = 0; i < str.length; i++) {
+                const charCode = str.charCodeAt(i);
+                if (charCode >= ga && charCode <= hih) {
+                    result += CHO[Math.floor((charCode - ga) / 588)];
+                }
+            }
+            return result;
+        }
 
         document.addEventListener('DOMContentLoaded', init);
 
-        // Firebase 연결 대기 및 초기화
         async function init() {
             if (typeof window.firebaseInitialized === 'undefined') {
                 setTimeout(init, 100);
@@ -508,169 +426,227 @@
                 setupRealtimeSync();
                 showSaveFeedback('🔥 실시간 동기화 시작');
             } else {
-                // 로컬 데이터 로드 (기존 기능)
-                companies = JSON.parse(localStorage.getItem('companies') || '[]');
-                searchCompanies();
                 showSaveFeedback('⚠️ Firebase 연결 실패 - 로컬 모드', true);
             }
+            
+            searchBar.addEventListener('input', renderCompanyList);
         }
 
-        // 실시간 동기화 설정
+        // 실시간 동기화 (이름순 정렬)
         function setupRealtimeSync() {
-            window.firebase.onSnapshot(window.firebase.collection(window.db, 'companies'), (snapshot) => {
-                companies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                searchCompanies(); // 데이터 변경 시마다 화면 다시 그리기
+            const q = window.firebase.query(
+                window.firebase.collection(window.db, 'companies'), 
+                window.firebase.orderBy("name", "asc") // 'name' 필드 기준으로 오름차순
+            );
+            
+            window.firebase.onSnapshot(q, (snapshot) => {
+                allCompanies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderCompanyList();
             });
         }
 
-        // 화면 그리기 (검색 포함)
-        function renderCompanies(data) {
-            const grid = document.getElementById('companiesGrid');
-            grid.innerHTML = '';
+        // 업체 목록 렌더링 (검색 포함)
+        function renderCompanyList() {
+            companyListEl.innerHTML = '';
+            const searchTerm = searchBar.value.toLowerCase().trim();
             
-            data.sort((a, b) => a.name.localeCompare(b.name, 'ko-KR')) // ㄱㄴㄷ 순 정렬
-                .forEach(company => {
-                    const infoList = `<ul>${company.info.split(' / ').map(item => `<li>${item.trim()}</li>`).join('')}</ul>`;
-                    
-                    const card = document.createElement('div');
-                    card.className = 'company-card';
-                    
-                    card.innerHTML = `
-                        ${company.special ? '<div class="special-badge">특별관리</div>' : ''}
-                        <div class="in-progress-badge ${company.inProgress ? 'visible' : ''}"></div>
-                        <div class="company-name">${company.name}</div>
-                        <div class="company-info">${infoList}</div>
-                        <div class="company-actions ${editMode ? '' : 'hidden'}">
-                            <button class="action-btn edit-btn" onclick="event.stopPropagation(); openEditModal('${company.id}')">편집</button>
-                            <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteCompany('${company.id}')">삭제</button>
-                        </div>
-                    `;
-                    
-                    if (!editMode) {
-                        card.onclick = () => alert(`${company.name}\n${company.special ? '⚠️ 특별 관리' : '✅ 일반 관리'}`);
-                    }
-                    
-                    grid.appendChild(card);
-                });
-        }
-
-        // 검색 및 필터링
-        function searchCompanies() {
-            const searchTerm = document.getElementById('companySearchInput').value.toLowerCase().trim();
-            const specialFilter = document.getElementById('specialActionsFilter').checked;
-            const noResults = document.getElementById('noResults');
-
-            const filtered = companies.filter(c => {
-                const nameMatch = c.name.toLowerCase().includes(searchTerm);
-                const initialMatch = c.initial && c.initial.toLowerCase().includes(searchTerm);
-                const matchesSearch = nameMatch || initialMatch;
-                const matchesFilter = !specialFilter || c.special;
-                return matchesSearch && matchesFilter;
+            const filtered = allCompanies.filter(company => {
+                const name = company.name.toLowerCase();
+                const initial = getCho(company.name);
+                return name.includes(searchTerm) || initial.includes(searchTerm);
             });
-
-            renderCompanies(filtered);
-            noResults.style.display = filtered.length === 0 ? 'block' : 'none';
-        }
-
-        function toggleEditMode(event) {
-            editMode = !editMode;
-            event.target.textContent = editMode ? '👁️ 보기 모드' : '✏️ 편집 모드';
-            searchCompanies(); // 편집 버튼 표시/숨기기를 위해 다시 그림
-        }
-
-        // --- 모달 및 데이터 관리 ---
-
-        function openAddModal() {
-            editingId = null;
-            document.getElementById('modalTitle').textContent = '업체 추가';
-            document.getElementById('companyName').value = '';
-            document.getElementById('companyInfo').value = '';
-            document.getElementById('companyInitial').value = '';
-            document.getElementById('companySpecial').value = 'false';
-            document.getElementById('inProgressCheckbox').checked = false;
-            document.getElementById('companyModal').style.display = 'block';
-        }
-
-        function openEditModal(id) {
-            const company = companies.find(c => c.id === id);
-            if (!company) return;
             
-            editingId = id;
-            document.getElementById('modalTitle').textContent = '업체 편집';
-            document.getElementById('companyName').value = company.name;
-            document.getElementById('companyInfo').value = company.info;
-            document.getElementById('companyInitial').value = company.initial || '';
-            document.getElementById('companySpecial').value = company.special.toString();
-            document.getElementById('inProgressCheckbox').checked = company.inProgress || false;
-            document.getElementById('companyModal').style.display = 'block';
+            filtered.forEach(company => {
+                const item = document.createElement('div');
+                item.className = 'company-item';
+                item.textContent = company.name;
+                item.onclick = () => showDetailView(company.id, company.name);
+                
+                const deleteIcon = document.createElement('button');
+                deleteIcon.className = 'delete-icon';
+                deleteIcon.textContent = 'X';
+                deleteIcon.onclick = (e) => {
+                    e.stopPropagation(); // 부모(업체) 클릭 방지
+                    openDeleteModal(company.id, company.name);
+                };
+                item.appendChild(deleteIcon);
+                
+                companyListEl.appendChild(item);
+            });
         }
+        
+        // --- 상세 뷰 관련 ---
 
-        function closeModal() {
-            document.getElementById('companyModal').style.display = 'none';
-        }
-
-        async function saveCompany() {
-            const companyData = {
-                name: document.getElementById('companyName').value.trim(),
-                info: document.getElementById('companyInfo').value.trim(),
-                initial: document.getElementById('companyInitial').value.trim(),
-                special: document.getElementById('companySpecial').value === 'true',
-                inProgress: document.getElementById('inProgressCheckbox').checked
-            };
-
-            if (!companyData.name || !companyData.info) {
-                return alert('업체명과 정보는 필수입니다.');
-            }
-
-            if (!window.firebaseInitialized) {
-                 alert('Firebase 연결 실패. 저장할 수 없습니다.');
-                 return;
-            }
+        async function showDetailView(id, name) {
+            currentDetailId = id;
+            
+            // 1. 제목 설정 및 애니메이션 준비
+            const titleEl = document.getElementById('detail-title');
+            titleEl.textContent = name;
+            // (애니메이션 로직 추가 - 여기서는 간단히 페이드 인)
+            
+            // 2. 블러 처리
+            listView.classList.add('blurred');
+            
+            // 3. 상세 정보 로드
+            const infoRef = window.firebase.doc(window.db, `companies/${id}/details`, "info");
+            let infoData = { info: '', upload: '', monitoring: '' };
             
             try {
-                if (editingId) {
-                    await window.firebase.updateDoc(window.firebase.doc(window.db, 'companies', editingId), companyData);
-                    showSaveFeedback('✏️ 수정되었습니다!');
-                } else {
-                    await window.firebase.addDoc(window.firebase.collection(window.db, 'companies'), companyData);
-                    showSaveFeedback('➕ 추가되었습니다!');
+                const docSnap = await window.firebase.getDoc(infoRef);
+                if (docSnap.exists()) {
+                    infoData = docSnap.data();
                 }
-            } catch (e) { 
-                console.error(e); 
+            } catch (e) {
+                console.error("상세 정보 로드 실패:", e);
+            }
+
+            document.getElementById('table-info').textContent = infoData.info;
+            document.getElementById('table-upload').textContent = infoData.upload;
+            document.getElementById('table-monitoring').textContent = infoData.monitoring;
+
+            // 4. 상세 뷰 표시
+            detailView.style.display = 'block';
+            setTimeout(() => detailView.classList.add('show'), 10); // Opacity 1
+        }
+
+        function hideDetailView() {
+            listView.classList.remove('blurred');
+            detailView.classList.remove('show');
+            setTimeout(() => detailView.style.display = 'none', 500); // 애니메이션 후 숨김
+            
+            // 수정 모드 해제
+            toggleDetailEdit(document.getElementById('edit-detail-btn'), true);
+            currentDetailId = null;
+        }
+
+        function toggleDetailEdit(button, forceOff = false) {
+            const isEditing = button.classList.contains('active');
+            const saveBtn = document.getElementById('save-detail-btn');
+            const tables = document.querySelectorAll('.editable-table');
+            
+            if (isEditing || forceOff) {
+                // 수정 완료
+                button.classList.remove('active');
+                button.textContent = '수정';
+                saveBtn.style.display = 'none';
+                tables.forEach(t => t.contentEditable = 'false');
+            } else {
+                // 수정 시작
+                button.classList.add('active');
+                button.textContent = '수정 중...';
+                saveBtn.style.display = 'inline-block';
+                tables.forEach(t => t.contentEditable = 'true');
+                tables[0].focus();
+            }
+        }
+
+        async function saveDetailData() {
+            if (!currentDetailId || !window.firebaseInitialized) return;
+            
+            const data = {
+                info: document.getElementById('table-info').textContent,
+                upload: document.getElementById('table-upload').textContent,
+                monitoring: document.getElementById('table-monitoring').textContent
+            };
+            
+            try {
+                const infoRef = window.firebase.doc(window.db, `companies/${currentDetailId}/details`, "info");
+                await window.firebase.setDoc(infoRef, data); // setDoc은 없으면 생성, 있으면 덮어씀
+                showSaveFeedback('💾 저장되었습니다!');
+                toggleDetailEdit(document.getElementById('edit-detail-btn'), true); // 수정 모드 끄기
+            } catch (error) {
+                console.error("상세 정보 저장 실패:", error);
                 showSaveFeedback('❌ 저장 실패', true);
             }
-            closeModal();
+        }
+        
+        // --- 업체 추가/삭제 ---
+
+        function openAddModal() {
+            document.getElementById('new-company-name').value = '';
+            document.getElementById('delete-modal-content').style.display = 'none';
+            document.getElementById('add-modal-content').style.display = 'block';
+            document.getElementById('company-modal').style.display = 'flex';
+            document.getElementById('new-company-name').focus();
+        }
+
+        async function saveNewCompany() {
+            const name = document.getElementById('new-company-name').value.trim();
+            if (!name) return alert('업체명을 입력하세요.');
+            if (!window.firebaseInitialized) return alert('Firebase 연결 실패');
+
+            try {
+                // 기본 정보 추가
+                await window.firebase.addDoc(window.firebase.collection(window.db, 'companies'), {
+                    name: name
+                });
+                showSaveFeedback('➕ 업체가 추가되었습니다!');
+                closeModal('company-modal');
+            } catch (error) {
+                console.error("업체 추가 실패:", error);
+                showSaveFeedback('❌ 추가 실패', true);
+            }
+        }
+
+        function toggleDeleteMode(button) {
+            const isDeleting = companyListEl.classList.toggle('deleting');
+            if (isDeleting) {
+                button.textContent = '삭제 완료';
+                button.classList.add('active');
+            } else {
+                button.textContent = '🗑️ 업체 삭제';
+                button.classList.remove('active');
+            }
+        }
+
+        function openDeleteModal(id, name) {
+            document.getElementById('delete-confirm-text').textContent = `'${name}' 업체를 정말 삭제하시겠습니까? (상세 정보도 함께 삭제됩니다)`;
+            document.getElementById('add-modal-content').style.display = 'none';
+            document.getElementById('delete-modal-content').style.display = 'block';
+            
+            // 삭제 버튼에 클릭 이벤트 새로 연결
+            const confirmBtn = document.getElementById('delete-confirm-btn');
+            confirmBtn.onclick = () => deleteCompany(id); // 새 함수를 연결
+            
+            document.getElementById('company-modal').style.display = 'flex';
         }
 
         async function deleteCompany(id) {
-            if (!confirm('정말로 삭제하시겠습니까?')) return;
+            if (!window.firebaseInitialized) return alert('Firebase 연결 실패');
             
-            if (!window.firebaseInitialized) {
-                 alert('Firebase 연결 실패. 삭제할 수 없습니다.');
-                 return;
-            }
-
+            // (참고: 하위 컬렉션(details)은 Firestore 규칙을 통해 삭제하거나, Cloud Function이 필요합니다.
+            // 여기서는 상위 업체만 삭제합니다.)
             try {
                 await window.firebase.deleteDoc(window.firebase.doc(window.db, 'companies', id));
                 showSaveFeedback('🗑️ 삭제되었습니다!');
-            } catch (e) { 
-                console.error(e); 
+                closeModal('company-modal');
+            } catch (error) {
+                console.error("삭제 실패:", error);
                 showSaveFeedback('❌ 삭제 실패', true);
             }
         }
 
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // --- 기타 ---
+
         function showSaveFeedback(message, isError = false) {
             const feedback = document.getElementById('saveFeedback');
             feedback.textContent = message;
-            feedback.style.background = isError ? '#dc3545' : '#28a745';
+            feedback.style.background = isError ? '#dc3545' : var(--bg-dark);
+            feedback.style.color = var(--text-light);
             feedback.classList.add('show');
-            setTimeout(() => feedback.classList.remove('show'), 2000);
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
         }
 
         window.onclick = (event) => {
-            if (event.target == document.getElementById('companyModal')) {
-                closeModal();
-            }
+            if (event.target == detailView) hideDetailView();
+            if (event.target == document.getElementById('company-modal')) closeModal('company-modal');
         };
     </script>
 </body>
