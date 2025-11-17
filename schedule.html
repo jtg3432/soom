@@ -509,6 +509,9 @@
                 });
                 renderScheduleData();
                 updateAllProgress();
+            }, (error) => {
+                console.error("실시간 동기화 실패:", error);
+                showSaveFeedback('⚠️ 실시간 연결 실패', true);
             });
         }
 
@@ -561,13 +564,13 @@
                     for (let i = 1; i <= totalItems; i++) {
                         const checkbox = document.getElementById(`${person}_${i}`);
                         const memo = document.getElementById(`memo_${person}_${i}`);
-                        // 체크박스나 메모가 존재하지 않으면(오류 방지) 건너뛰기
                         if (!checkbox || !memo) continue;
                         personData[i] = {
                             checked: checkbox.checked,
                             memo: memo.value
                         };
                     }
+                    // 'schedules' 컬렉션의 'person' 이름으로 된 문서에 저장
                     await window.firebase.setDoc(window.firebase.doc(window.db, 'schedules', person), personData);
                 }
                 return true;
@@ -681,8 +684,8 @@
         function showSaveFeedback(message, isError = false) {
             const feedback = document.getElementById('saveFeedback');
             feedback.textContent = message;
-            feedback.style.background = isError ? '#dc3545' : var(--bg-dark);
-            feedback.style.color = var(--text-light);
+            feedback.style.background = isError ? '#dc3545' : 'var(--bg-dark)';
+            feedback.style.color = 'var(--text-light)';
             feedback.classList.add('show');
             setTimeout(() => {
                 feedback.classList.remove('show');
