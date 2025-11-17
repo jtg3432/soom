@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>연세사랑모아 순번 - 운영관리팀</title>
     <style>
+        :root {
+            --bg-dark: #212529;
+            --bg-medium: #495057;
+            --bg-light: #F8F9FA;
+            --text-dark: #212529;
+            --text-light: #F8F9FA;
+            --text-muted: #6C757D;
+            --border-color: #DEE2E6;
+            --font-main: 'Noto Sans KR', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --primary-color: #007BFF; /* 강조색 (기존 파란색 유지) */
+            --success-color: #28a745; /* 완료색 (기존 초록색 유지) */
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,8 +25,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: var(--font-main);
+            background: var(--bg-light);
             min-height: 100vh;
             padding: 20px;
         }
@@ -21,98 +34,79 @@
         .page-container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
 
         /* 네비게이션 탭 스타일 */
         .nav-tabs {
             display: flex;
             list-style: none;
-            background: #f1f3f4;
+            background: #ffffff;
             padding: 0 20px;
-            border-bottom: 3px solid #dee2e6;
+            border-bottom: 2px solid var(--border-color);
             flex-wrap: wrap;
         }
         .nav-tabs li a {
             display: block;
             padding: 15px 20px;
             text-decoration: none;
-            color: #495057;
+            color: var(--text-muted);
             font-weight: 600;
             border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
             white-space: nowrap;
         }
         .nav-tabs li a:hover {
-            color: #007bff;
-            border-bottom-color: #007bff;
+            color: var(--text-dark);
         }
         .nav-tabs li.active a {
-            color: #4facfe;
-            border-bottom-color: #4facfe;
+            color: var(--bg-dark);
+            border-bottom-color: var(--bg-dark);
         }
 
         .page-header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
+            background: var(--bg-dark);
+            color: var(--text-light);
             text-align: center;
             padding: 40px 20px;
             position: relative;
         }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .page-header h2 {
-            font-size: 1.3rem;
-            font-weight: 300;
-            opacity: 0.9;
-        }
+        .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+        .page-header h2 { font-size: 1.3rem; opacity: 0.9; font-weight: 400; }
 
         .back-btn {
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.1);
+            color: white; border: none; padding: 10px 20px; border-radius: 25px;
+            text-decoration: none; font-weight: 600; transition: all 0.3s ease;
         }
-
-        .back-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
+        .back-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
 
         .notice-below {
             margin: 20px auto 0;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            opacity: 0.8;
             border-radius: 8px;
             padding: 12px 16px;
             max-width: 800px;
             font-size: 0.8rem;
             line-height: 1.4;
             text-align: center;
-            border-left: 4px solid #ffc107;
-            white-space: nowrap;
+            border-left: 4px solid var(--text-muted);
+            white-space: normal;
         }
 
         .progress-section {
             padding: 20px 40px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .progress-grid {
@@ -124,23 +118,22 @@
         }
 
         .progress-card {
-            background: white;
+            background: #ffffff;
             padding: 20px;
-            border-radius: 15px;
+            border-radius: 10px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
-
         .progress-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
         .progress-name {
             font-size: 1.2rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-dark);
             margin-bottom: 10px;
         }
 
@@ -155,55 +148,51 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: var(--primary-color); /* 강조색 */
             transition: width 0.3s ease;
             border-radius: 4px;
         }
 
         .progress-text {
             font-size: 0.9rem;
-            color: #6c757d;
+            color: var(--text-muted);
             font-weight: 500;
         }
 
         .table-container {
             padding: 40px;
             overflow-x: auto;
+            background: #ffffff;
         }
 
         .schedule-table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
-            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
         .schedule-table th {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 20px 10px;
-            font-size: 1.2rem;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            padding: 15px 10px;
+            font-size: 1.1rem;
             font-weight: 600;
             text-align: center;
-            position: relative;
+            border-bottom: 2px solid var(--border-color);
         }
 
         .schedule-table td {
-            padding: 20px 10px;
-            border-bottom: 1px solid #f1f3f4;
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--border-color);
             text-align: center;
             vertical-align: top;
+            border-right: 1px solid var(--border-color);
         }
-
-        .schedule-table tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        .schedule-table tbody tr:last-child td {
-            border-bottom: none;
-        }
+        .schedule-table td:last-child { border-right: none; }
+        .schedule-table tbody tr:last-child td { border-bottom: none; }
 
         .person-column {
             width: 20%;
@@ -214,7 +203,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            padding: 10px;
+            padding: 10px 0;
         }
 
         .checkbox-item {
@@ -222,16 +211,18 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            padding: 12px;
+            padding: 12px 8px;
             border-radius: 10px;
             transition: all 0.2s ease;
-            background: #f8f9fa;
-            position: relative; /* item-number 위치 기준 */
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            position: relative;
+            width: 90%;
+            margin: 0 auto;
         }
 
         .checkbox-item:hover {
             background: #e9ecef;
-            transform: scale(1.02);
         }
 
         .checkbox-item input[type="checkbox"] {
@@ -239,31 +230,26 @@
             height: 20px;
             cursor: pointer;
             transform: scale(1.3);
-            accent-color: #4facfe;
-            transition: all 0.2s ease;
-        }
-
-        .checkbox-item input[type="checkbox"]:checked {
-            transform: scale(1.4);
+            accent-color: var(--primary-color);
         }
 
         .mini-memo {
             width: 100%;
             max-width: 150px;
             padding: 8px 10px;
-            border: 2px solid #dee2e6;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 0.85rem;
             outline: none;
             transition: all 0.3s ease;
             text-align: center;
             background: white;
+            font-family: var(--font-main);
         }
 
         .mini-memo:focus {
-            border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-            transform: scale(1.05);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0,123,255, 0.1);
         }
 
         .mini-memo::placeholder {
@@ -272,28 +258,27 @@
         }
 
         .checkbox-item.completed {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            border: 2px solid #28a745;
+            background: #e6f7ec; /* 연한 초록 */
+            border-color: var(--success-color);
         }
-
         .checkbox-item.completed .mini-memo {
             background: #f8fff9;
-            border-color: #28a745;
+            border-color: var(--success-color);
         }
 
         .controls-section {
             padding: 20px 40px;
-            background: #f8f9fa;
-            border-top: 1px solid #dee2e6;
+            background: var(--bg-light);
+            border-top: 1px solid var(--border-color);
             text-align: center;
         }
 
         .control-btn {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-            color: white;
+            background: var(--bg-dark);
+            color: var(--text-light);
             border: none;
             padding: 12px 25px;
-            border-radius: 25px;
+            border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -302,42 +287,35 @@
         }
 
         .control-btn:hover {
+            background: var(--bg-medium);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .control-btn.save {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            background: var(--success-color);
+            color: white;
         }
+        .control-btn.save:hover { background: #218838; }
 
         .control-btn.reset {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            background: #dc3545;
+            color: white;
         }
+        .control-btn.reset:hover { background: #c82333; }
+
 
         .save-feedback {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #28a745;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            font-weight: 600;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: fixed; top: 20px; right: 20px; background: var(--bg-dark); color: var(--text-light); padding: 15px 25px;
+            border-radius: 8px; font-weight: 600; transform: translateX(400px); transition: transform 0.3s ease;
+            z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
-
-        .save-feedback.show {
-            transform: translateX(0);
-        }
+        .save-feedback.show { transform: translateX(0); }
 
         .item-number {
             position: absolute;
             top: 5px;
             left: 5px;
-            background: #4facfe;
+            background: var(--bg-medium);
             color: white;
             width: 20px;
             height: 20px;
@@ -350,40 +328,34 @@
         }
 
         .checkbox-item.completed .item-number {
-            background: #28a745;
+            background: var(--success-color);
         }
 
         @media (max-width: 768px) {
-            .page-container {
-                margin: 10px;
-            }
-            
-            .table-container {
-                padding: 20px;
-            }
-
+            body { padding: 10px; }
+            .page-container { margin: 0; }
+            .table-container { padding: 10px; }
             .schedule-table th,
-            .schedule-table td {
-                padding: 15px 8px;
-                font-size: 0.9rem;
-            }
+            .schedule-table td { padding: 10px 5px; font-size: 0.9rem; }
             .checkbox-group { gap: 10px; }
-            .mini-memo { max-width: 120px; font-size: 0.8rem; padding: 6px 8px; }
+            .mini-memo { max-width: 100px; font-size: 0.8rem; padding: 6px 8px; }
             .progress-section, .controls-section { padding: 20px; }
             .control-btn { padding: 10px 20px; font-size: 0.9rem; margin: 5px; }
             .notice-below { white-space: normal; max-width: 90%; }
         }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="page-container">
         <ul class="nav-tabs">
+            <li><a href="handover.html">인수인계</a></li>
             <li><a href="docs.html">독스 계정 정보</a></li>
             <li><a href="company.html">업체 정보</a></li>
-            <li><a href="cafe.html">집중관리 카페</a></li>
             <li class="active"><a href="schedule.html">연세사랑모아 순번</a></li>
-            <li><a href="monitoring.html">컨텐츠 모니터링</a></li>
-            <li><a href="Main.html">업체별 정보</a></li>
+            <li><a href="cafe.html">집중관리 카페</a></li>
         </ul>
     
         <div class="page-header">
@@ -483,7 +455,6 @@
     </script>
 
     <script>
-        // === JavaScript 순서 변경 ===
         const people = ['유빈', '수진', '태균', '정현', '수정'];
         const totalItems = 20;
         let scheduleData = {};
@@ -590,6 +561,8 @@
                     for (let i = 1; i <= totalItems; i++) {
                         const checkbox = document.getElementById(`${person}_${i}`);
                         const memo = document.getElementById(`memo_${person}_${i}`);
+                        // 체크박스나 메모가 존재하지 않으면(오류 방지) 건너뛰기
+                        if (!checkbox || !memo) continue;
                         personData[i] = {
                             checked: checkbox.checked,
                             memo: memo.value
@@ -609,11 +582,13 @@
         async function toggleItem(person, itemNumber) {
             updateProgress(person);
             const checkbox = document.getElementById(`${person}_${itemNumber}`);
-            const item = checkbox.closest('.checkbox-item');
-            if (checkbox.checked) {
-                item.classList.add('completed');
-            } else {
-                item.classList.remove('completed');
+            if (checkbox) {
+                const item = checkbox.closest('.checkbox-item');
+                if (checkbox.checked) {
+                    item.classList.add('completed');
+                } else {
+                    item.classList.remove('completed');
+                }
             }
             await autoSave();
         }
@@ -651,9 +626,9 @@
                     for (let i = 1; i <= totalItems; i++) {
                         const checkbox = document.getElementById(`${person}_${i}`);
                         const memo = document.getElementById(`memo_${person}_${i}`);
-                        checkbox.checked = false;
-                        memo.value = '';
-                        checkbox.closest('.checkbox-item').classList.remove('completed');
+                        if(checkbox) checkbox.checked = false;
+                        if(memo) memo.value = '';
+                        if(checkbox) checkbox.closest('.checkbox-item').classList.remove('completed');
                     }
                 });
                 await saveAllData();
@@ -686,7 +661,9 @@
                 for (let i = 1; i <= totalItems; i++) {
                     const checkbox = document.getElementById(`${person}_${i}`);
                     const memo = document.getElementById(`memo_${person}_${i}`);
-                    localData[person][i] = { checked: checkbox.checked, memo: memo.value };
+                    if(checkbox && memo) {
+                        localData[person][i] = { checked: checkbox.checked, memo: memo.value };
+                    }
                 }
             });
             localStorage.setItem('scheduleData', JSON.stringify(localData));
@@ -704,7 +681,8 @@
         function showSaveFeedback(message, isError = false) {
             const feedback = document.getElementById('saveFeedback');
             feedback.textContent = message;
-            feedback.style.background = isError ? '#dc3545' : '#28a745';
+            feedback.style.background = isError ? '#dc3545' : var(--bg-dark);
+            feedback.style.color = var(--text-light);
             feedback.classList.add('show');
             setTimeout(() => {
                 feedback.classList.remove('show');
