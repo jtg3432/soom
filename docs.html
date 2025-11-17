@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>독스 계정 정보 - 운영관리팀</title>
     <style>
+        :root {
+            --bg-dark: #212529;
+            --bg-medium: #495057;
+            --bg-light: #F8F9FA;
+            --text-dark: #212529;
+            --text-light: #F8F9FA;
+            --text-muted: #6C757D;
+            --border-color: #DEE2E6;
+            --font-main: 'Noto Sans KR', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,8 +23,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: var(--font-main);
+            background: var(--bg-light);
             min-height: 100vh;
             padding: 20px;
         }
@@ -21,79 +32,59 @@
         .page-container {
             max-width: 1000px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
 
-        /* 수정된 네비게이션 탭 스타일 */
+        /* 네비게이션 탭 스타일 */
         .nav-tabs {
             display: flex;
             list-style: none;
-            background: #f1f3f4;
+            background: #ffffff;
             padding: 0 20px;
-            border-bottom: 3px solid #dee2e6;
-            flex-wrap: wrap; 
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
         }
         .nav-tabs li a {
             display: block;
             padding: 15px 20px;
             text-decoration: none;
-            color: #495057;
+            color: var(--text-muted);
             font-weight: 600;
             border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
-            white-space: nowrap; 
+            white-space: nowrap;
         }
         .nav-tabs li a:hover {
-            color: #007bff;
-            border-bottom-color: #007bff;
+            color: var(--text-dark);
         }
         .nav-tabs li.active a {
-            color: #4facfe;
-            border-bottom-color: #4facfe;
+            color: var(--bg-dark);
+            border-bottom-color: var(--bg-dark);
         }
 
         .page-header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
+            background: var(--bg-dark);
+            color: var(--text-light);
             text-align: center;
             padding: 40px 20px;
             position: relative;
         }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .page-header h2 {
-            font-size: 1.3rem;
-            font-weight: 300;
-            opacity: 0.9;
-        }
+        .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+        .page-header h2 { font-size: 1.3rem; opacity: 0.9; font-weight: 400; }
 
         .back-btn {
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.1);
+            color: white; border: none; padding: 10px 20px; border-radius: 25px;
+            text-decoration: none; font-weight: 600; transition: all 0.3s ease;
         }
-
-        .back-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
+        .back-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
 
         .password-screen {
             text-align: center;
@@ -102,43 +93,46 @@
 
         .password-screen h3 {
             font-size: 1.8rem;
-            color: #2c3e50;
+            color: var(--text-dark);
             margin-bottom: 30px;
+            font-weight: 600;
         }
 
         .password-input {
             font-size: 1.2rem;
             padding: 15px 20px;
-            border: 2px solid #dee2e6;
-            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
             width: 250px;
             max-width: 100%;
             margin-bottom: 20px;
             text-align: center;
             outline: none;
             transition: all 0.3s ease;
+            font-family: var(--font-main);
         }
 
         .password-input:focus {
-            border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+            border-color: var(--bg-dark);
+            box-shadow: 0 0 0 3px rgba(33,37,41, 0.1);
         }
 
         .password-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
+            background: var(--bg-dark);
+            color: var(--text-light);
             border: none;
             padding: 15px 30px;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-left: 10px;
+            font-weight: 600;
         }
 
         .password-btn:hover {
+            background: var(--bg-medium);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .error-message {
@@ -152,53 +146,42 @@
         }
 
         .instruction {
-            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
-            color: #2d3436;
-            text-align: center;
-            padding: 20px;
-            margin: 20px 40px 10px 40px;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .instruction-docs {
-            background: linear-gradient(135deg, #a8e6cf 0%, #88d8a3 100%);
-            color: #2d3436;
+            background: var(--bg-light);
+            color: var(--text-dark);
             text-align: center;
             padding: 15px;
-            margin: 0 40px 20px 40px;
-            border-radius: 10px;
-            font-size: 0.9rem;
+            margin: 20px 40px 10px 40px;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 500;
+            border: 1px solid var(--border-color);
         }
 
         .accounts-grid {
-            padding: 0 40px 40px 40px;
+            padding: 20px 40px 40px 40px;
             display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
 
         .account-card {
-            background: #f8f9fa;
-            border-radius: 15px;
+            background: #ffffff;
+            border-radius: 10px;
             padding: 25px;
-            border: 2px solid transparent;
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
 
         .account-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            border-color: #4facfe;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border-color: var(--bg-medium);
         }
 
         .account-name {
             font-size: 1.4rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-dark);
             margin-bottom: 15px;
             display: flex;
             align-items: center;
@@ -213,8 +196,7 @@
         }
 
         .account-name:hover {
-            color: #4facfe;
-            transform: scale(1.05);
+            color: var(--bg-medium);
         }
 
         .credential {
@@ -223,36 +205,38 @@
 
         .credential-label {
             font-size: 0.9rem;
-            color: #6c757d;
+            color: var(--text-muted);
             margin-bottom: 5px;
             font-weight: 500;
         }
 
         .credential-value {
-            background: white;
+            background: var(--bg-light);
             padding: 12px 15px;
             border-radius: 8px;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border-color);
             cursor: pointer;
             transition: all 0.2s ease;
             font-family: 'Courier New', monospace;
             font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            word-wrap: break-word;
         }
 
         .credential-value:hover {
-            border-color: #4facfe;
-            background: #f0f8ff;
-            transform: scale(1.02);
+            border-color: var(--bg-medium);
+            background: #e9ecef;
         }
 
         .copy-feedback {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #28a745;
-            color: white;
+            background: var(--bg-dark);
+            color: var(--text-light);
             padding: 15px 25px;
-            border-radius: 50px;
+            border-radius: 8px;
             font-weight: 600;
             transform: translateX(400px);
             transition: transform 0.3s ease;
@@ -265,34 +249,26 @@
         }
 
         @media (max-width: 768px) {
-            .page-container {
-                margin: 10px;
-            }
-            
-            .password-screen {
-                padding: 40px 20px;
-            }
-
-            .accounts-grid {
-                padding: 0 20px 20px 20px;
-            }
-
-            .instruction, .instruction-docs {
-                margin: 20px 20px 10px 20px;
-            }
+            body { padding: 10px; }
+            .page-container { margin: 0; }
+            .password-screen { padding: 40px 20px; }
+            .accounts-grid { padding: 20px; grid-template-columns: 1fr; }
+            .instruction { margin: 20px; }
         }
     </style>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="page-container">
         <ul class="nav-tabs">
+            <li><a href="handover.html">인수인계</a></li>
             <li class="active"><a href="docs.html">독스 계정 정보</a></li>
             <li><a href="company.html">업체 정보</a></li>
-            <li><a href="cafe.html">집중관리 카페</a></li>
             <li><a href="schedule.html">연세사랑모아 순번</a></li>
-            <li><a href="monitoring.html">컨텐츠 모니터링</a></li>
-            <li><a href="Main.html">업체별 정보</a></li>
-            </ul>
+            <li><a href="cafe.html">집중관리 카페</a></li>
+        </ul>
 
         <div class="page-header">
             <a href="index.html" class="back-btn">← 메인으로</a>
@@ -312,11 +288,7 @@
 
         <div class="main-content" id="mainContent">
             <div class="instruction">
-                💡 아이디나 비밀번호를 클릭하면 자동으로 복사됩니다
-            </div>
-
-            <div class="instruction-docs">
-                📊 이름을 클릭하면 독스 주소가 복사됩니다
+                💡 아이디, 비밀번호, 독스 주소를 클릭하면 자동으로 복사됩니다.
             </div>
 
             <div class="accounts-grid">
