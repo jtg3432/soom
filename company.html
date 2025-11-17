@@ -395,10 +395,10 @@
         let allCompanies = [];
         let currentDetailId = null;
 
-        const listView = document.getElementById('list-view');
-        const detailView = document.getElementById('detail-view');
-        const companyListEl = document.getElementById('company-list');
-        const searchBar = document.getElementById('search-bar');
+        let listView;
+        let detailView;
+        let companyListEl;
+        let searchBar;
         
         // 초성 매핑
         const CHO = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
@@ -418,6 +418,12 @@
         document.addEventListener('DOMContentLoaded', init);
 
         async function init() {
+            // DOM 요소 할당
+            listView = document.getElementById('list-view');
+            detailView = document.getElementById('detail-view');
+            companyListEl = document.getElementById('company-list');
+            searchBar = document.getElementById('search-bar');
+
             if (typeof window.firebaseInitialized === 'undefined') {
                 setTimeout(init, 100);
                 return;
@@ -442,11 +448,16 @@
             window.firebase.onSnapshot(q, (snapshot) => {
                 allCompanies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderCompanyList();
+            }, (error) => {
+                console.error("실시간 동기화 실패:", error);
+                showSaveFeedback('⚠️ 실시간 연결 실패', true);
             });
         }
 
         // 업체 목록 렌더링 (검색 포함)
         function renderCompanyList() {
+            if (!companyListEl) return; // DOM 로드 전이면 중단
+            
             companyListEl.innerHTML = '';
             const searchTerm = searchBar.value.toLowerCase().trim();
             
@@ -464,7 +475,7 @@
                 
                 const deleteIcon = document.createElement('button');
                 deleteIcon.className = 'delete-icon';
-                deleteIcon.textContent = 'X';
+                deleteIcon.textContent = '×'; // 'X' 대신 '×' (곱하기) 기호로 변경
                 deleteIcon.onclick = (e) => {
                     e.stopPropagation(); // 부모(업체) 클릭 방지
                     openDeleteModal(company.id, company.name);
@@ -483,7 +494,6 @@
             // 1. 제목 설정 및 애니메이션 준비
             const titleEl = document.getElementById('detail-title');
             titleEl.textContent = name;
-            // (애니메이션 로직 추가 - 여기서는 간단히 페이드 인)
             
             // 2. 블러 처리
             listView.classList.add('blurred');
@@ -496,14 +506,18 @@
                 const docSnap = await window.firebase.getDoc(infoRef);
                 if (docSnap.exists()) {
                     infoData = docSnap.data();
+                } else {
+                    // 상세 정보가 없으면, 빈칸으로 표시 (저장 시 자동 생성됨)
+                    console.log("상세 정보 문서가 없습니다. 새로 생성됩니다.");
                 }
             } catch (e) {
                 console.error("상세 정보 로드 실패:", e);
+                showSaveFeedback('❌ 상세 정보 로드 실패', true);
             }
 
-            document.getElementById('table-info').textContent = infoData.info;
-            document.getElementById('table-upload').textContent = infoData.upload;
-            document.getElementById('table-monitoring').textContent = infoData.monitoring;
+            document.getElementById('table-info').textContent = infoData.info || '';
+            document.getElementById('table-upload').textContent = infoData.upload || '';
+            document.getElementById('table-monitoring').textContent = infoData.monitoring || '';
 
             // 4. 상세 뷰 표시
             detailView.style.display = 'block';
@@ -605,7 +619,6 @@
             document.getElementById('add-modal-content').style.display = 'none';
             document.getElementById('delete-modal-content').style.display = 'block';
             
-            // 삭제 버튼에 클릭 이벤트 새로 연결
             const confirmBtn = document.getElementById('delete-confirm-btn');
             confirmBtn.onclick = () => deleteCompany(id); // 새 함수를 연결
             
