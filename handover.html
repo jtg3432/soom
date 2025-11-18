@@ -105,13 +105,12 @@
             padding: 30px 40px;
         }
 
-        /* --- 매뉴얼 항목 디자인 수정 --- */
         .manual-item {
-            border: 1px solid var(--bg-medium); /* 테두리 어둡게 */
+            border: 1px solid var(--bg-medium);
             border-radius: 10px;
             margin-bottom: 15px;
             overflow: hidden;
-            background: var(--bg-dark); /* 배경 어둡게 */
+            background: var(--bg-dark);
         }
 
         .manual-header {
@@ -119,19 +118,19 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 20px;
-            background: var(--bg-dark); /* 배경 어둡게 */
+            background: var(--bg-dark);
             cursor: pointer;
-            border-bottom: 1px solid var(--bg-medium); /* 테두리 어둡게 */
+            border-bottom: 1px solid var(--bg-medium);
         }
         .manual-header:hover { background: var(--bg-medium); }
 
         .manual-header-title {
             font-size: 1.3rem;
             font-weight: 600;
-            color: var(--text-light); /* 글씨 밝게 */
+            color: var(--text-light);
         }
         .manual-header-title .order-number {
-            color: rgba(248, 249, 250, 0.7); /* 글씨 밝게 (약간 투명) */
+            color: rgba(248, 249, 250, 0.7);
             font-weight: 500;
             font-size: 1.1rem;
             margin-right: 10px;
@@ -148,26 +147,40 @@
             transition: all 0.2s ease;
             font-weight: 500;
         }
-        /* '수정' 버튼 색상 반전 */
         .edit-btn { background: var(--bg-medium); color: var(--text-light); }
         .delete-btn { background: #dc3545; color: white; }
         .edit-btn:hover { background: #6C757D; }
         .delete-btn:hover { background: #c82333; }
-        /* --- -------------------- --- */
 
         .manual-body {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #343a40; /* 내용 배경은 살짝 더 밝은 어두운색 */
+            background: #343a40;
         }
         
         .manual-body-content {
             padding: 20px;
             line-height: 1.7;
-            color: var(--text-light); /* 내용 글씨 밝게 */
+            color: var(--text-light);
+        }
+
+        /* --- 강조 텍스트 스타일 --- */
+        .manual-body-content .emphasis-text {
+            font-size: 1.15em; /* 약 2pt 크게 */
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            white-space: pre-wrap; /* 줄바꿈 인식 */
         }
         
+        .manual-body-content > p {
+            white-space: pre-wrap; /* 일반 텍스트도 줄바꿈 인식 */
+            margin: 0;
+        }
+        /* --- ---------------- --- */
+        
+        .manual-body-content .emphasis-text,
         .manual-body-content > p,
         .manual-body-content > img {
             opacity: 0;
@@ -180,13 +193,14 @@
             height: auto;
             border-radius: 8px;
             margin-top: 15px;
-            border: 1px solid var(--bg-medium); /* 이미지 테두리 */
+            border: 1px solid var(--bg-medium);
         }
 
         .manual-body.show {
             max-height: 2000px; 
         }
 
+        .manual-body.show .manual-body-content .emphasis-text,
         .manual-body.show .manual-body-content > p,
         .manual-body.show .manual-body-content > img {
             opacity: 1;
@@ -201,7 +215,8 @@
         }
         .modal-content {
             background-color: var(--bg-dark); 
-            margin: 10% auto; padding: 30px;
+            margin: 5% auto; /* 팝업 위치 살짝 위로 */
+            padding: 30px;
             border-radius: 15px; width: 90%; max-width: 700px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
@@ -227,7 +242,7 @@
         .form-input::placeholder, .form-textarea::placeholder {
              color: rgba(248, 249, 250, 0.5);
         }
-        .form-textarea { min-height: 200px; resize: vertical; }
+        .form-textarea { min-height: 150px; resize: vertical; } /* 높이 조절 */
         .form-input:focus, .form-textarea:focus { 
             border-color: var(--text-light); 
             background: #495057;
@@ -301,8 +316,12 @@
                 <input type="text" class="form-input" id="modal-title" placeholder="매뉴얼 제목 (예: 1일차: 계정 설정)">
             </div>
             <div class="form-group">
-                <label class="form-label" for="modal-content">내용</label>
-                <textarea class="form-textarea" id="modal-content" placeholder="매뉴얼 내용을 입력하세요. (줄바꿈 가능)"></textarea>
+                <label class="form-label" for="modal-content-emphasis">내용 (강조)</label>
+                <textarea class="form-textarea" id="modal-content-emphasis" placeholder="(선택) 강조할 내용을 입력하세요. 굵고 크게 표시됩니다." style="min-height: 80px;"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="modal-content-regular">내용 (일반)</label>
+                <textarea class="form-textarea" id="modal-content-regular" placeholder="(필수) 매뉴얼 내용을 입력하세요. (줄바꿈 가능)"></textarea>
             </div>
             <div class="form-group">
                 <label class="form-label" for="modal-image-url">이미지 URL (선택 사항)</label>
@@ -380,7 +399,7 @@
             });
         }
 
-        // 매뉴얼 목록 렌더링
+        // 매뉴얼 목록 렌더링 (수정됨)
         function renderManual() {
             listEl.innerHTML = ''; 
 
@@ -388,17 +407,30 @@
                 const itemEl = document.createElement('div');
                 itemEl.className = 'manual-item';
 
-                // 텍스트를 먼저 안전하게 처리
-                const tempDiv = document.createElement('div');
-                tempDiv.textContent = item.content;
+                // --- 강조/일반 텍스트 및 애니메이션 처리 ---
+                // 1. 강조 텍스트 (Optional)
+                let emphasisHtml = '';
+                if (item.content_emphasis) {
+                    const tempEmp = document.createElement('div');
+                    tempEmp.textContent = item.content_emphasis;
+                    emphasisHtml = `<p class="emphasis-text" style="transition-delay: 0s">${tempEmp.innerHTML.replace(/\n/g, '<br>')}</p>`;
+                }
+
+                // 2. 일반 텍스트
+                const tempReg = document.createElement('div');
+                tempReg.textContent = item.content_regular || ''; // 'content' -> 'content_regular'
                 
-                const lines = tempDiv.innerHTML.split('<br>').filter(line => line.trim() !== '');
-                const contentHtml = lines.map((line, index) => 
-                    `<p style="transition-delay: ${index * 0.1}s">${line}</p>`
+                const lines = tempReg.innerHTML.split('<br>').filter(line => line.trim() !== '');
+                const baseDelay = item.content_emphasis ? 0.1 : 0; // 강조 텍스트 있으면 0.1초 뒤 시작
+                
+                const regularHtml = lines.map((line, index) => 
+                    `<p style="transition-delay: ${baseDelay + (index * 0.1)}s">${line}</p>`
                 ).join('');
                 
+                // 3. 이미지 (Optional)
                 const imageHtml = item.imageUrl ? 
-                    `<img src="${item.imageUrl}" alt="매뉴얼 이미지" style="transition-delay: ${lines.length * 0.1}s">` : '';
+                    `<img src="${item.imageUrl}" alt="매뉴얼 이미지" style="transition-delay: ${baseDelay + (lines.length * 0.1)}s">` : '';
+                // --- --- --- --- --- ---
 
                 itemEl.innerHTML = `
                     <div class="manual-header">
@@ -413,7 +445,8 @@
                     </div>
                     <div class="manual-body">
                         <div class="manual-body-content">
-                            ${contentHtml}
+                            ${emphasisHtml}
+                            ${regularHtml}
                             ${imageHtml}
                         </div>
                     </div>
@@ -429,14 +462,15 @@
             });
         }
 
-        // --- CRUD 함수 ---
+        // --- CRUD 함수 (수정됨) ---
 
         function openAddModal() {
             editingId = null;
             document.getElementById('modalTitle').textContent = '새 매뉴얼 추가';
             document.getElementById('modal-order').value = items.length + 1;
             document.getElementById('modal-title').value = '';
-            document.getElementById('modal-content').value = '';
+            document.getElementById('modal-content-emphasis').value = ''; // 강조창 비우기
+            document.getElementById('modal-content-regular').value = ''; // 일반창 비우기
             document.getElementById('modal-image-url').value = '';
             modal.style.display = 'block';
             document.getElementById('modal-title').focus();
@@ -450,7 +484,9 @@
             document.getElementById('modalTitle').textContent = '매뉴얼 수정';
             document.getElementById('modal-order').value = item.order;
             document.getElementById('modal-title').value = item.title;
-            document.getElementById('modal-content').value = item.content;
+            // 'content' -> 'content_emphasis' 와 'content_regular'로 분리
+            document.getElementById('modal-content-emphasis').value = item.content_emphasis || '';
+            document.getElementById('modal-content-regular').value = item.content_regular || item.content || ''; // (하위 호환성)
             document.getElementById('modal-image-url').value = item.imageUrl || '';
             modal.style.display = 'block';
         }
@@ -462,11 +498,12 @@
         async function saveItem() {
             const order = parseInt(document.getElementById('modal-order').value) || 0;
             const title = document.getElementById('modal-title').value.trim();
-            const content = document.getElementById('modal-content').value.trim();
+            const content_emphasis = document.getElementById('modal-content-emphasis').value.trim();
+            const content_regular = document.getElementById('modal-content-regular').value.trim();
             const imageUrl = document.getElementById('modal-image-url').value.trim();
 
-            if (!title || !content) {
-                alert('순서, 제목, 내용은 필수 항목입니다.');
+            if (!title || !content_regular) { // '일반' 내용을 필수로 변경
+                alert('순서, 제목, 일반 내용은 필수 항목입니다.');
                 return;
             }
             if (!window.firebaseInitialized) {
@@ -474,7 +511,8 @@
                 return;
             }
 
-            const data = { order, title, content, imageUrl };
+            // 'content'는 삭제하고 새 필드로 저장
+            const data = { order, title, content_emphasis, content_regular, imageUrl };
 
             try {
                 if (editingId) {
