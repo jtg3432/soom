@@ -39,48 +39,28 @@
             border: 1px solid var(--border-color);
         }
 
-        /* 네비게이션 탭 스타일 */
+        /* 네비게이션 탭 */
         .nav-tabs {
-            display: flex;
-            list-style: none;
-            background: #ffffff;
-            padding: 0 20px;
-            border-bottom: 2px solid var(--border-color);
-            flex-wrap: wrap;
+            display: flex; list-style: none; background: #ffffff;
+            padding: 0 20px; border-bottom: 2px solid var(--border-color); flex-wrap: wrap;
         }
         .nav-tabs li a {
-            display: block;
-            padding: 15px 20px;
-            text-decoration: none;
-            color: var(--text-muted);
-            font-weight: 600;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-            white-space: nowrap;
+            display: block; padding: 15px 20px; text-decoration: none;
+            color: var(--text-muted); font-weight: 600; border-bottom: 3px solid transparent;
+            transition: all 0.3s ease; white-space: nowrap;
         }
-        .nav-tabs li a:hover {
-            color: var(--text-dark);
-        }
-        .nav-tabs li.active a {
-            color: var(--bg-dark);
-            border-bottom-color: var(--bg-dark);
-        }
+        .nav-tabs li a:hover { color: var(--text-dark); }
+        .nav-tabs li.active a { color: var(--bg-dark); border-bottom-color: var(--bg-dark); }
 
         .page-header {
-            background: var(--bg-dark);
-            color: var(--text-light);
-            text-align: center;
-            padding: 40px 20px;
-            position: relative;
+            background: var(--bg-dark); color: var(--text-light); text-align: center;
+            padding: 40px 20px; position: relative;
         }
         .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
         .page-header h2 { font-size: 1.3rem; opacity: 0.9; font-weight: 400; }
 
         .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255,255,255,0.1);
+            position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.1);
             color: white; border: none; padding: 10px 20px; border-radius: 25px;
             text-decoration: none; font-weight: 600; transition: all 0.3s ease;
         }
@@ -120,7 +100,7 @@
         }
         .control-btn:hover { background: var(--bg-medium); transform: translateY(-2px); }
         .delete-mode-btn { background: #dc3545; color: white; }
-        .delete-mode-btn.active { background: #6c757d; } /* 완료 버튼 */
+        .delete-mode-btn.active { background: #6c757d; } 
 
         .company-container {
             padding: 30px 40px;
@@ -163,12 +143,12 @@
             font-weight: 500;
         }
         .edit-btn { background: var(--bg-medium); color: var(--text-light); }
-        .delete-btn { background: #dc3545; color: white; display: none; } /* 삭제 모드일 때만 보임 */
+        .delete-btn { background: #dc3545; color: white; display: none; } 
         .edit-btn:hover { background: #6C757D; }
         .delete-btn:hover { background: #c82333; }
         
-        .deleting .delete-btn { display: inline-block; } /* 삭제 모드 */
-        .deleting .edit-btn { display: none; } /* 삭제 모드일 땐 수정 숨김 */
+        .deleting .delete-btn { display: inline-block; }
+        .deleting .edit-btn { display: none; }
 
         .company-body {
             max-height: 0;
@@ -184,7 +164,12 @@
         
         .content-section {
             margin-bottom: 20px;
+            /* --- ✨ 애니메이션 속성 추가 --- */
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .content-section h4 {
             font-size: 1.1rem;
             font-weight: 600;
@@ -201,10 +186,16 @@
         }
 
         .company-body.show {
-            max-height: 2000px; /* 넉넉하게 */
+            max-height: 2000px;
+        }
+
+        /* --- ✨ 펼쳐질 때 애니메이션 적용 --- */
+        .company-body.show .content-section {
+            opacity: 1;
+            transform: translateY(0);
         }
         
-        /* 모달 스타일 (어두운 테마) */
+        /* 모달 스타일 */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
             width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
@@ -446,7 +437,6 @@
             
             const filtered = allCompanies.filter(company => {
                 const name = company.name.toLowerCase();
-                // 'initial' 필드가 없는 구형 데이터 호환
                 const initial = company.initial ? company.initial.toLowerCase() : getCho(company.name);
                 return name.includes(searchTerm) || initial.includes(searchTerm);
             });
@@ -455,10 +445,11 @@
                 const itemEl = document.createElement('div');
                 itemEl.className = 'company-item';
 
-                // 'info', 'upload', 'monitoring' 필드를 item에서 직접 가져옴
-                const infoHtml = `<div class="content-section"><h4>자주 찾는 정보</h4><div class="content-block">${item.info || ''}</div></div>`;
-                const uploadHtml = `<div class="content-section"><h4>업로드 주의사항</h4><div class="content-block">${item.upload || ''}</div></div>`;
-                const monitoringHtml = `<div class="content-section"><h4>3자 모니터링 주의사항</h4><div class="content-block">${item.monitoring || ''}</div></div>`;
+                // --- ✨ 애니메이션을 위해 텍스트를 HTML로 변환 ---
+                const infoHtml = `<div class="content-section" style="transition-delay: 0s"><h4>자주 찾는 정보</h4><div class="content-block">${(item.info || '').replace(/\n/g, '<br>')}</div></div>`;
+                const uploadHtml = `<div class="content-section" style="transition-delay: 0.1s"><h4>업로드 주의사항</h4><div class="content-block">${(item.upload || '').replace(/\n/g, '<br>')}</div></div>`;
+                const monitoringHtml = `<div class="content-section" style="transition-delay: 0.2s"><h4>3자 모니터링 주의사항</h4><div class="content-block">${(item.monitoring || '').replace(/\n/g, '<br>')}</div></div>`;
+                // --- --------------------------------- ---
 
                 itemEl.innerHTML = `
                     <div class="company-header">
@@ -480,7 +471,7 @@
                 const header = itemEl.querySelector('.company-header');
                 const body = itemEl.querySelector('.company-body');
                 header.addEventListener('click', () => {
-                    body.classList.toggle('show');
+                    body.classList.toggle('show'); // 토글 기능
                 });
 
                 listEl.appendChild(itemEl);
@@ -538,7 +529,7 @@
                 alert('업체명은 필수 항목입니다.');
                 return;
             }
-            if (!initial) { // 초성이 비었으면 자동 생성
+            if (!initial) { 
                 initial = getCho(name);
             }
 
@@ -575,7 +566,7 @@
             document.getElementById('delete-confirm-text').textContent = `'${name}' 업체를 정말 삭제하시겠습니까?`;
             
             const confirmBtn = document.getElementById('delete-confirm-btn');
-            confirmBtn.onclick = () => deleteItem(id); // 삭제 함수 새로 연결
+            confirmBtn.onclick = () => deleteItem(id); 
             
             deleteModal.style.display = 'flex';
         }
@@ -586,7 +577,6 @@
                 return;
             }
             try {
-                // (참고: v1.0과 달리 subcollection이 없으므로, 이 doc 삭제만으로 충분함)
                 await window.firebase.deleteDoc(window.firebase.doc(window.db, 'companies', id));
                 showSaveFeedback('🗑️ 삭제되었습니다!');
                 closeModal('deleteModal');
