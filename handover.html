@@ -162,8 +162,15 @@
             padding: 20px;
             line-height: 1.7;
             color: var(--text-dark);
-            white-space: pre-wrap; /* \n 줄바꿈을 인식하도록 */
         }
+        
+        .manual-body-content > p,
+        .manual-body-content > img {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
         .manual-body-content img {
             max-width: 100%;
             height: auto;
@@ -174,39 +181,73 @@
 
         .manual-body.show {
             max-height: 2000px; /* 넉넉하게 */
-            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .manual-body.show .manual-body-content > p,
+        .manual-body.show .manual-body-content > img {
+            opacity: 1;
+            transform: translateY(0);
         }
         
-        /* 모달 스타일 */
+        /* --- 모달 스타일 수정 --- */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
             width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
             backdrop-filter: blur(5px);
         }
         .modal-content {
-            background-color: white; margin: 10% auto; padding: 30px;
+            /* 1. 배경 어둡게 */
+            background-color: var(--bg-dark); 
+            margin: 10% auto; padding: 30px;
             border-radius: 15px; width: 90%; max-width: 700px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
-        .modal-title { font-size: 1.5rem; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; }
+        .modal-title { 
+            font-size: 1.5rem; font-weight: 700; 
+            /* 1. 글씨 밝게 */
+            color: var(--text-light); 
+            margin-bottom: 20px; 
+        }
         .form-group { margin-bottom: 20px; }
-        .form-label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-muted); }
+        .form-label { 
+            display: block; margin-bottom: 8px; font-weight: 600; 
+            /* 1. 글씨 밝게 (약간 투명) */
+            color: rgba(248, 249, 250, 0.7);
+        }
         .form-input, .form-textarea {
-            width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;
+            width: 100%; padding: 12px; 
+            /* 1. 입력창 배경/테두리/글씨 수정 */
+            background: var(--bg-medium);
+            border: 2px solid #6C757D;
+            color: var(--text-light);
+            border-radius: 8px;
             font-size: 1rem; outline: none; transition: border-color 0.3s ease;
             font-family: var(--font-main);
         }
+        .form-input::placeholder, .form-textarea::placeholder {
+             color: rgba(248, 249, 250, 0.5);
+        }
         .form-textarea { min-height: 200px; resize: vertical; }
-        .form-input:focus, .form-textarea:focus { border-color: var(--bg-dark); }
+        .form-input:focus, .form-textarea:focus { 
+            border-color: var(--text-light); 
+            background: #495057;
+        }
         .form-buttons { display: flex; gap: 10px; justify-content: flex-end; }
         .form-btn {
             border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;
             cursor: pointer; transition: all 0.2s ease; font-size: 1rem;
         }
-        .save-btn { background: var(--bg-dark); color: var(--text-light); }
-        .cancel-btn { background: #e9ecef; color: var(--text-dark); }
-        .save-btn:hover { background: var(--bg-medium); }
-        .cancel-btn:hover { background: #ced4da; }
+        /* 1. 저장/취소 버튼 색상 반전 */
+        .save-btn { 
+            background: var(--text-light); 
+            color: var(--bg-dark); 
+        }
+        .cancel-btn { 
+            background: var(--bg-medium); 
+            color: var(--text-light); 
+        }
+        .save-btn:hover { background: #e9ecef; }
+        .cancel-btn:hover { background: #6C757D; }
 
         .save-feedback {
             position: fixed; top: 20px; right: 20px; background: var(--bg-dark); color: var(--text-light); padding: 15px 25px;
@@ -306,17 +347,12 @@
     <script>
         let items = [];
         let editingId = null;
-        
-        // *** 여기가 수정되었습니다 ***
-        // 변수를 전역으로 선언만 하고,
         let listEl;
         let modal;
 
         document.addEventListener('DOMContentLoaded', init);
 
         async function init() {
-            // *** 여기가 수정되었습니다 ***
-            // DOM이 로드된 후, init 함수 내부에서 요소를 찾도록 변경
             listEl = document.getElementById('manual-list');
             modal = document.getElementById('itemModal');
 
@@ -336,7 +372,7 @@
         function setupRealtimeSync() {
             const q = window.firebase.query(
                 window.firebase.collection(window.db, 'handoverManual'), 
-                window.firebase.orderBy("order", "asc") // 'order' 필드 기준으로 오름차순 정렬
+                window.firebase.orderBy("order", "asc")
             );
             
             window.firebase.onSnapshot(q, (snapshot) => {
@@ -353,8 +389,17 @@
                 const itemEl = document.createElement('div');
                 itemEl.className = 'manual-item';
 
-                const contentHtml = item.content.replace(/\n/g, '<br>');
-                const imageHtml = item.imageUrl ? `<img src="${item.imageUrl}" alt="매뉴얼 이미지">` : '';
+                // 텍스트를 먼저 안전하게 처리
+                const tempDiv = document.createElement('div');
+                tempDiv.textContent = item.content;
+                
+                const lines = tempDiv.innerHTML.split('<br>').filter(line => line.trim() !== '');
+                const contentHtml = lines.map((line, index) => 
+                    `<p style="transition-delay: ${index * 0.1}s">${line}</p>`
+                ).join('');
+                
+                const imageHtml = item.imageUrl ? 
+                    `<img src="${item.imageUrl}" alt="매뉴얼 이미지" style="transition-delay: ${lines.length * 0.1}s">` : '';
 
                 itemEl.innerHTML = `
                     <div class="manual-header">
@@ -394,7 +439,7 @@
             document.getElementById('modal-title').value = '';
             document.getElementById('modal-content').value = '';
             document.getElementById('modal-image-url').value = '';
-            modal.style.display = 'block'; // 이제 modal 변수가 정상입니다.
+            modal.style.display = 'block';
             document.getElementById('modal-title').focus();
         }
 
@@ -476,7 +521,6 @@
         }
 
         window.onclick = (event) => {
-            // 모달이 정상적으로 할당되었는지 확인 후 실행
             if (modal && event.target == modal) {
                 closeModal();
             }
