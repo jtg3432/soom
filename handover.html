@@ -70,41 +70,47 @@
             background: var(--bg-dark);
             color: var(--text-light);
             text-align: center;
-            padding: 40px 20px 0 20px; /* 하단 패딩 0으로 수정 */
+            padding: 40px 20px 0 20px; /* 하단 패딩 0 */
             position: relative;
         }
         .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
         .page-header h2 { font-size: 1.3rem; opacity: 0.9; font-weight: 400; }
 
-        /* --- ✨ 전광판 효과 (새로 추가) --- */
+        /* --- 전광판 효과 --- */
         .marquee-container {
             width: 100%;
-            margin-top: 25px; /* 위 h2와 간격 */
-            background-color: rgba(0, 0, 0, 0.2); /* 헤더보다 살짝 더 어두운 배경 */
+            margin-top: 25px;
+            background-color: rgba(0, 0, 0, 0.2);
             color: var(--text-light);
             padding: 10px 0;
             border-top: 1px solid var(--bg-medium);
             border-bottom: 1px solid var(--bg-medium);
-            
             overflow: hidden;
             white-space: nowrap;
         }
 
         .marquee-text {
             display: inline-block;
-            padding-left: 100%; /* 오른쪽 화면 밖에서 시작 */
-            animation: scroll-left 20s linear infinite; /* 20초로 속도 조절 */
+            padding-left: 100%; 
+            animation: scroll-left 20s linear infinite;
             font-size: 0.9rem;
             font-weight: 400;
             color: var(--text-light);
             opacity: 0.8;
+            will-change: transform; /* 애니메이션 성능 향상 */
         }
+        
+        /* --- ✨ 마우스 올리면 멈추는 효과 --- */
+        .marquee-container:hover .marquee-text {
+            animation-play-state: paused;
+        }
+        /* --- ------------------------- --- */
 
         @keyframes scroll-left {
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
         }
-        /* --- ------------------------- --- */
+        /* --- -------------------- --- */
 
         .back-btn {
             position: absolute;
@@ -614,8 +620,12 @@
                 }
             });
 
-            if (!title || !hasContent) {
-                alert('순서, 제목, 그리고 하나 이상의 일반 내용은 필수 항목입니다.');
+            if (!title) {
+                alert('제목은 필수 항목입니다.');
+                return;
+            }
+            if (sections.length === 0 || !hasContent) {
+                alert('하나 이상의 \'내용 (일반)\' 블럭이 필수입니다.');
                 return;
             }
             if (!window.firebaseInitialized) {
