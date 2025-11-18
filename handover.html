@@ -165,20 +165,18 @@
             color: var(--text-light);
         }
 
-        /* --- 강조 텍스트 스타일 --- */
         .manual-body-content .emphasis-text {
-            font-size: 1.15em; /* 약 2pt 크게 */
+            font-size: 1.15em;
             font-weight: 700;
             color: var(--text-light);
             margin-bottom: 15px;
-            white-space: pre-wrap; /* 줄바꿈 인식 */
+            white-space: pre-wrap;
         }
         
         .manual-body-content > p {
-            white-space: pre-wrap; /* 일반 텍스트도 줄바꿈 인식 */
+            white-space: pre-wrap;
             margin: 0;
         }
-        /* --- ---------------- --- */
         
         .manual-body-content .emphasis-text,
         .manual-body-content > p,
@@ -207,15 +205,17 @@
             transform: translateY(0);
         }
         
-        /* 모달 스타일 (어두운 테마) */
+        /* 모달 스타일 */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
             width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
             backdrop-filter: blur(5px);
+            /* 모달 스크롤 */
+            overflow-y: auto;
         }
         .modal-content {
             background-color: var(--bg-dark); 
-            margin: 5% auto; /* 팝업 위치 살짝 위로 */
+            margin: 5% auto; /* 상단 여백 5% */
             padding: 30px;
             border-radius: 15px; width: 90%; max-width: 700px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
@@ -242,7 +242,9 @@
         .form-input::placeholder, .form-textarea::placeholder {
              color: rgba(248, 249, 250, 0.5);
         }
-        .form-textarea { min-height: 150px; resize: vertical; } /* 높이 조절 */
+        .form-textarea { min-height: 150px; resize: vertical; }
+        .form-textarea.emphasis { min-height: 80px; } /* 강조창은 작게 */
+        
         .form-input:focus, .form-textarea:focus { 
             border-color: var(--text-light); 
             background: #495057;
@@ -262,6 +264,41 @@
         }
         .save-btn:hover { background: #e9ecef; }
         .cancel-btn:hover { background: #6C757D; }
+
+        /* --- 내용 블럭 추가 버튼 스타일 --- */
+        .section-group {
+            position: relative;
+            padding: 20px;
+            background: var(--bg-medium);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #6C757D;
+        }
+        .section-group textarea { margin-bottom: 10px; }
+        
+        .add-section-btn {
+            background: var(--bg-medium); 
+            color: var(--text-light);
+            width: 100%; 
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px dashed #6C757D;
+        }
+        .add-section-btn:hover { background: #6C757D; }
+
+        .delete-section-btn {
+            position: absolute; 
+            top: 10px; 
+            right: 10px;
+            background: #dc3545; 
+            color: white; 
+            border: none;
+            border-radius: 5px; 
+            padding: 3px 8px; 
+            font-size: 0.8rem;
+        }
+        .delete-section-btn:hover { background: #c82333; }
+        /* --- ---------------------- --- */
 
         .save-feedback {
             position: fixed; top: 20px; right: 20px; background: var(--bg-dark); color: var(--text-light); padding: 15px 25px;
@@ -315,13 +352,12 @@
                 <label class="form-label" for="modal-title">제목</label>
                 <input type="text" class="form-input" id="modal-title" placeholder="매뉴얼 제목 (예: 1일차: 계정 설정)">
             </div>
+
             <div class="form-group">
-                <label class="form-label" for="modal-content-emphasis">내용 (강조)</label>
-                <textarea class="form-textarea" id="modal-content-emphasis" placeholder="(선택) 강조할 내용을 입력하세요. 굵고 크게 표시됩니다." style="min-height: 80px;"></textarea>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="modal-content-regular">내용 (일반)</label>
-                <textarea class="form-textarea" id="modal-content-regular" placeholder="(필수) 매뉴얼 내용을 입력하세요. (줄바꿈 가능)"></textarea>
+                <label class="form-label">내용 (블럭)</label>
+                <div id="sections-container">
+                    </div>
+                <button type="button" class="form-btn add-section-btn" onclick="addSectionToModal()">➕ 내용 블럭 추가</button>
             </div>
             <div class="form-group">
                 <label class="form-label" for="modal-image-url">이미지 URL (선택 사항)</label>
@@ -367,12 +403,14 @@
         let editingId = null;
         let listEl;
         let modal;
+        let sectionsContainer;
 
         document.addEventListener('DOMContentLoaded', init);
 
         async function init() {
             listEl = document.getElementById('manual-list');
             modal = document.getElementById('itemModal');
+            sectionsContainer = document.getElementById('sections-container');
 
             if (typeof window.firebaseInitialized === 'undefined') {
                 setTimeout(init, 100);
@@ -386,7 +424,6 @@
             }
         }
 
-        // 실시간 동기화 (순서대로 정렬)
         function setupRealtimeSync() {
             const q = window.firebase.query(
                 window.firebase.collection(window.db, 'handoverManual'), 
@@ -402,35 +439,40 @@
         // 매뉴얼 목록 렌더링 (수정됨)
         function renderManual() {
             listEl.innerHTML = ''; 
+            let totalDelayIndex = 0;
 
             items.forEach(item => {
                 const itemEl = document.createElement('div');
                 itemEl.className = 'manual-item';
 
-                // --- 강조/일반 텍스트 및 애니메이션 처리 ---
-                // 1. 강조 텍스트 (Optional)
-                let emphasisHtml = '';
-                if (item.content_emphasis) {
-                    const tempEmp = document.createElement('div');
-                    tempEmp.textContent = item.content_emphasis;
-                    emphasisHtml = `<p class="emphasis-text" style="transition-delay: 0s">${tempEmp.innerHTML.replace(/\n/g, '<br>')}</p>`;
-                }
+                let contentHtml = '';
+                
+                // item.sections가 배열인지 확인 (없으면 빈 배열로)
+                const sections = Array.isArray(item.sections) ? item.sections : [];
 
-                // 2. 일반 텍스트
-                const tempReg = document.createElement('div');
-                tempReg.textContent = item.content_regular || ''; // 'content' -> 'content_regular'
+                sections.forEach(section => {
+                    // 1. 강조 텍스트
+                    if (section.emphasis) {
+                        const tempEmp = document.createElement('div');
+                        tempEmp.textContent = section.emphasis;
+                        contentHtml += `<p class="emphasis-text" style="transition-delay: ${totalDelayIndex * 0.1}s">${tempEmp.innerHTML.replace(/\n/g, '<br>')}</p>`;
+                        totalDelayIndex++;
+                    }
+                    // 2. 일반 텍스트
+                    if(section.regular) {
+                        const tempReg = document.createElement('div');
+                        tempReg.textContent = section.regular;
+                        const lines = tempReg.innerHTML.split('<br>').filter(line => line.trim() !== '');
+                        lines.forEach((line) => {
+                            contentHtml += `<p style="transition-delay: ${totalDelayIndex * 0.1}s">${line}</p>`;
+                            totalDelayIndex++;
+                        });
+                    }
+                });
                 
-                const lines = tempReg.innerHTML.split('<br>').filter(line => line.trim() !== '');
-                const baseDelay = item.content_emphasis ? 0.1 : 0; // 강조 텍스트 있으면 0.1초 뒤 시작
-                
-                const regularHtml = lines.map((line, index) => 
-                    `<p style="transition-delay: ${baseDelay + (index * 0.1)}s">${line}</p>`
-                ).join('');
-                
-                // 3. 이미지 (Optional)
+                // 3. 이미지
                 const imageHtml = item.imageUrl ? 
-                    `<img src="${item.imageUrl}" alt="매뉴얼 이미지" style="transition-delay: ${baseDelay + (lines.length * 0.1)}s">` : '';
-                // --- --- --- --- --- ---
+                    `<img src="${item.imageUrl}" alt="매뉴얼 이미지" style="transition-delay: ${totalDelayIndex * 0.1}s">` : '';
 
                 itemEl.innerHTML = `
                     <div class="manual-header">
@@ -445,8 +487,7 @@
                     </div>
                     <div class="manual-body">
                         <div class="manual-body-content">
-                            ${emphasisHtml}
-                            ${regularHtml}
+                            ${contentHtml}
                             ${imageHtml}
                         </div>
                     </div>
@@ -469,9 +510,11 @@
             document.getElementById('modalTitle').textContent = '새 매뉴얼 추가';
             document.getElementById('modal-order').value = items.length + 1;
             document.getElementById('modal-title').value = '';
-            document.getElementById('modal-content-emphasis').value = ''; // 강조창 비우기
-            document.getElementById('modal-content-regular').value = ''; // 일반창 비우기
             document.getElementById('modal-image-url').value = '';
+            
+            clearSections(); // 기존 섹션 지우기
+            addSectionToModal(); // 빈 섹션 1개 추가
+            
             modal.style.display = 'block';
             document.getElementById('modal-title').focus();
         }
@@ -484,11 +527,40 @@
             document.getElementById('modalTitle').textContent = '매뉴얼 수정';
             document.getElementById('modal-order').value = item.order;
             document.getElementById('modal-title').value = item.title;
-            // 'content' -> 'content_emphasis' 와 'content_regular'로 분리
-            document.getElementById('modal-content-emphasis').value = item.content_emphasis || '';
-            document.getElementById('modal-content-regular').value = item.content_regular || item.content || ''; // (하위 호환성)
             document.getElementById('modal-image-url').value = item.imageUrl || '';
+            
+            clearSections();
+            // 데이터에 섹션이 있으면 불러오기
+            if (item.sections && item.sections.length > 0) {
+                item.sections.forEach(section => {
+                    addSectionToModal(section.emphasis, section.regular);
+                });
+            } else {
+                // (하위 호환성) 옛날 데이터면 '일반' 쪽에 넣어주기
+                const oldContent = item.content_regular || item.content || '';
+                addSectionToModal(item.content_emphasis, oldContent);
+            }
+
             modal.style.display = 'block';
+        }
+        
+        // 모달에 내용 블럭(emphasis, regular)을 추가하는 함수
+        function addSectionToModal(emphasis = '', regular = '') {
+            const sectionGroup = document.createElement('div');
+            sectionGroup.className = 'section-group';
+            
+            sectionGroup.innerHTML = `
+                <textarea class="form-textarea emphasis" placeholder="내용 (강조) (선택)">${emphasis}</textarea>
+                <textarea class="form-textarea regular" placeholder="내용 (일반) (필수)">${regular}</textarea>
+                <button type="button" class="delete-section-btn" onclick="this.parentElement.remove()">블럭 삭제</button>
+            `;
+            
+            sectionsContainer.appendChild(sectionGroup);
+        }
+        
+        // 모달의 모든 내용 블럭을 지우는 함수
+        function clearSections() {
+            sectionsContainer.innerHTML = '';
         }
 
         function closeModal() {
@@ -498,12 +570,27 @@
         async function saveItem() {
             const order = parseInt(document.getElementById('modal-order').value) || 0;
             const title = document.getElementById('modal-title').value.trim();
-            const content_emphasis = document.getElementById('modal-content-emphasis').value.trim();
-            const content_regular = document.getElementById('modal-content-regular').value.trim();
             const imageUrl = document.getElementById('modal-image-url').value.trim();
 
-            if (!title || !content_regular) { // '일반' 내용을 필수로 변경
-                alert('순서, 제목, 일반 내용은 필수 항목입니다.');
+            // --- 섹션 데이터 수집 ---
+            const sections = [];
+            const sectionGroups = document.querySelectorAll('#sections-container .section-group');
+            
+            let hasContent = false;
+            sectionGroups.forEach(group => {
+                const emphasis = group.querySelector('.emphasis').value.trim();
+                const regular = group.querySelector('.regular').value.trim();
+                
+                // 둘 중 하나라도 내용이 있으면 추가
+                if (emphasis || regular) {
+                    sections.push({ emphasis, regular });
+                    if (regular) hasContent = true; // '일반' 내용이 하나라도 있는지
+                }
+            });
+            // --- ----------------- ---
+
+            if (!title || !hasContent) { // '일반' 내용이 하나라도 있어야 함
+                alert('순서, 제목, 그리고 하나 이상의 일반 내용은 필수 항목입니다.');
                 return;
             }
             if (!window.firebaseInitialized) {
@@ -511,8 +598,7 @@
                 return;
             }
 
-            // 'content'는 삭제하고 새 필드로 저장
-            const data = { order, title, content_emphasis, content_regular, imageUrl };
+            const data = { order, title, sections, imageUrl }; // 'sections' 배열로 저장
 
             try {
                 if (editingId) {
