@@ -105,12 +105,13 @@
             padding: 30px 40px;
         }
 
+        /* --- 매뉴얼 항목 디자인 수정 --- */
         .manual-item {
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--bg-medium); /* 테두리 어둡게 */
             border-radius: 10px;
             margin-bottom: 15px;
             overflow: hidden;
-            background: #ffffff;
+            background: var(--bg-dark); /* 배경 어둡게 */
         }
 
         .manual-header {
@@ -118,19 +119,19 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 20px;
-            background: #ffffff;
+            background: var(--bg-dark); /* 배경 어둡게 */
             cursor: pointer;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--bg-medium); /* 테두리 어둡게 */
         }
-        .manual-header:hover { background: var(--bg-light); }
+        .manual-header:hover { background: var(--bg-medium); }
 
         .manual-header-title {
             font-size: 1.3rem;
             font-weight: 600;
-            color: var(--text-dark);
+            color: var(--text-light); /* 글씨 밝게 */
         }
         .manual-header-title .order-number {
-            color: var(--text-muted);
+            color: rgba(248, 249, 250, 0.7); /* 글씨 밝게 (약간 투명) */
             font-weight: 500;
             font-size: 1.1rem;
             margin-right: 10px;
@@ -147,21 +148,24 @@
             transition: all 0.2s ease;
             font-weight: 500;
         }
-        .edit-btn { background: #e9ecef; color: var(--text-dark); }
+        /* '수정' 버튼 색상 반전 */
+        .edit-btn { background: var(--bg-medium); color: var(--text-light); }
         .delete-btn { background: #dc3545; color: white; }
-        .edit-btn:hover { background: #ced4da; }
+        .edit-btn:hover { background: #6C757D; }
         .delete-btn:hover { background: #c82333; }
+        /* --- -------------------- --- */
 
         .manual-body {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #343a40; /* 내용 배경은 살짝 더 밝은 어두운색 */
         }
         
         .manual-body-content {
             padding: 20px;
             line-height: 1.7;
-            color: var(--text-dark);
+            color: var(--text-light); /* 내용 글씨 밝게 */
         }
         
         .manual-body-content > p,
@@ -176,11 +180,11 @@
             height: auto;
             border-radius: 8px;
             margin-top: 15px;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--bg-medium); /* 이미지 테두리 */
         }
 
         .manual-body.show {
-            max-height: 2000px; /* 넉넉하게 */
+            max-height: 2000px; 
         }
 
         .manual-body.show .manual-body-content > p,
@@ -189,14 +193,13 @@
             transform: translateY(0);
         }
         
-        /* --- 모달 스타일 수정 --- */
+        /* 모달 스타일 (어두운 테마) */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
             width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
             backdrop-filter: blur(5px);
         }
         .modal-content {
-            /* 1. 배경 어둡게 */
             background-color: var(--bg-dark); 
             margin: 10% auto; padding: 30px;
             border-radius: 15px; width: 90%; max-width: 700px;
@@ -204,19 +207,16 @@
         }
         .modal-title { 
             font-size: 1.5rem; font-weight: 700; 
-            /* 1. 글씨 밝게 */
             color: var(--text-light); 
             margin-bottom: 20px; 
         }
         .form-group { margin-bottom: 20px; }
         .form-label { 
             display: block; margin-bottom: 8px; font-weight: 600; 
-            /* 1. 글씨 밝게 (약간 투명) */
             color: rgba(248, 249, 250, 0.7);
         }
         .form-input, .form-textarea {
             width: 100%; padding: 12px; 
-            /* 1. 입력창 배경/테두리/글씨 수정 */
             background: var(--bg-medium);
             border: 2px solid #6C757D;
             color: var(--text-light);
@@ -237,7 +237,6 @@
             border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;
             cursor: pointer; transition: all 0.2s ease; font-size: 1rem;
         }
-        /* 1. 저장/취소 버튼 색상 반전 */
         .save-btn { 
             background: var(--text-light); 
             color: var(--bg-dark); 
