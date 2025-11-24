@@ -46,7 +46,7 @@
             background: #ffffff;
             padding: 0 20px;
             border-bottom: 2px solid var(--border-color);
-            flex-wrap: wrap;
+            flex-wrap: wrap; 
         }
         .nav-tabs li a {
             display: block;
@@ -56,7 +56,7 @@
             font-weight: 600;
             border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
-            white-space: nowrap;
+            white-space: nowrap; 
         }
         .nav-tabs li a:hover {
             color: var(--text-dark);
@@ -73,18 +73,37 @@
             padding: 40px 20px;
             position: relative;
         }
-        .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
-        .page-header h2 { font-size: 1.3rem; opacity: 0.9; font-weight: 400; }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .page-header h2 {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
 
         .back-btn {
             position: absolute;
             top: 20px;
             left: 20px;
             background: rgba(255,255,255,0.1);
-            color: white; border: none; padding: 10px 20px; border-radius: 25px;
-            text-decoration: none; font-weight: 600; transition: all 0.3s ease;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
-        .back-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
 
         .password-screen {
             text-align: center;
@@ -102,7 +121,7 @@
             font-size: 1.2rem;
             padding: 15px 20px;
             border: 2px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             width: 250px;
             max-width: 100%;
             margin-bottom: 20px;
@@ -114,7 +133,7 @@
 
         .password-input:focus {
             border-color: var(--bg-dark);
-            box-shadow: 0 0 0 3px rgba(33,37,41, 0.1);
+            box-shadow: 0 0 0 3px rgba(33, 37, 41, 0.1);
         }
 
         .password-btn {
@@ -122,7 +141,7 @@
             color: var(--text-light);
             border: none;
             padding: 15px 30px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -149,33 +168,46 @@
             background: var(--bg-light);
             color: var(--text-dark);
             text-align: center;
-            padding: 15px;
+            padding: 20px;
             margin: 20px 40px 10px 40px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 0.95rem;
             font-weight: 500;
             border: 1px solid var(--border-color);
         }
 
+        .instruction-docs {
+            background: #e9ecef;
+            color: var(--text-dark);
+            text-align: center;
+            padding: 15px;
+            margin: 0 40px 20px 40px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+        }
+
         .accounts-grid {
-            padding: 20px 40px 40px 40px;
+            padding: 0 40px 40px 40px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
 
         .account-card {
             background: #ffffff;
-            border-radius: 10px;
+            border-radius: 15px;
             padding: 25px;
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .account-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            border-color: var(--bg-medium);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-color: var(--bg-dark);
         }
 
         .account-name {
@@ -197,6 +229,7 @@
 
         .account-name:hover {
             color: var(--bg-medium);
+            transform: scale(1.05);
         }
 
         .credential {
@@ -219,14 +252,19 @@
             transition: all 0.2s ease;
             font-family: 'Courier New', monospace;
             font-size: 0.95rem;
-            font-weight: 600;
+            position: relative;
+            overflow: hidden;
             color: var(--text-dark);
-            word-wrap: break-word;
         }
 
         .credential-value:hover {
-            border-color: var(--bg-medium);
+            border-color: var(--bg-dark);
             background: #e9ecef;
+            transform: scale(1.02);
+        }
+
+        .credential-value:active {
+            transform: scale(0.98);
         }
 
         .copy-feedback {
@@ -236,7 +274,7 @@
             background: var(--bg-dark);
             color: var(--text-light);
             padding: 15px 25px;
-            border-radius: 8px;
+            border-radius: 50px;
             font-weight: 600;
             transform: translateX(400px);
             transition: transform 0.3s ease;
@@ -249,16 +287,26 @@
         }
 
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .page-container { margin: 0; }
-            .password-screen { padding: 40px 20px; }
-            .accounts-grid { padding: 20px; grid-template-columns: 1fr; }
-            .instruction { margin: 20px; }
+            .page-container {
+                margin: 10px;
+            }
+            
+            .password-screen {
+                padding: 40px 20px;
+            }
+
+            .accounts-grid {
+                padding: 0 20px 20px 20px;
+            }
+
+            .instruction, .instruction-docs {
+                margin: 20px 20px 10px 20px;
+            }
         }
     </style>
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="page-container">
@@ -288,7 +336,11 @@
 
         <div class="main-content" id="mainContent">
             <div class="instruction">
-                💡 아이디, 비밀번호, 독스 주소를 클릭하면 자동으로 복사됩니다.
+                💡 아이디나 비밀번호를 클릭하면 자동으로 복사됩니다
+            </div>
+
+            <div class="instruction-docs">
+                📊 이름을 클릭하면 독스 주소가 복사됩니다
             </div>
 
             <div class="accounts-grid">
@@ -357,7 +409,7 @@
                 </div>
 
                 <div class="account-card">
-                    <div class="account-name" onclick="copyDocsUrl('https://docs.google.com/spreadsheets/d/1iHuiTzkvEKrtTifxv0jzQ6X01zK9QMx8ii7CGeJ--Yg/edit?gid=2094140456#gid=2094140456', '수진')">수진</div>
+                    <div class="account-name" onclick="copyDocsUrl('https://docs.google.com/spreadsheets/d/1iHuiTzkvEKrtTifxv0jzQ6X01zK9QMx8ii7CGeJ--Yg/edit?gid=2094140456#gid=2094140456', '공란')">공란</div>
                     <div class="credential">
                         <div class="credential-label">아이디</div>
                         <div class="credential-value" onclick="copyToClipboard('sccompany204@gmail.com')">
@@ -366,12 +418,11 @@
                     </div>
                     <div class="credential">
                         <div class="credential-label">비밀번호</div>
-                        <div class="credential-value" onclick="copyToClipboard('dk2bdtna')">
-                            dk2bdtna
+                        <div class="credential-value" onclick="copyToClipboard('bdtna1121')">
+                            bdtna1121
                         </div>
                     </div>
                 </div>
-
                 <div class="account-card">
                     <div class="account-name" onclick="copyDocsUrl('https://docs.google.com/spreadsheets/d/1nMg9yy1M5vqaAlmXWEvhgqcHW-Y8QFKyav3OSSm1qVk/edit?gid=194574205#gid=194574205', '수정')">수정</div>
                     <div class="credential">
@@ -396,8 +447,10 @@
     </div>
 
     <script>
-        const validPasswords = ['6635', '7338', '6169', '9266', '1378'];
+        // 9266 삭제됨
+        const validPasswords = ['6635', '7338', '6169', '1378'];
 
+        // 엔터키로 비밀번호 확인
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && document.getElementById('passwordScreen').style.display !== 'none') {
                 checkPassword();
@@ -422,6 +475,7 @@
             navigator.clipboard.writeText(text).then(function() {
                 showCopyFeedback('📋 복사되었습니다!');
             }).catch(function(err) {
+                // 구형 브라우저 지원
                 const textArea = document.createElement("textarea");
                 textArea.value = text;
                 document.body.appendChild(textArea);
@@ -441,6 +495,7 @@
             navigator.clipboard.writeText(url).then(function() {
                 showCopyFeedback(`📊 ${name}의 독스 주소가 복사되었습니다!`);
             }).catch(function(err) {
+                // 구형 브라우저 지원
                 const textArea = document.createElement("textarea");
                 textArea.value = url;
                 document.body.appendChild(textArea);
@@ -466,6 +521,7 @@
             }, 2000);
         }
 
+        // 페이지 로드 시 비밀번호 입력창에 포커스
         window.onload = function() {
             document.getElementById('passwordInput').focus();
         };
