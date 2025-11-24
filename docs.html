@@ -30,7 +30,7 @@
         }
 
         .page-container {
-            max-width: 1000px;
+            max-width: 1200px; /* 너비를 좀 더 넓혀서 그리드가 잘 보이게 함 */
             margin: 0 auto;
             background: #ffffff;
             border-radius: 15px;
@@ -188,9 +188,12 @@
             border: 1px solid var(--border-color);
         }
 
+        /* === 그리드 레이아웃 복구 === */
         .accounts-grid {
-            padding: 0 40px 40px 40px;
+            padding: 20px 40px 40px 40px;
             display: grid;
+            /* 최소 280px 너비의 카드를 화면에 꽉 차게 배치 (자동 줄바꿈) */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
 
@@ -202,6 +205,8 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            /* 카드 높이 일정하게 유지하고 싶다면 아래 주석 해제 */
+            /* min-height: 200px; */
         }
 
         .account-card:hover {
@@ -255,6 +260,7 @@
             position: relative;
             overflow: hidden;
             color: var(--text-dark);
+            word-break: break-all; /* 긴 비밀번호 줄바꿈 */
         }
 
         .credential-value:hover {
@@ -296,7 +302,9 @@
             }
 
             .accounts-grid {
-                padding: 0 20px 20px 20px;
+                padding: 20px;
+                /* 모바일에서는 1열로 보기 */
+                grid-template-columns: 1fr;
             }
 
             .instruction, .instruction-docs {
@@ -409,21 +417,6 @@
                 </div>
 
                 <div class="account-card">
-                    <div class="account-name" onclick="copyDocsUrl('https://docs.google.com/spreadsheets/d/1iHuiTzkvEKrtTifxv0jzQ6X01zK9QMx8ii7CGeJ--Yg/edit?gid=2094140456#gid=2094140456', '공란')">공란</div>
-                    <div class="credential">
-                        <div class="credential-label">아이디</div>
-                        <div class="credential-value" onclick="copyToClipboard('sccompany204@gmail.com')">
-                            sccompany204@gmail.com
-                        </div>
-                    </div>
-                    <div class="credential">
-                        <div class="credential-label">비밀번호</div>
-                        <div class="credential-value" onclick="copyToClipboard('bdtna1121')">
-                            bdtna1121
-                        </div>
-                    </div>
-                </div>
-                <div class="account-card">
                     <div class="account-name" onclick="copyDocsUrl('https://docs.google.com/spreadsheets/d/1nMg9yy1M5vqaAlmXWEvhgqcHW-Y8QFKyav3OSSm1qVk/edit?gid=194574205#gid=194574205', '수정')">수정</div>
                     <div class="credential">
                         <div class="credential-label">아이디</div>
@@ -438,6 +431,22 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="account-card">
+                    <div class="account-name" onclick="copyDocsUrl('https://docs.google.com/spreadsheets/d/1iHuiTzkvEKrtTifxv0jzQ6X01zK9QMx8ii7CGeJ--Yg/edit?gid=2094140456#gid=2094140456', '공란')">공란</div>
+                    <div class="credential">
+                        <div class="credential-label">아이디</div>
+                        <div class="credential-value" onclick="copyToClipboard('sccompany204@gmail.com')">
+                            sccompany204@gmail.com
+                        </div>
+                    </div>
+                    <div class="credential">
+                        <div class="credential-label">비밀번호</div>
+                        <div class="credential-value" onclick="copyToClipboard('bdtna1121')">
+                            bdtna1121
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -447,10 +456,8 @@
     </div>
 
     <script>
-        // 9266 삭제됨
         const validPasswords = ['6635', '7338', '6169', '1378'];
 
-        // 엔터키로 비밀번호 확인
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && document.getElementById('passwordScreen').style.display !== 'none') {
                 checkPassword();
@@ -475,7 +482,6 @@
             navigator.clipboard.writeText(text).then(function() {
                 showCopyFeedback('📋 복사되었습니다!');
             }).catch(function(err) {
-                // 구형 브라우저 지원
                 const textArea = document.createElement("textarea");
                 textArea.value = text;
                 document.body.appendChild(textArea);
@@ -495,7 +501,6 @@
             navigator.clipboard.writeText(url).then(function() {
                 showCopyFeedback(`📊 ${name}의 독스 주소가 복사되었습니다!`);
             }).catch(function(err) {
-                // 구형 브라우저 지원
                 const textArea = document.createElement("textarea");
                 textArea.value = url;
                 document.body.appendChild(textArea);
@@ -521,7 +526,6 @@
             }, 2000);
         }
 
-        // 페이지 로드 시 비밀번호 입력창에 포커스
         window.onload = function() {
             document.getElementById('passwordInput').focus();
         };
