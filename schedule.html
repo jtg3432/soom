@@ -375,9 +375,8 @@
                     <div class="progress-text" id="progress-text-유빈">0 / 20 완료</div>
                 </div>
                 <div class="progress-card">
-                    <div class="progress-name">수진</div>
-                    <div class="progress-bar"><div class="progress-fill" id="progress-수진"></div></div>
-                    <div class="progress-text" id="progress-text-수진">0 / 20 완료</div>
+                    <div class="progress-name">공란</div> <div class="progress-bar"><div class="progress-fill" id="progress-공란"></div></div>
+                    <div class="progress-text" id="progress-text-공란">0 / 20 완료</div>
                 </div>
                 <div class="progress-card">
                     <div class="progress-name">태균</div>
@@ -402,8 +401,7 @@
                 <thead>
                     <tr>
                         <th>유빈</th>
-                        <th>수진</th>
-                        <th>태균</th>
+                        <th>공란</th> <th>태균</th>
                         <th>정현</th>
                         <th>수정</th>
                     </tr>
@@ -411,8 +409,7 @@
                 <tbody>
                     <tr>
                         <td class="person-column"><div class="checkbox-group" id="group-유빈"></div></td>
-                        <td class="person-column"><div class="checkbox-group" id="group-수진"></div></td>
-                        <td class="person-column"><div class="checkbox-group" id="group-태균"></div></td>
+                        <td class="person-column"><div class="checkbox-group" id="group-공란"></div></td> <td class="person-column"><div class="checkbox-group" id="group-태균"></div></td>
                         <td class="person-column"><div class="checkbox-group" id="group-정현"></div></td>
                         <td class="person-column"><div class="checkbox-group" id="group-수정"></div></td>
                     </tr>
@@ -455,7 +452,8 @@
     </script>
 
     <script>
-        const people = ['유빈', '수진', '태균', '정현', '수정'];
+        // *** '수진'을 '공란'으로 변경 ***
+        const people = ['유빈', '공란', '태균', '정현', '수정'];
         const totalItems = 20;
         let scheduleData = {};
 
@@ -564,13 +562,13 @@
                     for (let i = 1; i <= totalItems; i++) {
                         const checkbox = document.getElementById(`${person}_${i}`);
                         const memo = document.getElementById(`memo_${person}_${i}`);
+                        // 체크박스나 메모가 존재하지 않으면(오류 방지) 건너뛰기
                         if (!checkbox || !memo) continue;
                         personData[i] = {
                             checked: checkbox.checked,
                             memo: memo.value
                         };
                     }
-                    // 'schedules' 컬렉션의 'person' 이름으로 된 문서에 저장
                     await window.firebase.setDoc(window.firebase.doc(window.db, 'schedules', person), personData);
                 }
                 return true;
