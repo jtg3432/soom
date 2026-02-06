@@ -12,20 +12,86 @@
             --text-muted: #6C757D;
             --border-color: #DEE2E6;
             --primary-color: #007BFF;
-            --card-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            --error-color: #dc3545;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Noto Sans KR', sans-serif;
             background: var(--bg-light);
-            padding: 20px;
             color: var(--text-dark);
+            height: 100vh; /* 잠금화면용 높이 설정 */
+        }
+
+        /* --- 잠금 화면 스타일 --- */
+        #lock-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(33, 37, 41, 0.98); /* 배경 어둡게 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .login-box h2 { margin-bottom: 20px; color: var(--text-dark); }
+        .login-box p { margin-bottom: 20px; color: var(--text-muted); font-size: 0.9rem; }
+
+        .pw-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2rem;
+            text-align: center;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            letter-spacing: 5px; /* 비밀번호 점 간격 */
+        }
+        .pw-input:focus { outline: none; border-color: var(--primary-color); }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-dark);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .login-btn:hover { background: #000; }
+
+        .error-msg {
+            color: var(--error-color);
+            margin-top: 10px;
+            font-size: 0.9rem;
+            display: none; /* 기본 숨김 */
+            font-weight: bold;
+        }
+
+
+        /* --- 메인 콘텐츠 (기본 숨김) --- */
+        #main-content {
+            display: none; /* 잠금 해제 전까지 숨김 */
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .page-container {
-            max-width: 1200px;
-            margin: 0 auto;
             background: #ffffff;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
@@ -75,7 +141,6 @@
         }
         .back-btn:hover { background: rgba(255,255,255,0.2); }
 
-        /* 카드 그리드 레이아웃 */
         .account-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -92,7 +157,7 @@
             position: relative;
             overflow: hidden;
         }
-
+        /* 현선 탭 테두리 제거됨 */
         .account-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.08);
@@ -110,13 +175,8 @@
             transition: background 0.2s;
             border-radius: 8px;
         }
-        
-        .card-header:hover {
-            background: #f8f9fa;
-        }
-        .card-header:active {
-            background: #e9ecef;
-        }
+        .card-header:hover { background: #f8f9fa; }
+        .card-header:active { background: #e9ecef; }
 
         .member-name {
             font-size: 1.4rem;
@@ -126,32 +186,23 @@
             align-items: center;
             gap: 8px;
         }
-        
-        .member-name::after {
-            content: '🔗';
-            font-size: 1rem;
-            opacity: 0.5;
-        }
-
-        .member-status {
-            font-size: 0.9rem;
-            color: var(--primary-color);
-            font-weight: 600;
-        }
+        .member-name::after { content: '🔗'; font-size: 1rem; opacity: 0.5; }
+        .member-status { font-size: 0.9rem; color: var(--primary-color); font-weight: 600; }
 
         .info-row {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start; /* 왼쪽 정렬 */
             align-items: center;
             margin-bottom: 8px;
             padding: 5px 0;
+            gap: 10px; /* 라벨과 값 사이 간격 */
         }
 
         .info-label {
             font-size: 0.85rem;
             color: var(--text-muted);
             font-weight: 600;
-            width: 50px;
+            width: 40px; /* 라벨 너비 고정 */
             flex-shrink: 0;
         }
 
@@ -161,173 +212,212 @@
             flex-grow: 1;
             padding: 8px 12px;
             word-break: break-all;
-            text-align: right;
+            text-align: left; /* [요청사항] 왼쪽 정렬 */
             
-            /* 클릭 가능한 스타일 */
             cursor: pointer;
             border-radius: 6px;
             transition: all 0.2s ease;
-            background: #f8f9fa; /* 기본 배경 살짝 깔아줌 */
+            background: #f8f9fa;
         }
 
         .info-value:hover {
-            background: #e9ecef; /* 마우스 올렸을 때 진하게 */
+            background: #e9ecef;
             color: var(--primary-color);
-            transform: translateX(-2px); /* 살짝 움직이는 효과 */
         }
-        
         .info-value:active {
             background: #dee2e6;
             transform: scale(0.98);
         }
 
-        /* 복사 알림 토스트 */
+        /* 비밀번호 숨김 클래스 */
+        .hidden-pw {
+            font-family: sans-serif; /* 점 모양 깔끔하게 */
+            letter-spacing: 2px;
+            color: #adb5bd; /* 회색으로 은은하게 */
+        }
+
         .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(33, 37, 41, 0.95);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.3s, transform 0.3s;
-            pointer-events: none;
-            z-index: 1000;
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(33, 37, 41, 0.95); color: white; padding: 12px 25px;
+            border-radius: 30px; font-size: 0.95rem; font-weight: 500;
+            opacity: 0; transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none; z-index: 1000;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
 
         @media (max-width: 768px) {
             .account-grid { grid-template-columns: 1fr; padding: 20px; }
+            .login-box { width: 95%; padding: 30px 20px; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="page-container">
-    <ul class="nav-tabs">
-        <li><a href="handover.html">인수인계</a></li>
-        <li class="active"><a href="docs.html">독스 계정 정보</a></li>
-        <li><a href="company.html">업체 정보</a></li>
-        <li><a href="schedule.html">연세사랑모아 순번</a></li>
-        <li><a href="cafe.html">집중관리 카페</a></li>
-    </ul>
-
-    <div class="header-section">
-        <a href="index.html" class="back-btn">← 메인으로</a>
-        <h1>운영관리팀 독스 계정</h1>
-        <p>내용을 클릭하면 복사됩니다.</p>
+<div id="lock-screen">
+    <div class="login-box">
+        <h2>🔒 보안 접속</h2>
+        <p>페이지에 접근하려면 비밀번호를 입력하세요.</p>
+        <input type="password" id="access-pw" class="pw-input" placeholder="비밀번호 4자리" maxlength="4" onkeyup="checkEnter(event)">
+        <button class="login-btn" onclick="checkPassword()">확인</button>
+        <div id="error-msg" class="error-msg">⛔ 비밀번호가 올바르지 않습니다.</div>
     </div>
+</div>
 
-    <div class="account-grid">
+<div id="main-content">
+    <div class="page-container">
+        <ul class="nav-tabs">
+            <li><a href="handover.html">인수인계</a></li>
+            <li class="active"><a href="docs.html">독스 계정 정보</a></li>
+            <li><a href="company.html">업체 정보</a></li>
+            <li><a href="schedule.html">연세사랑모아 순번</a></li>
+            <li><a href="cafe.html">집중관리 카페</a></li>
+        </ul>
 
-        <div class="account-card">
-            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1s4qfamMG3mGAhs65Qutm7QMEjAj0Qh2jJOQ-MATavX4/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
-                <span class="member-name">민영</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">ID</span>
-                <span class="info-value" onclick="copyText('sccompany103@gmail.com')">sccompany103@gmail.com</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">PW</span>
-                <span class="info-value" onclick="copyText('fkzpt56%')">fkzpt56%</span>
-            </div>
+        <div class="header-section">
+            <a href="index.html" class="back-btn">← 메인으로</a>
+            <h1>운영관리팀 독스 계정</h1>
+            <p>내용을 클릭하면 복사됩니다. (비밀번호 보안 처리됨)</p>
         </div>
 
-        <div class="account-card">
-            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1Hojio1szvAE9H-X36qgm6GBsjG2O7ga7HN3vPgzngN4/edit?gid=1702577566#gid=1702577566', '구글시트 주소')">
-                <span class="member-name">정현 <span class="member-status">[공석]</span></span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">ID</span>
-                <span class="info-value" onclick="copyText('sccompany101@gmail.com')">sccompany101@gmail.com</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">PW</span>
-                <span class="info-value" onclick="copyText('xkrwk34&')">xkrwk34&</span>
-            </div>
-        </div>
+        <div class="account-grid">
 
-        <div class="account-card">
-            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1g_MJISJ7Z6tK-ywrc13vt-IlZe_0qka99oHYEGalTUw/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
-                <span class="member-name">유빈 <span class="member-status">[서은]</span></span>
+            <div class="account-card">
+                <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1s4qfamMG3mGAhs65Qutm7QMEjAj0Qh2jJOQ-MATavX4/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
+                    <span class="member-name">민영</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">ID</span>
+                    <span class="info-value" onclick="copyText('sccompany103@gmail.com')">sccompany103@gmail.com</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">PW</span>
+                    <span class="info-value hidden-pw" onclick="copyText('fkzpt56%')">••••••••</span>
+                </div>
             </div>
-            
-            <div class="info-row">
-                <span class="info-label">ID</span>
-                <span class="info-value" onclick="copyText('sccompany102@gmail.com')">sccompany102@gmail.com</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">PW</span>
-                <span class="info-value" onclick="copyText('tjaud45^')">tjaud45^</span>
-            </div>
-        </div>
 
-        <div class="account-card">
-            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1cWGwmgoKURPHfo-nksSe50D9gFPRO5TYsi5kUaZx2Mw/edit?form=MY01SV&OCID=MY01SV&gid=1263914047#gid=1263914047', '구글시트 주소')">
-                <span class="member-name">태균</span>
+            <div class="account-card">
+                <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1Hojio1szvAE9H-X36qgm6GBsjG2O7ga7HN3vPgzngN4/edit?gid=1702577566#gid=1702577566', '구글시트 주소')">
+                    <span class="member-name">정현 <span class="member-status">[공석]</span></span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">ID</span>
+                    <span class="info-value" onclick="copyText('sccompany101@gmail.com')">sccompany101@gmail.com</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">PW</span>
+                    <span class="info-value hidden-pw" onclick="copyText('xkrwk34&')">••••••••</span>
+                </div>
             </div>
-            
-            <div class="info-row">
-                <span class="info-label">ID</span>
-                <span class="info-value" onclick="copyText('sccompany104@gmail.com')">sccompany104@gmail.com</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">PW</span>
-                <span class="info-value" onclick="copyText('wkdrhks67$')">wkdrhks67$</span>
-            </div>
-        </div>
 
-        <div class="account-card">
-            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1nMg9yy1M5vqaAlmXWEvhgqcHW-Y8QFKyav3OSSm1qVk/edit?gid=194574205#gid=194574205', '구글시트 주소')">
-                <span class="member-name">수정</span>
+            <div class="account-card">
+                <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1g_MJISJ7Z6tK-ywrc13vt-IlZe_0qka99oHYEGalTUw/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
+                    <span class="member-name">유빈 <span class="member-status">[서은]</span></span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">ID</span>
+                    <span class="info-value" onclick="copyText('sccompany102@gmail.com')">sccompany102@gmail.com</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">PW</span>
+                    <span class="info-value hidden-pw" onclick="copyText('tjaud45^')">••••••••</span>
+                </div>
             </div>
-            
-            <div class="info-row">
-                <span class="info-label">ID</span>
-                <span class="info-value" onclick="copyText('sccompany105@gmail.com')">sccompany105@gmail.com</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">PW</span>
-                <span class="info-value" onclick="copyText('thtm78##')">thtm78##</span>
-            </div>
-        </div>
 
-        <div class="account-card" style="border: 2px solid var(--primary-color); background: #f8fbff;">
-            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1iHuiTzkvEKrtTifxv0jzQ6X01zK9QMx8ii7CGeJ--Yg/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
-                <span class="member-name">현선</span>
+            <div class="account-card">
+                <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1cWGwmgoKURPHfo-nksSe50D9gFPRO5TYsi5kUaZx2Mw/edit?form=MY01SV&OCID=MY01SV&gid=1263914047#gid=1263914047', '구글시트 주소')">
+                    <span class="member-name">태균</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">ID</span>
+                    <span class="info-value" onclick="copyText('sccompany104@gmail.com')">sccompany104@gmail.com</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">PW</span>
+                    <span class="info-value hidden-pw" onclick="copyText('wkdrhks67$')">••••••••</span>
+                </div>
             </div>
-            
-            <div class="info-row">
-                <span class="info-label">ID</span>
-                <span class="info-value" onclick="copyText('sccompany204@gmail.com')">sccompany204@gmail.com</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">PW</span>
-                <span class="info-value" onclick="copyText('bdtna1121')">bdtna1121</span>
-            </div>
-        </div>
 
+            <div class="account-card">
+                <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1nMg9yy1M5vqaAlmXWEvhgqcHW-Y8QFKyav3OSSm1qVk/edit?gid=194574205#gid=194574205', '구글시트 주소')">
+                    <span class="member-name">수정</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">ID</span>
+                    <span class="info-value" onclick="copyText('sccompany105@gmail.com')">sccompany105@gmail.com</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">PW</span>
+                    <span class="info-value hidden-pw" onclick="copyText('thtm78##')">••••••••</span>
+                </div>
+            </div>
+
+            <div class="account-card">
+                <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1iHuiTzkvEKrtTifxv0jzQ6X01zK9QMx8ii7CGeJ--Yg/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
+                    <span class="member-name">현선</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">ID</span>
+                    <span class="info-value" onclick="copyText('sccompany204@gmail.com')">sccompany204@gmail.com</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">PW</span>
+                    <span class="info-value hidden-pw" onclick="copyText('bdtna1121')">••••••••</span>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 
 <div id="toast" class="toast">복사되었습니다!</div>
 
 <script>
+    // --- 1. 잠금 화면 로직 ---
+    function checkPassword() {
+        const input = document.getElementById('access-pw');
+        const errorMsg = document.getElementById('error-msg');
+        
+        if (input.value === '6169') {
+            // 비밀번호 일치 시
+            document.getElementById('lock-screen').style.display = 'none'; // 잠금 화면 숨김
+            document.getElementById('main-content').style.display = 'block'; // 메인 내용 표시
+        } else {
+            // 불일치 시
+            errorMsg.style.display = 'block';
+            input.value = ''; // 입력창 초기화
+            input.focus();
+            
+            // 흔들림 효과 (UX)
+            const box = document.querySelector('.login-box');
+            box.style.transform = 'translateX(10px)';
+            setTimeout(() => { box.style.transform = 'translateX(-10px)'; }, 50);
+            setTimeout(() => { box.style.transform = 'translateX(5px)'; }, 100);
+            setTimeout(() => { box.style.transform = 'translateX(0)'; }, 150);
+        }
+    }
+
+    // 엔터키 입력 지원
+    function checkEnter(e) {
+        if (e.key === 'Enter') {
+            checkPassword();
+        }
+    }
+
+    // --- 2. 복사 기능 로직 ---
     function copyText(text, label) {
         navigator.clipboard.writeText(text).then(() => {
             const toast = document.getElementById('toast');
             
             if (label) {
-                toast.textContent = `📋 ${label}가 복사되었습니다!`;
+                toast.textContent = `📋 ${label} 복사 완료!`;
             } else {
                 toast.textContent = '📋 복사되었습니다!';
             }
@@ -342,6 +432,11 @@
             console.error('복사 실패:', err);
         });
     }
+
+    // 페이지 로드 시 비밀번호 입력창에 포커스
+    window.onload = function() {
+        document.getElementById('access-pw').focus();
+    };
 </script>
 
 </body>
