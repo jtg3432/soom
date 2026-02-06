@@ -101,80 +101,84 @@
 
         .card-header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid #f1f3f5;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 8px;
+        }
+        
+        .card-header:hover {
+            background: #f8f9fa;
+        }
+        .card-header:active {
+            background: #e9ecef;
         }
 
         .member-name {
             font-size: 1.4rem;
             font-weight: 700;
             color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
+        .member-name::after {
+            content: '🔗';
+            font-size: 1rem;
+            opacity: 0.5;
+        }
+
         .member-status {
             font-size: 0.9rem;
             color: var(--primary-color);
             font-weight: 600;
         }
 
-        .sheet-btn {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background: var(--primary-color);
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            transition: background 0.2s;
-        }
-        .sheet-btn:hover { background: #0056b3; }
-
         .info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 6px;
+            margin-bottom: 8px;
+            padding: 5px 0;
         }
 
         .info-label {
             font-size: 0.85rem;
             color: var(--text-muted);
             font-weight: 600;
-            width: 60px;
+            width: 50px;
+            flex-shrink: 0;
         }
 
         .info-value {
-            font-family: 'Courier New', monospace;
-            font-weight: 600;
+            font-weight: 500;
             color: var(--text-dark);
             flex-grow: 1;
-            padding: 0 10px;
+            padding: 8px 12px;
             word-break: break-all;
+            text-align: right;
+            
+            /* 클릭 가능한 스타일 */
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            background: #f8f9fa; /* 기본 배경 살짝 깔아줌 */
         }
 
-        .copy-btn {
-            background: none;
-            border: 1px solid #dee2e6;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            transition: all 0.2s;
+        .info-value:hover {
+            background: #e9ecef; /* 마우스 올렸을 때 진하게 */
+            color: var(--primary-color);
+            transform: translateX(-2px); /* 살짝 움직이는 효과 */
         }
-        .copy-btn:hover {
-            background: var(--text-dark);
-            color: white;
-            border-color: var(--text-dark);
+        
+        .info-value:active {
+            background: #dee2e6;
+            transform: scale(0.98);
         }
 
         /* 복사 알림 토스트 */
@@ -183,17 +187,19 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(33, 37, 41, 0.9);
+            background: rgba(33, 37, 41, 0.95);
             color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 0.9rem;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 500;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, transform 0.3s;
             pointer-events: none;
             z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        .toast.show { opacity: 1; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
 
         @media (max-width: 768px) {
             .account-grid { grid-template-columns: 1fr; padding: 20px; }
@@ -215,116 +221,98 @@
     <div class="header-section">
         <a href="index.html" class="back-btn">← 메인으로</a>
         <h1>운영관리팀 독스 계정</h1>
-        <p>각 담당자별 구글 시트 및 계정 정보입니다.</p>
+        <p>내용을 클릭하면 복사됩니다.</p>
     </div>
 
     <div class="account-grid">
 
         <div class="account-card">
-            <div class="card-header">
+            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1s4qfamMG3mGAhs65Qutm7QMEjAj0Qh2jJOQ-MATavX4/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
                 <span class="member-name">민영</span>
             </div>
-            <a href="https://docs.google.com/spreadsheets/d/1s4qfamMG3mGAhs65Qutm7QMEjAj0Qh2jJOQ-MATavX4/edit?gid=2094140456#gid=2094140456" class="sheet-btn" target="_blank">📊 구글 시트 바로가기</a>
             
             <div class="info-row">
                 <span class="info-label">ID</span>
-                <span class="info-value">sccompany103@gmail.com</span>
-                <button class="copy-btn" onclick="copyText('sccompany103@gmail.com')">복사</button>
+                <span class="info-value" onclick="copyText('sccompany103@gmail.com')">sccompany103@gmail.com</span>
             </div>
             <div class="info-row">
                 <span class="info-label">PW</span>
-                <span class="info-value">fkzpt56%</span>
-                <button class="copy-btn" onclick="copyText('fkzpt56%')">복사</button>
+                <span class="info-value" onclick="copyText('fkzpt56%')">fkzpt56%</span>
             </div>
         </div>
 
         <div class="account-card">
-            <div class="card-header">
+            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1Hojio1szvAE9H-X36qgm6GBsjG2O7ga7HN3vPgzngN4/edit?gid=1702577566#gid=1702577566', '구글시트 주소')">
                 <span class="member-name">정현 <span class="member-status">[공석]</span></span>
             </div>
-            <a href="https://docs.google.com/spreadsheets/d/1Hojio1szvAE9H-X36qgm6GBsjG2O7ga7HN3vPgzngN4/edit?gid=1702577566#gid=1702577566" class="sheet-btn" target="_blank">📊 구글 시트 바로가기</a>
             
             <div class="info-row">
                 <span class="info-label">ID</span>
-                <span class="info-value">sccompany101@gmail.com</span>
-                <button class="copy-btn" onclick="copyText('sccompany101@gmail.com')">복사</button>
+                <span class="info-value" onclick="copyText('sccompany101@gmail.com')">sccompany101@gmail.com</span>
             </div>
             <div class="info-row">
                 <span class="info-label">PW</span>
-                <span class="info-value">xkrwk34&</span>
-                <button class="copy-btn" onclick="copyText('xkrwk34&')">복사</button>
+                <span class="info-value" onclick="copyText('xkrwk34&')">xkrwk34&</span>
             </div>
         </div>
 
         <div class="account-card">
-            <div class="card-header">
+            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1g_MJISJ7Z6tK-ywrc13vt-IlZe_0qka99oHYEGalTUw/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
                 <span class="member-name">유빈 <span class="member-status">[서은]</span></span>
             </div>
-            <a href="https://docs.google.com/spreadsheets/d/1g_MJISJ7Z6tK-ywrc13vt-IlZe_0qka99oHYEGalTUw/edit?gid=2094140456#gid=2094140456" class="sheet-btn" target="_blank">📊 구글 시트 바로가기</a>
             
             <div class="info-row">
                 <span class="info-label">ID</span>
-                <span class="info-value">sccompany102@gmail.com</span>
-                <button class="copy-btn" onclick="copyText('sccompany102@gmail.com')">복사</button>
+                <span class="info-value" onclick="copyText('sccompany102@gmail.com')">sccompany102@gmail.com</span>
             </div>
             <div class="info-row">
                 <span class="info-label">PW</span>
-                <span class="info-value">tjaud45^</span>
-                <button class="copy-btn" onclick="copyText('tjaud45^')">복사</button>
+                <span class="info-value" onclick="copyText('tjaud45^')">tjaud45^</span>
             </div>
         </div>
 
         <div class="account-card">
-            <div class="card-header">
+            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1cWGwmgoKURPHfo-nksSe50D9gFPRO5TYsi5kUaZx2Mw/edit?form=MY01SV&OCID=MY01SV&gid=1263914047#gid=1263914047', '구글시트 주소')">
                 <span class="member-name">태균</span>
             </div>
-            <a href="https://docs.google.com/spreadsheets/d/1cWGwmgoKURPHfo-nksSe50D9gFPRO5TYsi5kUaZx2Mw/edit?form=MY01SV&OCID=MY01SV&gid=1263914047#gid=1263914047" class="sheet-btn" target="_blank">📊 구글 시트 바로가기</a>
             
             <div class="info-row">
                 <span class="info-label">ID</span>
-                <span class="info-value">sccompany104@gmail.com</span>
-                <button class="copy-btn" onclick="copyText('sccompany104@gmail.com')">복사</button>
+                <span class="info-value" onclick="copyText('sccompany104@gmail.com')">sccompany104@gmail.com</span>
             </div>
             <div class="info-row">
                 <span class="info-label">PW</span>
-                <span class="info-value">wkdrhks67$</span>
-                <button class="copy-btn" onclick="copyText('wkdrhks67$')">복사</button>
+                <span class="info-value" onclick="copyText('wkdrhks67$')">wkdrhks67$</span>
             </div>
         </div>
 
         <div class="account-card">
-            <div class="card-header">
+            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1nMg9yy1M5vqaAlmXWEvhgqcHW-Y8QFKyav3OSSm1qVk/edit?gid=194574205#gid=194574205', '구글시트 주소')">
                 <span class="member-name">수정</span>
             </div>
-            <a href="https://docs.google.com/spreadsheets/d/1nMg9yy1M5vqaAlmXWEvhgqcHW-Y8QFKyav3OSSm1qVk/edit?gid=194574205#gid=194574205" class="sheet-btn" target="_blank">📊 구글 시트 바로가기</a>
             
             <div class="info-row">
                 <span class="info-label">ID</span>
-                <span class="info-value">sccompany105@gmail.com</span>
-                <button class="copy-btn" onclick="copyText('sccompany105@gmail.com')">복사</button>
+                <span class="info-value" onclick="copyText('sccompany105@gmail.com')">sccompany105@gmail.com</span>
             </div>
             <div class="info-row">
                 <span class="info-label">PW</span>
-                <span class="info-value">thtm78##</span>
-                <button class="copy-btn" onclick="copyText('thtm78##')">복사</button>
+                <span class="info-value" onclick="copyText('thtm78##')">thtm78##</span>
             </div>
         </div>
 
-        <div class="account-card" style="border-color: var(--primary-color); background: #f8fbff;">
-            <div class="card-header">
+        <div class="account-card" style="border: 2px solid var(--primary-color); background: #f8fbff;">
+            <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1iHuiTzkvEKrtTifxv0jzQ6X01zK9QMx8ii7CGeJ--Yg/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
                 <span class="member-name">현선</span>
             </div>
-            <a href="https://docs.google.com/spreadsheets/d/1iHuiTzkvEKrtTifxv0jzQ6X01zK9QMx8ii7CGeJ--Yg/edit?gid=2094140456#gid=2094140456" class="sheet-btn" target="_blank">📊 구글 시트 바로가기</a>
             
             <div class="info-row">
                 <span class="info-label">ID</span>
-                <span class="info-value">sccompany204@gmail.com</span>
-                <button class="copy-btn" onclick="copyText('sccompany204@gmail.com')">복사</button>
+                <span class="info-value" onclick="copyText('sccompany204@gmail.com')">sccompany204@gmail.com</span>
             </div>
             <div class="info-row">
                 <span class="info-label">PW</span>
-                <span class="info-value">bdtna1121</span>
-                <button class="copy-btn" onclick="copyText('bdtna1121')">복사</button>
+                <span class="info-value" onclick="copyText('bdtna1121')">bdtna1121</span>
             </div>
         </div>
 
@@ -334,11 +322,20 @@
 <div id="toast" class="toast">복사되었습니다!</div>
 
 <script>
-    function copyText(text) {
+    function copyText(text, label) {
         navigator.clipboard.writeText(text).then(() => {
             const toast = document.getElementById('toast');
+            
+            if (label) {
+                toast.textContent = `📋 ${label}가 복사되었습니다!`;
+            } else {
+                toast.textContent = '📋 복사되었습니다!';
+            }
+            
             toast.classList.add('show');
-            setTimeout(() => {
+            
+            if (window.toastTimer) clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
                 toast.classList.remove('show');
             }, 2000);
         }).catch(err => {
