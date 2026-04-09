@@ -32,7 +32,7 @@
         }
 
         .page-container {
-            max-width: 1600px; /* 6명이므로 너비를 더 넓게 확보 */
+            max-width: 1600px;
             margin: 0 auto;
             background: #ffffff;
             border-radius: 15px;
@@ -111,7 +111,6 @@
 
         .progress-grid {
             display: grid;
-            /* 6명에 맞춰 그리드 조정 */
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
             max-width: 1400px;
@@ -187,7 +186,7 @@
         }
 
         .schedule-table td {
-            padding: 15px 5px; /* 패딩 축소 */
+            padding: 15px 5px;
             border-bottom: 1px solid var(--border-color);
             text-align: center;
             vertical-align: top;
@@ -197,7 +196,7 @@
         .schedule-table tbody tr:last-child td { border-bottom: none; }
 
         .person-column {
-            width: 16.66%; /* 6명이므로 100/6 */
+            width: 20%; /* 5명이므로 다시 20%로 수정 */
             position: relative;
         }
 
@@ -213,13 +212,13 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            padding: 12px 5px; /* 패딩 축소 */
+            padding: 12px 5px;
             border-radius: 10px;
             transition: all 0.2s ease;
             background: var(--bg-light);
             border: 1px solid var(--border-color);
             position: relative;
-            width: 95%; /* 너비 조정 */
+            width: 95%;
             margin: 0 auto;
         }
 
@@ -237,7 +236,7 @@
 
         .mini-memo {
             width: 100%;
-            max-width: 90%; /* 메모장 너비 꽉 차게 */
+            max-width: 90%;
             padding: 8px 5px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
@@ -333,11 +332,10 @@
             background: var(--success-color);
         }
 
-        @media (max-width: 1024px) { /* 태블릿/모바일 대응 수정 */
+        @media (max-width: 1024px) {
             body { padding: 10px; }
             .page-container { margin: 0; }
             .table-container { padding: 5px; overflow-x: scroll; }
-            /* 모바일에서는 가로 스크롤 허용하고 너비 고정 해제 */
             .schedule-table { table-layout: auto; min-width: 800px; } 
             .schedule-table th,
             .schedule-table td { padding: 10px 5px; font-size: 0.9rem; }
@@ -374,34 +372,29 @@
         <div class="progress-section">
             <div class="progress-grid">
                 <div class="progress-card">
-                    <div class="progress-name">유빈</div>
-                    <div class="progress-bar"><div class="progress-fill" id="progress-유빈"></div></div>
-                    <div class="progress-text" id="progress-text-유빈">0 / 20 완료</div>
-                </div>
-                <div class="progress-card">
-                    <div class="progress-name">현선</div>
-                    <div class="progress-bar"><div class="progress-fill" id="progress-현선"></div></div>
-                    <div class="progress-text" id="progress-text-현선">0 / 20 완료</div>
-                </div>
-                <div class="progress-card">
                     <div class="progress-name">태균</div>
                     <div class="progress-bar"><div class="progress-fill" id="progress-태균"></div></div>
                     <div class="progress-text" id="progress-text-태균">0 / 20 완료</div>
                 </div>
                 <div class="progress-card">
-                    <div class="progress-name">윤서</div>
-                    <div class="progress-bar"><div class="progress-fill" id="progress-윤서"></div></div>
-                    <div class="progress-text" id="progress-text-윤서">0 / 20 완료</div>
+                    <div class="progress-name">지은</div>
+                    <div class="progress-bar"><div class="progress-fill" id="progress-지은"></div></div>
+                    <div class="progress-text" id="progress-text-지은">0 / 20 완료</div>
                 </div>
                 <div class="progress-card">
-                    <div class="progress-name">정현</div>
-                    <div class="progress-bar"><div class="progress-fill" id="progress-정현"></div></div>
-                    <div class="progress-text" id="progress-text-정현">0 / 20 완료</div>
+                    <div class="progress-name">이서</div>
+                    <div class="progress-bar"><div class="progress-fill" id="progress-이서"></div></div>
+                    <div class="progress-text" id="progress-text-이서">0 / 20 완료</div>
                 </div>
                 <div class="progress-card">
                     <div class="progress-name">수정</div>
                     <div class="progress-bar"><div class="progress-fill" id="progress-수정"></div></div>
                     <div class="progress-text" id="progress-text-수정">0 / 20 완료</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-name">해민</div>
+                    <div class="progress-bar"><div class="progress-fill" id="progress-해민"></div></div>
+                    <div class="progress-text" id="progress-text-해민">0 / 20 완료</div>
                 </div>
             </div>
         </div>
@@ -410,22 +403,20 @@
             <table class="schedule-table">
                 <thead>
                     <tr>
-                        <th>유빈</th>
-                        <th>현선</th>
                         <th>태균</th>
-                        <th>윤서</th>
-                        <th>정현</th>
+                        <th>지은</th>
+                        <th>이서</th>
                         <th>수정</th>
+                        <th>해민</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="person-column"><div class="checkbox-group" id="group-유빈"></div></td>
-                        <td class="person-column"><div class="checkbox-group" id="group-현선"></div></td>
                         <td class="person-column"><div class="checkbox-group" id="group-태균"></div></td>
-                        <td class="person-column"><div class="checkbox-group" id="group-윤서"></div></td>
-                        <td class="person-column"><div class="checkbox-group" id="group-정현"></div></td>
+                        <td class="person-column"><div class="checkbox-group" id="group-지은"></div></td>
+                        <td class="person-column"><div class="checkbox-group" id="group-이서"></div></td>
                         <td class="person-column"><div class="checkbox-group" id="group-수정"></div></td>
+                        <td class="person-column"><div class="checkbox-group" id="group-해민"></div></td>
                     </tr>
                 </tbody>
             </table>
@@ -466,8 +457,8 @@
     </script>
 
     <script>
-        // *** 멤버 목록 변경 (6명) ***
-        const people = ['유빈', '현선', '태균', '윤서', '정현', '수정'];
+        // *** 멤버 목록 변경 (5명) ***
+        const people = ['태균', '지은', '이서', '수정', '해민'];
         const totalItems = 20;
         let scheduleData = {};
 
@@ -576,7 +567,6 @@
                     for (let i = 1; i <= totalItems; i++) {
                         const checkbox = document.getElementById(`${person}_${i}`);
                         const memo = document.getElementById(`memo_${person}_${i}`);
-                        // 체크박스나 메모가 존재하지 않으면(오류 방지) 건너뛰기
                         if (!checkbox || !memo) continue;
                         personData[i] = {
                             checked: checkbox.checked,
