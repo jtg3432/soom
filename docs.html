@@ -20,14 +20,14 @@
             font-family: 'Noto Sans KR', sans-serif;
             background: var(--bg-light);
             color: var(--text-dark);
-            height: 100vh; /* 잠금화면용 높이 설정 */
+            height: 100vh;
         }
 
         /* --- 잠금 화면 스타일 --- */
         #lock-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(33, 37, 41, 0.98); /* 배경 어둡게 */
+            background: rgba(33, 37, 41, 0.98); 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -56,7 +56,7 @@
             border: 2px solid var(--border-color);
             border-radius: 8px;
             margin-bottom: 15px;
-            letter-spacing: 5px; /* 비밀번호 점 간격 */
+            letter-spacing: 5px; 
         }
         .pw-input:focus { outline: none; border-color: var(--primary-color); }
 
@@ -78,14 +78,14 @@
             color: var(--error-color);
             margin-top: 10px;
             font-size: 0.9rem;
-            display: none; /* 기본 숨김 */
+            display: none; 
             font-weight: bold;
         }
 
 
-        /* --- 메인 콘텐츠 (기본 숨김) --- */
+        /* --- 메인 콘텐츠 --- */
         #main-content {
-            display: none; /* 잠금 해제 전까지 숨김 */
+            display: none; 
             padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
@@ -157,7 +157,7 @@
             position: relative;
             overflow: hidden;
         }
-        /* 현선 탭 테두리 제거됨 */
+        
         .account-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.08);
@@ -191,18 +191,18 @@
 
         .info-row {
             display: flex;
-            justify-content: flex-start; /* 왼쪽 정렬 */
+            justify-content: flex-start;
             align-items: center;
             margin-bottom: 8px;
             padding: 5px 0;
-            gap: 10px; /* 라벨과 값 사이 간격 */
+            gap: 10px;
         }
 
         .info-label {
             font-size: 0.85rem;
             color: var(--text-muted);
             font-weight: 600;
-            width: 40px; /* 라벨 너비 고정 */
+            width: 40px;
             flex-shrink: 0;
         }
 
@@ -212,7 +212,7 @@
             flex-grow: 1;
             padding: 8px 12px;
             word-break: break-all;
-            text-align: left; /* [요청사항] 왼쪽 정렬 */
+            text-align: left;
             
             cursor: pointer;
             border-radius: 6px;
@@ -229,11 +229,10 @@
             transform: scale(0.98);
         }
 
-        /* 비밀번호 숨김 클래스 */
         .hidden-pw {
-            font-family: sans-serif; /* 점 모양 깔끔하게 */
+            font-family: sans-serif; 
             letter-spacing: 2px;
-            color: #adb5bd; /* 회색으로 은은하게 */
+            color: #adb5bd;
         }
 
         .toast {
@@ -255,6 +254,7 @@
 </head>
 <body>
 
+<!-- 잠금 화면 -->
 <div id="lock-screen">
     <div class="login-box">
         <h2>🔒 보안 접속</h2>
@@ -265,6 +265,7 @@
     </div>
 </div>
 
+<!-- 메인 콘텐츠 -->
 <div id="main-content">
     <div class="page-container">
         <ul class="nav-tabs">
@@ -283,6 +284,7 @@
 
         <div class="account-grid">
 
+            <!-- 1. 민영 -->
             <div class="account-card">
                 <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1s4qfamMG3mGAhs65Qutm7QMEjAj0Qh2jJOQ-MATavX4/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
                     <span class="member-name">민영</span>
@@ -298,9 +300,10 @@
                 </div>
             </div>
 
+            <!-- 2. 101 (기존 정현) -->
             <div class="account-card">
                 <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1Hojio1szvAE9H-X36qgm6GBsjG2O7ga7HN3vPgzngN4/edit?gid=1702577566#gid=1702577566', '구글시트 주소')">
-                    <span class="member-name">정현 <span class="member-status">[공석]</span></span>
+                    <span class="member-name">101</span>
                 </div>
                 
                 <div class="info-row">
@@ -309,13 +312,14 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">PW</span>
-                    <span class="info-value hidden-pw" onclick="copyText('xkrwk34&')">••••••••</span>
+                    <span class="info-value hidden-pw" onclick="copyText('fkvn48@*')">••••••••</span>
                 </div>
             </div>
 
+            <!-- 3. 102 (기존 유빈) -->
             <div class="account-card">
                 <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1g_MJISJ7Z6tK-ywrc13vt-IlZe_0qka99oHYEGalTUw/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
-                    <span class="member-name">유빈 <span class="member-status">[서은]</span></span>
+                    <span class="member-name">102</span>
                 </div>
                 
                 <div class="info-row">
@@ -324,10 +328,11 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">PW</span>
-                    <span class="info-value hidden-pw" onclick="copyText('tjaud45^')">••••••••</span>
+                    <span class="info-value hidden-pw" onclick="copyText('tmqkr78%')">••••••••</span>
                 </div>
             </div>
 
+            <!-- 4. 태균 -->
             <div class="account-card">
                 <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1cWGwmgoKURPHfo-nksSe50D9gFPRO5TYsi5kUaZx2Mw/edit?form=MY01SV&OCID=MY01SV&gid=1263914047#gid=1263914047', '구글시트 주소')">
                     <span class="member-name">태균</span>
@@ -343,6 +348,7 @@
                 </div>
             </div>
 
+            <!-- 5. 수정 -->
             <div class="account-card">
                 <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1nMg9yy1M5vqaAlmXWEvhgqcHW-Y8QFKyav3OSSm1qVk/edit?gid=194574205#gid=194574205', '구글시트 주소')">
                     <span class="member-name">수정</span>
@@ -354,13 +360,14 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">PW</span>
-                    <span class="info-value hidden-pw" onclick="copyText('thtm78##')">••••••••</span>
+                    <span class="info-value hidden-pw" onclick="copyText('dlth333#')">••••••••</span>
                 </div>
             </div>
 
+            <!-- 6. 이서 -->
             <div class="account-card">
                 <div class="card-header" onclick="copyText('https://docs.google.com/spreadsheets/d/1iHuiTzkvEKrtTifxv0jzQ6X01zK9QMx8ii7CGeJ--Yg/edit?gid=2094140456#gid=2094140456', '구글시트 주소')">
-                    <span class="member-name">현선</span>
+                    <span class="member-name">이서</span>
                 </div>
                 
                 <div class="info-row">
@@ -369,7 +376,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">PW</span>
-                    <span class="info-value hidden-pw" onclick="copyText('bdtna1121')">••••••••</span>
+                    <span class="info-value hidden-pw" onclick="copyText('tnrjs89@')">••••••••</span>
                 </div>
             </div>
 
@@ -380,22 +387,19 @@
 <div id="toast" class="toast">복사되었습니다!</div>
 
 <script>
-    // --- 1. 잠금 화면 로직 ---
+    // --- 잠금 화면 로직 ---
     function checkPassword() {
         const input = document.getElementById('access-pw');
         const errorMsg = document.getElementById('error-msg');
         
         if (input.value === '6169') {
-            // 비밀번호 일치 시
-            document.getElementById('lock-screen').style.display = 'none'; // 잠금 화면 숨김
-            document.getElementById('main-content').style.display = 'block'; // 메인 내용 표시
+            document.getElementById('lock-screen').style.display = 'none'; 
+            document.getElementById('main-content').style.display = 'block'; 
         } else {
-            // 불일치 시
             errorMsg.style.display = 'block';
-            input.value = ''; // 입력창 초기화
+            input.value = ''; 
             input.focus();
             
-            // 흔들림 효과 (UX)
             const box = document.querySelector('.login-box');
             box.style.transform = 'translateX(10px)';
             setTimeout(() => { box.style.transform = 'translateX(-10px)'; }, 50);
@@ -404,14 +408,13 @@
         }
     }
 
-    // 엔터키 입력 지원
     function checkEnter(e) {
         if (e.key === 'Enter') {
             checkPassword();
         }
     }
 
-    // --- 2. 복사 기능 로직 ---
+    // --- 복사 기능 로직 ---
     function copyText(text, label) {
         navigator.clipboard.writeText(text).then(() => {
             const toast = document.getElementById('toast');
@@ -433,7 +436,6 @@
         });
     }
 
-    // 페이지 로드 시 비밀번호 입력창에 포커스
     window.onload = function() {
         document.getElementById('access-pw').focus();
     };
